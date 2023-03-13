@@ -8,7 +8,14 @@
 * En los hilos ocultos se resalta la palabra en color naranja para saber por que está oculto
 * Adaptar el foro a la pantalla para no tener espacios vacios a los lados
 
+
+![botones][2]
+----------------
 ![Captura hilos][1]
+![menu][3]
+![lista][4]
+
+----------------
 
 ## Extensiones soportadas
 
@@ -21,3 +28,6 @@ Este script es compatible con las siguientes extensiones
 
 
 [1]: resources/capturas/hilos%20ocultos.png "Captura hilos"
+[2]: resources/capturas/botones.png "botones"
+[3]: resources/capturas/menu.png "menu"
+[4]: resources/capturas/lista.png "lista"
