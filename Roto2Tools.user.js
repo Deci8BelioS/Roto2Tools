@@ -5,7 +5,7 @@
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @downloadURL     https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
 // @namespace       https://github.com/Deci8BelioS/Roto2Tools
-// @version         1.0.2b
+// @version         1.0.3b
 // @author          DeciBelioS
 // @charset         UTF-8
 // @include         http://www.forocoches.com/*
@@ -94,19 +94,31 @@ const agregarPalabraBtn = document.createElement("button");
     agregarPalabraBtn.textContent = "Añadir";
     agregarPalabraBtn.style.cssText = "background-color: #32CD32; color: white; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);";
     agregarPalabraBtn.addEventListener("click", () => {
-      const nuevaPalabra = agregarPalabraInput.value.trim();
-      if (nuevaPalabra) {
-        if (resaltarHilos.includes(nuevaPalabra)) {
-          alert(`La palabra "${nuevaPalabra}" ya existe en la lista`);
-        } else {
-          resaltarHilos.push(nuevaPalabra);
-          GM_setValue("resaltarHilos", resaltarHilos);
-          alert(`Se ha añadido la palabra "${nuevaPalabra}" a la lista de resaltar hilos`);
+      const nuevasPalabras = agregarPalabraInput.value.split(',').map(palabra => palabra.trim());
+      const palabrasUnicas = nuevasPalabras.filter((palabra, index, arr) => arr.indexOf(palabra) === index);
+      const palabrasAgregadas = [];
+      const palabrasYaExistentes = [];
+        palabrasUnicas.forEach(palabra => {
+          if (resaltarHilos.includes(palabra)) {
+            palabrasYaExistentes.push(palabra);
+          } else {
+            // Si la palabra no existe en la lista, se agrega
+            resaltarHilos.push(palabra);
+            GM_setValue("resaltarHilos", resaltarHilos);
+            palabrasAgregadas.push(palabra);
+          }
+        });
+        if (palabrasAgregadas.length > 0) {
+          const mensaje = `Se ${palabrasAgregadas.length > 1 ? "han" : "ha"} añadido ${palabrasAgregadas.length > 1 ? "las" : "la"} ${palabrasAgregadas.length > 1 ? "palabras" : "palabra"} ${palabrasAgregadas.join(', ')} a la lista de resaltar hilos`;
+          alert(mensaje);
+        }
+        if (palabrasYaExistentes.length > 0) {
+          const mensaje = `${palabrasYaExistentes.length > 1 ? "Las" : "La"} ${palabrasYaExistentes.length > 1 ? "palabras" : "palabra"} ${palabrasYaExistentes.join(', ')} ya ${palabrasYaExistentes.length > 1 ? "estan" : "esta"} en la lista de resaltar hilos`;
+          alert(mensaje);
         }
         agregarPalabraInput.value = "";
-      }
-  });
-    nuevaVentana.appendChild(agregarPalabraBtn);
+});
+  nuevaVentana.appendChild(agregarPalabraBtn);
 
 // Crear el botón para eliminar palabras de resaltar hilos
 const eliminarPalabraBtn = document.createElement("button");
@@ -132,14 +144,14 @@ const eliminarPalabraBtn = document.createElement("button");
 // Crear contenedor para el área de ocultar hilos
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const ocultarHilosContainer = document.createElement("div");
-    ocultarHilosContainer.style.cssText = "display: flex; align-items: center; margin-bottom: 20px;";
+    ocultarHilosContainer.style.cssText = "display: flex; align-items: center; margin-bottom: 10px;";
     nuevaVentana.appendChild(ocultarHilosContainer);
 
 // Crear el título de la caja de ocultar hilos
 const ocultarHilosTitulo = document.createElement("div");
-    ocultarHilosTitulo.style.cssText = "border: 5px solid #3A3A3A; color: white; margin-bottom: 20px; font-weight: bold; box-shadow: 0 2px 6px rgba(0, 0, 0, 1); border-radius: 6px; background-color: #3A3A3A;";
     ocultarHilosTitulo.textContent = "Ocultar hilos (separado por comas)";
-    nuevaVentana.insertBefore(ocultarHilosTitulo, ocultarHilosContainer.firstChild);
+    ocultarHilosTitulo.style.cssText = "border: 5px solid #3A3A3A; color: white; margin-bottom: 20px; font-weight: bold; box-shadow: 0 2px 6px rgba(0, 0, 0, 1); border-radius: 6px; background-color: #3A3A3A;";
+    nuevaVentana.appendChild(ocultarHilosTitulo);
 
 // Crear el input para añadir palabras a ocultar
 const ocultarHilosInput = document.createElement("input");
@@ -147,44 +159,56 @@ const ocultarHilosInput = document.createElement("input");
     ocultarHilosInput.style.cssText = "padding: 8px 12px; border: 1px solid #FD5D4D; box-shadow: 0 2px 6px rgba(0, 0, 0, 1); border-radius: 5px; margin-right: 5px; margin-left: 5px;";
     nuevaVentana.appendChild(ocultarHilosInput);
 
-// Crear el botón para añadir palabras a ocultar
+// Crear el botón para añadir palabras a resaltar
 const ocultarHilosBtn = document.createElement("button");
     ocultarHilosBtn.textContent = "Añadir";
     ocultarHilosBtn.style.cssText = "background-color: #32CD32; color: white; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);";
     ocultarHilosBtn.addEventListener("click", () => {
-      const nuevaPalabra = ocultarHilosInput.value.trim();
-      if (nuevaPalabra) {
-        if (ocultarHilos.includes(nuevaPalabra)) {
-          alert(`La palabra "${nuevaPalabra}" ya existe en la lista`);
+      const nuevasPalabras = ocultarHilosInput.value.split(',').map(palabra => palabra.trim());
+      const palabrasUnicas = nuevasPalabras.filter((palabra, index, arr) => arr.indexOf(palabra) === index);
+      const palabrasAgregadas = [];
+      const palabrasYaExistentes = [];
+      palabrasUnicas.forEach(palabra => {
+        if (ocultarHilos.includes(palabra)) {
+          palabrasYaExistentes.push(palabra);
         } else {
-          ocultarHilos.push(nuevaPalabra);
+          // Si la palabra no existe en la lista, se agrega
+          ocultarHilos.push(palabra);
           GM_setValue("ocultarHilos", ocultarHilos);
-          alert(`Se ha añadido la palabra "${nuevaPalabra}" a la lista de ocultar hilos`);
+          palabrasAgregadas.push(palabra);
         }
-        ocultarHilosInput.value = "";
+      });
+      if (palabrasAgregadas.length > 0) {
+        const mensaje = `Se ${palabrasAgregadas.length > 1 ? "han" : "ha"} añadido ${palabrasAgregadas.length > 1 ? "las" : "la"} ${palabrasAgregadas.length > 1 ? "palabras" : "palabra"} ${palabrasAgregadas.join(', ')} a la lista de ocultar hilos`;
+        alert(mensaje);
       }
-  });
+      if (palabrasYaExistentes.length > 0) {
+        const mensaje = `${palabrasYaExistentes.length > 1 ? "Las" : "La"} ${palabrasYaExistentes.length > 1 ? "palabras" : "palabra"} ${palabrasYaExistentes.join(', ')} ya ${palabrasYaExistentes.length > 1 ? "estan" : "esta"} en la lista de ocultar hilos`;
+        alert(mensaje);
+      }
+      ocultarHilosInput.value = "";
+});
     nuevaVentana.appendChild(ocultarHilosBtn);
 
 // Crear el botón para eliminar palabras de ocultarHilos
-const eliminarOcultarPalabraBtn = document.createElement("button");
-    eliminarOcultarPalabraBtn.textContent = "Eliminar";
-    eliminarOcultarPalabraBtn.style.cssText = "background-color: #FD5D4D; color: white; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);";
-    eliminarOcultarPalabraBtn.addEventListener("click", () => {
+const eliminarPalabra2Btn = document.createElement("button");
+    eliminarPalabra2Btn.textContent = "Eliminar";
+    eliminarPalabra2Btn.style.cssText = "background-color: #FD5D4D; color: white; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);";
+    eliminarPalabra2Btn.addEventListener("click", () => {
       const palabraAEliminar = ocultarHilosInput.value.trim();
       if (palabraAEliminar) {
         const indice = ocultarHilos.indexOf(palabraAEliminar);
         if (indice !== -1) {
           ocultarHilos.splice(indice, 1);
           GM_setValue("ocultarHilos", ocultarHilos);
-          alert(`La palabra "${palabraAEliminar}" HA sido eliminada de la lista de ocultar.`);
+          alert(`La palabra "${palabraAEliminar}" A sido eliminada de la lista ocultar hilos.`);
         } else {
-          alert(`La palabra "${palabraAEliminar}" NO se encontró en la lista de ocultar.`);
+          alert(`La palabra "${palabraAEliminar}" NO se encontró en la lista de ocultar hilos.`);
         }
         ocultarHilosInput.value = "";
       }
     });
-    nuevaVentana.appendChild(eliminarOcultarPalabraBtn);
+    nuevaVentana.appendChild(eliminarPalabra2Btn);
 
 // agregar el botón de cierre
 let cerrarBtn = document.createElement("button");
