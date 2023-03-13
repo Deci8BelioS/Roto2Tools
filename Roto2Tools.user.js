@@ -6,7 +6,7 @@
 // @downloadURL     https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.js?token=GHSAT0AAAAAAB6U4KLO2KCHFJV62G2HFWHCZAPJCEQ
 // @namespace       https://github.com/Deci8BelioS/Roto2Tools
 // @version         1.2.1b
-// @author          Desdenta2 Team
+// @author          DeciBelioS
 // @charset         UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
