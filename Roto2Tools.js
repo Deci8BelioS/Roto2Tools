@@ -4,7 +4,7 @@
 // @icon            https://raw.github.com/igtroop/shurscript/anycloud/images/icon-48x48.png
 // @icon64          https://raw.github.com/igtroop/shurscript/anycloud/images/icon-64x64.png
 // @downloadURL     https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.js?token=GHSAT0AAAAAAB6U4KLO2KCHFJV62G2HFWHCZAPJCEQ
-// @namespace       Violentmonkey Scripts
+// @namespace       https://github.com/Deci8BelioS/Roto2Tools
 // @version         1.2b
 // @author          Desdenta2 Team
 // @charset         UTF-8
