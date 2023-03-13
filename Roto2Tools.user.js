@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name            Roto2Tools
 // @description     Script para Forocoches que oculta hilos o los resalta con las palabras añadidas por el usuario
-// @icon            https://raw.github.com/igtroop/shurscript/anycloud/images/icon-48x48.png
-// @icon64          https://raw.github.com/igtroop/shurscript/anycloud/images/icon-64x64.png
+// @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png?token=GHSAT0AAAAAAB6U4KLOAWPTRF7VZCYPR2TQZAPMLWA
+// @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png?token=GHSAT0AAAAAAB6U4KLOBVOHHQYR5GZPENIIZAPMLMA
 // @downloadURL     https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.js?token=GHSAT0AAAAAAB6U4KLO2KCHFJV62G2HFWHCZAPJCEQ
 // @namespace       https://github.com/Deci8BelioS/Roto2Tools
 // @version         1.2.1b
