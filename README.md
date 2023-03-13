@@ -8,6 +8,8 @@
 * En los hilos ocultos se resalta la palabra en color naranja para saber por que está oculto
 * Adaptar el foro a la pantalla para no tener espacios vacios a los lados
 
+![Captura hilos][1]
+
 ## Extensiones soportadas
 
 Este script es compatible con las siguientes extensiones
@@ -17,3 +19,5 @@ Este script es compatible con las siguientes extensiones
 |   Violentmonkey   | :heavy_check_mark: |
 |    Tampermonkey   | :heavy_check_mark: |
 
+
+[1]: resources/capturas/hilos%20ocultos.png "Captura hilos"
