@@ -2,7 +2,7 @@
 
 * Añadir palabras para ocultar hilos
 * Añadir palabras para resaltar hilos
-* Botones en el Header al lado del logo de Forocoches donde abrir el menú para añadir o eliminar palabras y ver las listas que hay guardadas
+* Botones en el Header al lado del logo de Forocoches donde abrir el menú para añadir o eliminar palabras y ver las listas que hay guardadas (si entras a un hilo se pone a la derecha del titulo del hilo)
 * En los hilos ocultos se resalta la palabra en color naranja para saber por que está oculto
 * Adaptar el foro a la pantalla para no tener espacios vacios a los lados
 
