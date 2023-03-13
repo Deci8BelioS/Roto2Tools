@@ -1,5 +1,3 @@
-# Roto2Tools
-
 ## Caracteristicas
 
 * Añadir palabras para ocultar hilos
@@ -8,14 +6,15 @@
 * En los hilos ocultos se resalta la palabra en color naranja para saber por que está oculto
 * Adaptar el foro a la pantalla para no tener espacios vacios a los lados
 
-
+## Capturas
 ![botones][2]
-----------------
+
 ![Captura hilos][1]
+
 ![menu][3]
+
 ![lista][4]
 
-----------------
 
 ## Extensiones soportadas
 
