@@ -6,7 +6,7 @@
 // @homepage        https://github.com/Deci8BelioS/Roto2Tools/
 // @description     Script para Forocoches que oculta hilos o los resalta con las palabras añadidas por el usuario
 // @icon            https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-48x48.png
-// @icon64          https://github.com/Deci8BelioS/Roto2Tools/raw/main/main/resources/img/icon-64x64.png
+// @icon64          https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/main/Roto2Tools.user.js
 // @version         1.0.4-2b
 // @encoding        UTF-8
