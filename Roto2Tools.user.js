@@ -8,7 +8,7 @@
 // @icon            https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-48x48.png
 // @icon64          https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/main/Roto2Tools.user.js
-// @version         1.0.4-2b
+// @version         1.0.4-3b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -103,9 +103,9 @@ const agregarPalabraBtn = document.createElement("button");
     agregarPalabraBtn.textContent = "Añadir";
     agregarPalabraBtn.style.cssText = "background-color: #32CD32; color: white; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);";
     agregarPalabraBtn.addEventListener("click", () => {
-      const regex = /^\s*(?:[a-zA-Z0-9]+|[+-]?\d+(?:\.\d+)?)(?:\s*,\s*(?:[a-zA-Z0-9]+|[+-]?\d+(?:\.\d+)?))*\s*$/;
+      const regex = /^\s*(?:[a-zA-Z0-9]+|[+-]?[a-zA-Z0-9]+|[+-]?\d+(?:\.\d+)?)(?:\s*,\s*(?:[a-zA-Z0-9]+|[+-]?[a-zA-Z0-9]+|[+-]?\d+(?:\.\d+)?))*\s*$/;
       if (!regex.test(agregarPalabraInput.value)) {
-        alert("Por favor, introduzca una lista de palabras separadas por comas y un espacio, por ejemplo: palabra, otra palabra");
+        alert("⛔ Por favor, introduzca una lista de palabras separadas por comas y un espacio, por ejemplo: palabra, otra palabra ⛔");
         return;
       }
       const nuevasPalabras = agregarPalabraInput.value.split(',').map(palabra => palabra.trim());
@@ -123,11 +123,11 @@ const agregarPalabraBtn = document.createElement("button");
         }
       });
       if (palabrasAgregadas.length > 0) {
-        const mensaje = `Se ${palabrasAgregadas.length > 1 ? "han" : "ha"} añadido ${palabrasAgregadas.length > 1 ? "las" : "la"} ${palabrasAgregadas.length > 1 ? "palabras" : "palabra"} ${palabrasAgregadas.join(", ")} a la lista de resaltar hilos`;
+        const mensaje = `✅ Se ${palabrasAgregadas.length > 1 ? "han" : "ha"} añadido ${palabrasAgregadas.length > 1 ? "las" : "la"} ${palabrasAgregadas.length > 1 ? "palabras" : "palabra"} ${palabrasAgregadas.join(", ")} a la lista de resaltar hilos ✅`;
         alert(mensaje);
       }
       if (palabrasYaExistentes.length > 0) {
-        const mensaje = `${palabrasYaExistentes.length > 1 ? "Las" : "La"} ${palabrasYaExistentes.length > 1 ? "palabras" : "palabra"} ${palabrasYaExistentes.join(", ")} ya ${palabrasYaExistentes.length > 1 ? "están" : "está"} en la lista de resaltar hilos`;
+        const mensaje = `❌ ${palabrasYaExistentes.length > 1 ? "Las" : "La"} ${palabrasYaExistentes.length > 1 ? "palabras" : "palabra"} ${palabrasYaExistentes.join(", ")} ya ${palabrasYaExistentes.length > 1 ? "están" : "está"} en la lista de resaltar hilos ❌`;
         alert(mensaje);
       }
       agregarPalabraInput.value = "";
@@ -145,9 +145,9 @@ const eliminarPalabraBtn = document.createElement("button");
         if (indice !== -1) {
           resaltarHilos.splice(indice, 1);
           GM_setValue("resaltarHilos", resaltarHilos);
-          alert(`La palabra "${palabraAEliminar}" A sido eliminada de la lista de resaltar.`);
+          alert(`✅ La palabra "${palabraAEliminar}" ha sido eliminada de la lista de resaltar ✅`);
         } else {
-          alert(`La palabra "${palabraAEliminar}" NO se encontró en la lista de resaltar.`);
+          alert(`⚠️ ¡No existe la palabra "${palabraAEliminar}" en la lista de la lista de resaltar! ⚠️`);
         }
         agregarPalabraInput.value = "";
       }
@@ -178,9 +178,9 @@ const ocultarHilosBtn = document.createElement("button");
     ocultarHilosBtn.textContent = "Añadir";
     ocultarHilosBtn.style.cssText = "background-color: #32CD32; color: white; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);";
     ocultarHilosBtn.addEventListener("click", () => {
-      const regex = /^\s*(?:[a-zA-Z0-9]+|[+-]?\d+(?:\.\d+)?)(?:\s*,\s*(?:[a-zA-Z0-9]+|[+-]?\d+(?:\.\d+)?))*\s*$/;
+      const regex = /^\s*(?:[a-zA-Z0-9]+|[+-]?[a-zA-Z0-9]+|[+-]?\d+(?:\.\d+)?)(?:\s*,\s*(?:[a-zA-Z0-9]+|[+-]?[a-zA-Z0-9]+|[+-]?\d+(?:\.\d+)?))*\s*$/;
       if (!regex.test(ocultarHilosInput.value)) {
-        alert("Por favor, introduzca una lista de palabras separadas por comas y un espacio, por ejemplo: palabra, otra palabra");
+        alert("⛔ Por favor, introduzca una lista de palabras separadas por comas y un espacio, por ejemplo: palabra, otra palabra ⛔");
         return;
       }
       const nuevasPalabras1 = ocultarHilosInput.value.split(',').map(palabra => palabra.trim());
@@ -198,11 +198,11 @@ const ocultarHilosBtn = document.createElement("button");
         }
       });
       if (palabrasAgregadas1.length > 0) {
-        const mensaje = `Se ${palabrasAgregadas1.length > 1 ? "han" : "ha"} añadido ${palabrasAgregadas1.length > 1 ? "las" : "la"} ${palabrasAgregadas1.length > 1 ? "palabras" : "palabra"} ${palabrasAgregadas1.join(', ')} a la lista de ocultar hilos`;
+        const mensaje = `✅ Se ${palabrasAgregadas1.length > 1 ? "han" : "ha"} añadido ${palabrasAgregadas1.length > 1 ? "las" : "la"} ${palabrasAgregadas1.length > 1 ? "palabras" : "palabra"} ${palabrasAgregadas1.join(', ')} a la lista de ocultar hilos ✅`;
         alert(mensaje);
       }
       if (palabrasYaExistentes2.length > 0) {
-        const mensaje = `${palabrasYaExistentes2.length > 1 ? "Las" : "La"} ${palabrasYaExistentes2.length > 1 ? "palabras" : "palabra"} ${palabrasYaExistentes2.join(', ')} ya ${palabrasYaExistentes2.length > 1 ? "estan" : "esta"} en la lista de ocultar hilos`;
+        const mensaje = `❌ ${palabrasYaExistentes2.length > 1 ? "Las" : "La"} ${palabrasYaExistentes2.length > 1 ? "palabras" : "palabra"} ${palabrasYaExistentes2.join(', ')} ya ${palabrasYaExistentes2.length > 1 ? "estan" : "esta"} en la lista de ocultar hilos ❌`;
         alert(mensaje);
       }
       ocultarHilosInput.value = "";
@@ -214,15 +214,15 @@ const eliminarPalabra2Btn = document.createElement("button");
     eliminarPalabra2Btn.textContent = "Eliminar";
     eliminarPalabra2Btn.style.cssText = "background-color: #FD5D4D; color: white; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);";
     eliminarPalabra2Btn.addEventListener("click", () => {
-      const palabraAEliminar = ocultarHilosInput.value.trim();
-      if (palabraAEliminar) {
-        const indice = ocultarHilos.indexOf(palabraAEliminar);
+      const palabraAEliminar1 = ocultarHilosInput.value.trim();
+      if (palabraAEliminar1) {
+        const indice = ocultarHilos.indexOf(palabraAEliminar1);
         if (indice !== -1) {
           ocultarHilos.splice(indice, 1);
           GM_setValue("ocultarHilos", ocultarHilos);
-          alert(`La palabra "${palabraAEliminar}" A sido eliminada de la lista ocultar hilos.`);
+          alert(`✅ La palabra "${palabraAEliminar1}" ha sido eliminada de la lista ocultar hilos ✅`);
         } else {
-          alert(`La palabra "${palabraAEliminar}" NO se encontró en la lista de ocultar hilos.`);
+          alert(`⚠️ ¡No existe la palabra "${palabraAEliminar1}" en la lista de ocultar hilos! ⚠️`);
         }
         ocultarHilosInput.value = "";
       }
