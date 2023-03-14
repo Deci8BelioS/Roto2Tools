@@ -8,7 +8,7 @@
 // @icon            https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-48x48.png
 // @icon64          https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/main/Roto2Tools.user.js
-// @version         1.0.4-3b
+// @version         1.0.4-4b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -145,9 +145,9 @@ const eliminarPalabraBtn = document.createElement("button");
         if (indice !== -1) {
           resaltarHilos.splice(indice, 1);
           GM_setValue("resaltarHilos", resaltarHilos);
-          alert(`✅ La palabra "${palabraAEliminar}" ha sido eliminada de la lista de resaltar ✅`);
+          alert(`✅ La palabra "${palabraAEliminar}" ha sido eliminada de la lista de resaltar hilos ✅`);
         } else {
-          alert(`⚠️ ¡No existe la palabra "${palabraAEliminar}" en la lista de la lista de resaltar! ⚠️`);
+          alert(`⚠️ ¡No existe la palabra "${palabraAEliminar}" en la lista de resaltar hilos! ⚠️`);
         }
         agregarPalabraInput.value = "";
       }
