@@ -8,7 +8,7 @@
 // @icon            https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-48x48.png
 // @icon64          https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/main/Roto2Tools.user.js
-// @version         1.0.5-1b
+// @version         1.0.5-2b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -110,7 +110,7 @@ menuBtn.addEventListener("click", () => {
     agregarPalabraBtn.textContent = "Añadir";
     agregarPalabraBtn.style.cssText = "background-color: #32CD32; color: white; padding: 10px 20px; font-weight: bold; text-shadow: 1px 1px 4px #000; border-radius: 6px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);";
     agregarPalabraBtn.addEventListener("click", () => {
-      const regex = /^\s*(?:[a-zA-Z0-9ñÑ]+|[+-]?[a-zA-Z0-9ñÑ]+|[+-]?\d+(?:\.\d+)?)(?:\s*,\s*(?:[a-zA-Z0-9ñÑ]+|[+-]?[a-zA-Z0-9ñÑ]+|[+-]?\d+(?:\.\d+)?))*\s*$/;
+      const regex = /^\s*(?:[a-zA-Z0-9ñÑ\s]+|[+-]?[a-zA-Z0-9ñÑ\s]+|[+-]?\d+(?:\.\d+)?)(?:\s*,\s*(?:[a-zA-Z0-9ñÑ\s]+|[+-]?[a-zA-Z0-9ñÑ\s]+|[+-]?\d+(?:\.\d+)?))*\s*$/;
       if (!regex.test(agregarPalabraInput.value)) {
         (function () {
           'use strict';
@@ -265,7 +265,7 @@ menuBtn.addEventListener("click", () => {
     ocultarHilosBtn.textContent = "Añadir";
     ocultarHilosBtn.style.cssText = "background-color: #32CD32; color: white; padding: 10px 20px; font-weight: bold; text-shadow: 1px 1px 4px #000; border-radius: 6px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);";
     ocultarHilosBtn.addEventListener("click", () => {
-      const regex = /^\s*(?:[a-zA-Z0-9ñÑ]+|[+-]?[a-zA-Z0-9ñÑ]+|[+-]?\d+(?:\.\d+)?)(?:\s*,\s*(?:[a-zA-Z0-9ñÑ]+|[+-]?[a-zA-Z0-9ñÑ]+|[+-]?\d+(?:\.\d+)?))*\s*$/;
+      const regex = /^\s*(?:[a-zA-Z0-9ñÑ\s]+|[+-]?[a-zA-Z0-9ñÑ\s]+|[+-]?\d+(?:\.\d+)?)(?:\s*,\s*(?:[a-zA-Z0-9ñÑ\s]+|[+-]?[a-zA-Z0-9ñÑ\s]+|[+-]?\d+(?:\.\d+)?))*\s*$/;
       if (!regex.test(ocultarHilosInput.value)) {
         (function () {
           'use strict';
