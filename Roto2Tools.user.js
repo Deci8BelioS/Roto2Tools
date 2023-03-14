@@ -1,20 +1,29 @@
 // ==UserScript==
+// @id              Roto2Tools
 // @name            Roto2Tools
-// @description     Script para Forocoches que oculta hilos o los resalta con las palabras añadidas por el usuario
-// @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
-// @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
-// @downloadURL     https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @namespace       https://github.com/Deci8BelioS/Roto2Tools
-// @version         1.0.4b
+// @namespace       Roto2Tools
 // @author          DeciBelioS
-// @charset         UTF-8
+// @homepage        https://github.com/Deci8BelioS/Roto2Tools/
+// @description     Script para Forocoches que oculta hilos o los resalta con las palabras añadidas por el usuario
+// @icon            https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-48x48.png
+// @icon64          https://github.com/Deci8BelioS/Roto2Tools/raw/main/main/resources/img/icon-64x64.png
+// @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/main/Roto2Tools.user.js
+// @version         1.0.4-1b
+// @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
 // @include         https://www.forocoches.com/*
 // @include         https://forocoches.com/*
 // @grant           GM_getValue
 // @grant           GM_setValue
+// @compatible      chrome
+// @compatible      firefox
+// @compatible      opera
+// @compatible      safari
+// @compatible      edge
+// @run-at          document-end
 // ==/UserScript==
+
 document.charset = "UTF-8";
 // leer la lista guardada en Tampermonkey
 let resaltarHilos = GM_getValue("resaltarHilos", []);
