@@ -15,7 +15,6 @@
 .toast-message a,
 .toast-message label {
     color: #FFF;
-    text-shadow: 1px 1px 4px #000;
 }
 
 .toast-message a:hover {
@@ -135,6 +134,7 @@ button.toast-close-button {
     -webkit-box-shadow: 0 0 12px #999;
     box-shadow: 0 0 12px #999;
     color: #FFF;
+    text-shadow: 1px 1px 4px #000;
     opacity: 1;
     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
     filter: alpha(Opacity=100)
