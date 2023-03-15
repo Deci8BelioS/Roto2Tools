@@ -1,4 +1,4 @@
-![logo][5]
+![logo][4]
 ## Caracteristicas
 
 * Añadir palabras para ocultar hilos
@@ -15,7 +15,6 @@
 
 ![menu][3]
 
-![lista][4]
 
 
 ## Extensiones soportadas
@@ -31,5 +30,4 @@ Este script es compatible con las siguientes extensiones
 [1]: resources/capturas/hilos%20ocultos.png "Captura hilos"
 [2]: resources/capturas/botones.png "botones"
 [3]: resources/capturas/menu.png "menu"
-[4]: resources/capturas/lista.png "lista"
-[5]: resources/img/icon-64x64.png "logo"
+[4]: resources/img/icon-64x64.png "logo"
