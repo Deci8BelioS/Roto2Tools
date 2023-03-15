@@ -8,7 +8,7 @@
 // @icon            https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-48x48.png
 // @icon64          https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/main/Roto2Tools.user.js
-// @version         1.0.6b
+// @version         1.0.7b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -21,7 +21,7 @@
 // @grant           GM_deleteValue
 // @grant           GM_listValues
 // @grant           GM_openInTab
-// @require         http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js
+// @require         https://code.jquery.com/jquery-3.6.4.min.js
 // @require         https://raw.githubusercontent.com/CodeSeven/toastr/master/toastr.js
 // @compatible      chrome
 // @compatible      firefox
