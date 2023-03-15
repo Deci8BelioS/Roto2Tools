@@ -5,10 +5,10 @@
 // @author          DeciBelioS
 // @homepage        https://github.com/Deci8BelioS/Roto2Tools/
 // @description     Script para Forocoches que oculta hilos o los resalta con las palabras añadidas por el usuario
-// @icon            https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-48x48.png
-// @icon64          https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/img/icon-64x64.png
-// @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/main/Roto2Tools.user.js
-// @version         1.0.7b
+// @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
+// @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
+// @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
+// @version         1.0.8b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -22,7 +22,7 @@
 // @grant           GM_listValues
 // @grant           GM_openInTab
 // @require         https://code.jquery.com/jquery-3.6.4.min.js
-// @require         https://raw.githubusercontent.com/CodeSeven/toastr/master/toastr.js
+// @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/require/toastr.js
 // @compatible      chrome
 // @compatible      firefox
 // @compatible      opera
@@ -110,7 +110,7 @@ menuBtn.addEventListener("click", () => {
       'use strict';
       GM_xmlhttpRequest({
         method: 'GET',
-        url: 'https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/require/toastr.min.css',
+        url: 'https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/require/toastr.min.css',
         onload: function (response) {
           GM_addStyle(response.responseText);
           initializeToastr();
@@ -173,7 +173,7 @@ menuBtn.addEventListener("click", () => {
           'use strict';
           GM_xmlhttpRequest({
             method: 'GET',
-            url: 'https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/require/toastr.min.css',
+            url: 'https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/require/toastr.min.css',
             onload: function (response) {
               GM_addStyle(response.responseText);
               initializeToastr();
@@ -206,7 +206,7 @@ menuBtn.addEventListener("click", () => {
           'use strict';
           GM_xmlhttpRequest({
             method: 'GET',
-            url: 'https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/require/toastr.min.css',
+            url: 'https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/require/toastr.min.css',
             onload: function (response) {
               GM_addStyle(response.responseText);
               initializeToastr();
@@ -260,7 +260,7 @@ menuBtn.addEventListener("click", () => {
           'use strict';
           GM_xmlhttpRequest({
             method: 'GET',
-            url: 'https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/require/toastr.min.css',
+            url: 'https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/require/toastr.min.css',
             onload: function (response) {
               GM_addStyle(response.responseText);
               initializeToastr();
@@ -291,7 +291,7 @@ menuBtn.addEventListener("click", () => {
           'use strict';
           GM_xmlhttpRequest({
             method: 'GET',
-            url: 'https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/require/toastr.min.css',
+            url: 'https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/require/toastr.min.css',
             onload: function (response) {
               GM_addStyle(response.responseText);
               initializeToastr();
@@ -330,7 +330,7 @@ menuBtn.addEventListener("click", () => {
         'use strict';
         GM_xmlhttpRequest({
           method: 'GET',
-          url: 'https://github.com/Deci8BelioS/Roto2Tools/raw/main/resources/require/toastr.min.css',
+          url: 'https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/require/toastr.min.css',
           onload: function (response) {
             GM_addStyle(response.responseText);
             initializeToastr();
