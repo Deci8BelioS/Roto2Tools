@@ -26,6 +26,8 @@ Este script es compatible con las siguientes extensiones
 |   Violentmonkey   | :heavy_check_mark: |
 |    Tampermonkey   | :heavy_check_mark: |
 
+##
+Este script hace uso de [toastr](https://github.com/CodeSeven/toastr), creado por [CodeSeven](https://github.com/CodeSeven) 
 
 [1]: resources/capturas/hilos%20ocultos.png "Captura hilos"
 [2]: resources/capturas/botones.png "botones"
