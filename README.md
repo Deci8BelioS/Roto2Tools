@@ -2,7 +2,7 @@
   <strong>Este script hace uso de <a href="https://github.com/CodeSeven/toastr">toastr</a>, creado por <a href="https://github.com/CodeSeven">CodeSeven</a></strong>
 </p>
 
-![logo][4]
+![logo][2]
 ## Caracteristicas
 
 * Añadir palabras para ocultar hilos
@@ -25,6 +25,4 @@ Este script es compatible con las siguientes extensiones
 |    Tampermonkey   | :heavy_check_mark: |
 
 [1]: resources/capturas/hilos%20ocultos.png "Captura hilos"
-[2]: resources/capturas/botones.png "botones"
-[3]: resources/capturas/menu.png "menu"
-[4]: resources/img/icon-64x64.png "logo"
+[2]: resources/img/icon-64x64.png "logo"
