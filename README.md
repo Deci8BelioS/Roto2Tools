@@ -1,3 +1,7 @@
+<p align="right" >
+  <strong>Este script hace uso de <a href="https://github.com/CodeSeven/toastr">toastr</a>, creado por <a href="https://github.com/CodeSeven">CodeSeven</a></strong>
+</p>
+
 ![logo][4]
 ## Caracteristicas
 
@@ -9,13 +13,7 @@
 * Adaptar el foro a la pantalla para no tener espacios vacios a los lados
 
 ## Capturas
-![botones][2]
-
 ![Captura hilos][1]
-
-![menu][3]
-
-
 
 ## Extensiones soportadas
 
@@ -25,9 +23,6 @@ Este script es compatible con las siguientes extensiones
 | ----------------- | ------------------ |
 |   Violentmonkey   | :heavy_check_mark: |
 |    Tampermonkey   | :heavy_check_mark: |
-
-##
-Este script hace uso de [toastr](https://github.com/CodeSeven/toastr), creado por [CodeSeven](https://github.com/CodeSeven) 
 
 [1]: resources/capturas/hilos%20ocultos.png "Captura hilos"
 [2]: resources/capturas/botones.png "botones"
