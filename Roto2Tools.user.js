@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.1.1b
+// @version         1.1.2b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -195,23 +195,28 @@ if (noShur) {
                     toastr["error"](`No des tantos clics cowboy <img src="https://forocoches.com/foro/images/smilies/para.gif"></a>`, `Roto2Tools`);
                     return;
                 }
+                // Establecer variable a true para indicar que el botón ha sido pulsado
+                botonPulsado = true;
+                hasGuardado = true;
                 const OcultarListaInput = ocultarInput.value.trim();
                 const resaltarListaInput = ResaltarInput.value.trim();
-                if (OcultarListaInput) {
-                    // Establecer variable a true para indicar que el botón ha sido pulsado
-                    botonPulsado = true;
-                    hasGuardado = true;
+                if (OcultarListaInput || resaltarListaInput) {
 
                     // Eliminar la lista anterior
                     GM_deleteValue("ocultarHilos");
                     GM_deleteValue("resaltarHilos");
 
                     // Crear la nueva lista
-                    const OcultarListaNueva = [OcultarListaInput];
-                    const nuevaLista = [resaltarListaInput];
+                    const OcultarListaNueva = OcultarListaInput ? [OcultarListaInput] : GM_getValue("ocultarHilos", []);
+                    const nuevaLista = resaltarListaInput ? [resaltarListaInput] : GM_getValue("resaltarHilos", []);
+
                     // Guardar la nueva lista
-                    GM_setValue("resaltarHilos", nuevaLista);
-                    GM_setValue("ocultarHilos", OcultarListaNueva);
+                    if (OcultarListaNueva.length > 0) {
+                        GM_setValue("ocultarHilos", OcultarListaNueva);
+                    }
+                    if (nuevaLista.length > 0) {
+                        GM_setValue("resaltarHilos", nuevaLista);
+                    }
 
                     toastr.options = { "closeButton": false, "debug": false, "newestOnTop": false, "progressBar": true, "positionClass": "toast-bottom-right", "preventDuplicates": false, "onclick": null, "showDuration": "500", "hideDuration": "1000", "timeOut": "8000", "extendedTimeOut": "2000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut" };
                     toastr["success"](`Las listas se han guardado correctamente shur &nbsp;<img src="https://forocoches.com/foro/images/smilies/thumbsup.gif"></a>`, `Roto2Tools`);
