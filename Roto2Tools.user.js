@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.1.0b
+// @version         1.1.1b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -351,6 +351,6 @@ if (noShur) {
     };
 
     // // Arregla el ancho de la pagina para que se adapte a la pantalla
-    document.querySelector('header').style = 'max-width: unset; margin: unset; width: 100%;';
+    document.querySelector('#header').style = 'max-width: unset; margin: unset; width: 100%;';
     document.querySelector('main').style = 'margin: 0; width: 100%; max-width: unset; grid-template-columns: 1fr auto;';
 };
