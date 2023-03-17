@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.1.2b
+// @version         1.1.3b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -32,11 +32,9 @@
 const header = document.querySelector("#header");
 
 // Cargar y agregar el archivo CSS de toastr como recurso y estilo en la página
-(function () {
-    'use strict';
-    const toastrcss = GM_getResourceText('toastrcss');
-    GM_addStyle(toastrcss);
-})();
+const toastrcss = GM_getResourceText('toastrcss');
+GM_addStyle(toastrcss);
+toastr.options = { "closeButton": false, "debug": false, "newestOnTop": false, "progressBar": true, "positionClass": "toast-bottom-right", "preventDuplicates": true, "onclick": null, "showDuration": "350", "hideDuration": "1000", "timeOut": "6000", "extendedTimeOut": "2000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut" };
 
 // Si no estas logeado no funciona el script
 let noShur = header.querySelector('[src="/image/new_icons/avatar.svg"]');
@@ -46,19 +44,9 @@ let telefono = header.querySelector("#fc-mobile-version-tag-for-monitoring");
 
 // Si estas logeado y en el pc (o modo escritorio) se ejecuta el script
 if (noShur) {
-    (function () {
-        'use strict';
-        GM_addStyle('toastrcss');
-        toastr.options = { "closeButton": false, "debug": true, "newestOnTop": false, "progressBar": true, "positionClass": "toast-bottom-right", "preventDuplicates": true, "onclick": null, "showDuration": "500", "hideDuration": "1000", "timeOut": "8000", "extendedTimeOut": "2000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut" };
-        toastr["error"](`No funciona si no estas logeado`, `Roto2Tools &nbsp;<img src="https://forocoches.com/foro/images/smilies/nono.gif"></a>`);
-    })();
+    toastr["error"](`No funciona si no estas logeado`, `Roto2Tools &nbsp;<img src="https://forocoches.com/foro/images/smilies/nono.gif"></a>`);
 } else if (telefono) {
-    (function () {
-        'use strict';
-        GM_addStyle('toastrcss');
-        toastr.options = { "closeButton": false, "debug": true, "newestOnTop": false, "progressBar": true, "positionClass": "toast-bottom-right", "preventDuplicates": true, "onclick": null, "showDuration": "500", "hideDuration": "1000", "timeOut": "8000", "extendedTimeOut": "2000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut" };
-        toastr["warning"](`No funciona en telefonos &nbsp;<img src="https://forocoches.com/foro/images/smilies/smash2.gif"></a>`, `Roto2Tools`);
-    })();
+    toastr["warning"](`No funciona en telefonos &nbsp;<img src="https://forocoches.com/foro/images/smilies/smash2.gif"></a>`, `Roto2Tools`);
 } else {
 
     // leer la lista guardada en Tampermonkey
@@ -124,7 +112,6 @@ if (noShur) {
     menuBtn.addEventListener("click", () => {
         // Verificar si el botón ha sido pulsado previamente
         if (ventanaAbierta) {
-            toastr.options = { "closeButton": false, "debug": false, "newestOnTop": false, "progressBar": true, "positionClass": "toast-bottom-right", "preventDuplicates": true, "onclick": null, "showDuration": "500", "hideDuration": "1000", "timeOut": "8000", "extendedTimeOut": "2000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut" };
             toastr["error"](`Ya tienes el menú abierto ¿Por que quieres abrirlo otra vez? &nbsp;<img src="https://forocoches.com/foro/images/smilies/goofy.gif"></a>`, `Roto2Tools`);
             return;
         }
@@ -191,7 +178,6 @@ if (noShur) {
             guardarOcultarBtn.addEventListener("click", () => {
                 // Verificar si el botón ha sido pulsado previamente
                 if (botonPulsado) {
-                    toastr.options = { "closeButton": false, "debug": false, "newestOnTop": false, "progressBar": true, "positionClass": "toast-bottom-right", "preventDuplicates": true, "onclick": null, "showDuration": "500", "hideDuration": "1000", "timeOut": "8000", "extendedTimeOut": "2000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut" };
                     toastr["error"](`No des tantos clics cowboy <img src="https://forocoches.com/foro/images/smilies/para.gif"></a>`, `Roto2Tools`);
                     return;
                 }
@@ -218,7 +204,6 @@ if (noShur) {
                         GM_setValue("resaltarHilos", nuevaLista);
                     }
 
-                    toastr.options = { "closeButton": false, "debug": false, "newestOnTop": false, "progressBar": true, "positionClass": "toast-bottom-right", "preventDuplicates": false, "onclick": null, "showDuration": "500", "hideDuration": "1000", "timeOut": "8000", "extendedTimeOut": "2000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut" };
                     toastr["success"](`Las listas se han guardado correctamente shur &nbsp;<img src="https://forocoches.com/foro/images/smilies/thumbsup.gif"></a>`, `Roto2Tools`);
 
                     // Volver a meter la lista en las cajas
