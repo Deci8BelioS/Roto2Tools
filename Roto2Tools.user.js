@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.2.2b
+// @version         1.2.3b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -143,7 +143,7 @@ if (telefono) {
 
             // Crear textarea para agregar palabras a resaltar
             const ResaltarInput = document.createElement("textarea");
-            ResaltarInput.placeholder = "Agregar palabras a resaltar...";
+            ResaltarInput.placeholder = "Agregar palabras a resaltar separadas por comas, ejemplo: palabra, palabra";
             ResaltarInput.value = resaltarHilos.join(", "); // Agregar lista como valor inicial
             ResaltarInput.style.cssText = "background-color: rgb(58, 58, 58); color: white; padding: 10px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; font-weight: bold; width: 320px; height: 80px; resize: none;";
             nuevaVentana.appendChild(ResaltarInput);
@@ -161,7 +161,7 @@ if (telefono) {
 
             // Crear textarea para agregar palabras a ocultar
             const ocultarInput = document.createElement("textarea");
-            ocultarInput.placeholder = "Agregar palabra a ocultar...";
+            ocultarInput.placeholder = "Agregar palabras a ocultar separadas por comas, ejemplo: palabra, palabra";
             ocultarInput.value = ocultarHilos.join(", "); // Agregar lista como valor inicial
             ocultarInput.style.cssText = "background-color: rgb(58, 58, 58); color: white; padding: 10px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; font-weight: bold; width: 320px; height: 160px; resize: none;";
             nuevaVentana.appendChild(ocultarInput);
