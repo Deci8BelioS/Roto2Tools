@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.2.0b
+// @version         1.2.1b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -512,7 +512,7 @@ if (!noShur) {
 
     // agregar estilos a los elementos resaltados dentro de [id*="edit"] > section
     const usecontacto = document.createElement("style");
-    usecontacto.innerHTML = `[id*="edit"] > section.resaltado { border-left: solid 4px #2fc726; }`;
+    usecontacto.innerHTML = `[id*="edit"] > section.resaltado { border-left: solid 4px #2fc726 !important; }`;
     document.head.appendChild(usecontacto);
 
     // Arregla el ancho de la pagina para que se adapte a la pantalla
