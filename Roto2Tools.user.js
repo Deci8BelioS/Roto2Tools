@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.2.1b
+// @version         1.2.2b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -36,19 +36,18 @@ const toastrcss = GM_getResourceText('toastrcss');
 GM_addStyle(toastrcss);
 toastr.options = { "closeButton": false, "debug": false, "newestOnTop": false, "progressBar": true, "positionClass": "toast-bottom-right", "preventDuplicates": true, "onclick": null, "showDuration": "350", "hideDuration": "1000", "timeOut": "6000", "extendedTimeOut": "2000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut" };
 
-// Si no estas logeado no funciona el script
-let noShur = header.querySelector("#user-online-status");
-
 // Si estas en modo telefno no funciona el script
 let telefono = header.querySelector("#fc-mobile-version-tag-for-monitoring");
 
-// Si estas logeado y en el pc (o modo escritorio) se ejecuta el script
-if (!noShur) {
-    toastr["error"](`No funciona si no estas logeado`, `Roto2Tools &nbsp;<img src="https://forocoches.com/foro/images/smilies/nono.gif"></a>`);
-} else if (telefono) {
-    toastr["warning"](`No funciona en telefonos &nbsp;<img src="https://forocoches.com/foro/images/smilies/smash2.gif"></a>`, `Roto2Tools`);
-} else {
+// Si no estas logeado no funciona el script
+let noShur = header.querySelector("#user-online-status");
 
+// Si estas logeado y en el pc (o modo escritorio) se ejecuta el script
+if (telefono) {
+    toastr["warning"](`No funciona en telefonos &nbsp;<img src="https://forocoches.com/foro/images/smilies/smash2.gif"></a>`, `Roto2Tools`);
+} else if (!noShur) {
+    toastr["error"](`No funciona si no estas logeado`, `Roto2Tools &nbsp;<img src="https://forocoches.com/foro/images/smilies/nono.gif"></a>`);
+} else {
     // leer la lista guardada en Tampermonkey
     let resaltarHilos = GM_getValue("resaltarHilos", []);
     let ocultarHilos = GM_getValue("ocultarHilos", []);
