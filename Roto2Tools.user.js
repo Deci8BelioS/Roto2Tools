@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.2.3b
+// @version         1.2.4b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -425,7 +425,7 @@ if (telefono) {
 
                     // Verificar si se encontraron contactos
                     if (contactosElements.length === 0) {
-                        toastr["info"](`No se encontraron contactos en la lista. <img src="https://forocoches.com/foro/images/smilies/number_one.gif"></a>`, `Roto2Tools`);
+                        toastr["info"](`No se encontraron contactos en la lista. <img src="https://forocoches.com/foro/images/smilies/nusenuse.gif"></a>`, `Roto2Tools`);
                     } else {
                         // Crear un array vacío para almacenar los nombres de los contactos
                         let contactos = [];
@@ -444,6 +444,10 @@ if (telefono) {
                         toastr["success"](`Los contactos se han guardado correctamente shur &nbsp;<img src="https://forocoches.com/foro/images/smilies/thumbsup.gif"></a>`, `Roto2Tools`);
                         hasGuardado = true;
                     }
+                    // Establecer un temporizador para resetear la variable booleana después de x segundos
+                    setTimeout(() => {
+                        botonPulsado = false;
+                    }, 5000);
                 });
 
                 // Agregar botón a la ventana
@@ -518,3 +522,4 @@ if (telefono) {
     document.querySelector('#header').style = 'max-width: unset; margin: unset; width: 100%;';
     document.querySelector('main').style = 'margin: 0; width: 100%; max-width: unset; grid-template-columns: 1fr auto;';
 };
+
