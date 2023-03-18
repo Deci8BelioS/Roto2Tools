@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.1.3b
+// @version         1.2.0b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -37,13 +37,13 @@ GM_addStyle(toastrcss);
 toastr.options = { "closeButton": false, "debug": false, "newestOnTop": false, "progressBar": true, "positionClass": "toast-bottom-right", "preventDuplicates": true, "onclick": null, "showDuration": "350", "hideDuration": "1000", "timeOut": "6000", "extendedTimeOut": "2000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut" };
 
 // Si no estas logeado no funciona el script
-let noShur = header.querySelector('[src="/image/new_icons/avatar.svg"]');
+let noShur = header.querySelector("#user-online-status");
 
 // Si estas en modo telefno no funciona el script
 let telefono = header.querySelector("#fc-mobile-version-tag-for-monitoring");
 
 // Si estas logeado y en el pc (o modo escritorio) se ejecuta el script
-if (noShur) {
+if (!noShur) {
     toastr["error"](`No funciona si no estas logeado`, `Roto2Tools &nbsp;<img src="https://forocoches.com/foro/images/smilies/nono.gif"></a>`);
 } else if (telefono) {
     toastr["warning"](`No funciona en telefonos &nbsp;<img src="https://forocoches.com/foro/images/smilies/smash2.gif"></a>`, `Roto2Tools`);
@@ -52,6 +52,7 @@ if (noShur) {
     // leer la lista guardada en Tampermonkey
     let resaltarHilos = GM_getValue("resaltarHilos", []);
     let ocultarHilos = GM_getValue("ocultarHilos", []);
+    let resaltarContactos = GM_getValue("resaltarContactos", []);
 
     // Función para escapar caracteres, quitar comas etc etc
     function getRegex(userInput, isRegex, wholeWords) {
@@ -83,7 +84,7 @@ if (noShur) {
         }
 
         return regex;
-    }
+    };
 
     // Crear un contenedor para los botones
     const buttonContainer = document.createElement("div");
@@ -135,22 +136,17 @@ if (noShur) {
                 nuevaVentana.style.opacity = '1'; // Cambiar la opacidad a 1 para el efecto de entrada
             }, 10);
 
-            // Crear contenedor para el área de resaltar hilos
-            const resaltarHilosContainer = document.createElement("div");
-            resaltarHilosContainer.style.cssText = "display: flex; align-items: center; margin-bottom: 10px;";
-            nuevaVentana.appendChild(resaltarHilosContainer);
-
             // Crear el título de la caja de resaltar hilos
             const resaltarHilosTitulo = document.createElement("div");
-            resaltarHilosTitulo.textContent = "Resaltar hilos (separado por comas)";
-            resaltarHilosTitulo.style.cssText = "padding: 5px; border: 5px solid #3A3A3A; color: white; margin-top: 5%; margin-bottom: 20px; font-weight: bold; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6); border-radius: 6px; background-color: #3A3A3A;";
+            resaltarHilosTitulo.textContent = "Resaltar hilos";
+            resaltarHilosTitulo.style.cssText = "padding: 5px; border: 5px solid rgb(58, 58, 58); color: white; margin: 0px auto 10px; width: 145px; font-weight: bold; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 6px; border-radius: 6px; background-color: rgb(58, 58, 58);";
             nuevaVentana.appendChild(resaltarHilosTitulo);
 
             // Crear textarea para agregar palabras a resaltar
             const ResaltarInput = document.createElement("textarea");
             ResaltarInput.placeholder = "Agregar palabras a resaltar...";
-            ResaltarInput.style.cssText = "background-color: rgb(58, 58, 58); color: white; padding: 10px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; font-weight: bold; width: 290px; height: 68px; resize: none;";
             ResaltarInput.value = resaltarHilos.join(", "); // Agregar lista como valor inicial
+            ResaltarInput.style.cssText = "background-color: rgb(58, 58, 58); color: white; padding: 10px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; font-weight: bold; width: 320px; height: 80px; resize: none;";
             nuevaVentana.appendChild(ResaltarInput);
 
             // Crear contenedor para el área de ocultar hilos
@@ -160,22 +156,22 @@ if (noShur) {
 
             // Crear el título de la caja de ocultar hilos
             const ocultarHilosTitulo = document.createElement("div");
-            ocultarHilosTitulo.textContent = "Ocultar hilos (separado por comas)";
-            ocultarHilosTitulo.style.cssText = "padding: 5px; border: 5px solid #3A3A3A; color: white; margin-top: 5%; margin-bottom: 20px; font-weight: bold; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6); border-radius: 6px; background-color: #3A3A3A;";
+            ocultarHilosTitulo.textContent = "Ocultar hilos";
+            ocultarHilosTitulo.style.cssText = "padding: 5px; border: 5px solid rgb(58, 58, 58); color: white; margin: 0px auto 10px; width: 145px; font-weight: bold; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 6px; border-radius: 6px; background-color: rgb(58, 58, 58);";
             nuevaVentana.appendChild(ocultarHilosTitulo);
 
             // Crear textarea para agregar palabras a ocultar
             const ocultarInput = document.createElement("textarea");
             ocultarInput.placeholder = "Agregar palabra a ocultar...";
-            ocultarInput.style.cssText = "background-color: rgb(58, 58, 58); color: white; padding: 10px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; font-weight: bold; width: 290px; height: 68px; resize: none;";
             ocultarInput.value = ocultarHilos.join(", "); // Agregar lista como valor inicial
+            ocultarInput.style.cssText = "background-color: rgb(58, 58, 58); color: white; padding: 10px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; font-weight: bold; width: 320px; height: 160px; resize: none;";
             nuevaVentana.appendChild(ocultarInput);
 
-            // Crear el botón para guardar palabras a ocultar
-            const guardarOcultarBtn = document.createElement("button");
-            guardarOcultarBtn.textContent = "GUARDAR";
-            guardarOcultarBtn.style.cssText = "background-color: #FF5A4B; color: white; font-weight: bold; padding: 10px 20px; border-radius: 6px; text-shadow: 1px 1px 4px #000; cursor: pointer; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); display: block; margin: 0 auto; margin-top: 5%;";
-            guardarOcultarBtn.addEventListener("click", () => {
+            // Crear el botón para guardar las listas
+            const guardarlistasBtn = document.createElement("button");
+            guardarlistasBtn.textContent = "GUARDAR";
+            guardarlistasBtn.style.cssText = "background-color: rgb(255, 90, 75); color: white; font-weight: bold; padding: 10px 20px; border-radius: 6px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; cursor: pointer; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; display: block; margin: 5px auto; margin-top: 15px;";
+            guardarlistasBtn.addEventListener("click", () => {
                 // Verificar si el botón ha sido pulsado previamente
                 if (botonPulsado) {
                     toastr["error"](`No des tantos clics cowboy <img src="https://forocoches.com/foro/images/smilies/para.gif"></a>`, `Roto2Tools`);
@@ -217,12 +213,12 @@ if (noShur) {
                 }
             });
 
-            nuevaVentana.appendChild(guardarOcultarBtn);
+            nuevaVentana.appendChild(guardarlistasBtn);
 
             // agregar el botón de cierre
             let cerrarBtn = document.createElement("button");
             cerrarBtn.textContent = "Cerrar";
-            cerrarBtn.style.cssText = "bottom: 20px; padding: 10px 20px; border-radius: 6px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; background-color: rgb(85, 85, 85); color: white; cursor: pointer; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; display: block; margin: 5% auto 0px;";
+            cerrarBtn.style.cssText = "bottom: 20px; padding: 10px 20px; border-radius: 6px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; background-color: rgb(85, 85, 85); color: white; cursor: pointer; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; margin: 5px auto 5px; margin-top: 15px;";
             cerrarBtn.addEventListener("click", () => {
                 document.documentElement.style.overflow = "auto";
                 document.body.style.overflow = "auto";
@@ -244,7 +240,7 @@ if (noShur) {
                     // establecer el estado de la ventana emergente en cerrado
                     ventanaAbierta = false;
                 }, 500); // Esperar 500ms para que se complete la animación de salida antes de eliminar la ventana
-            });
+            })
             nuevaVentana.appendChild(cerrarBtn);
         }
     });
@@ -319,7 +315,7 @@ if (noShur) {
                 spoiler.textContent = elementosOcultos.length + ' Hilo(s) oculto(s)';
                 contenedorOcultos.style.maxHeight = '0';
             }
-        });
+        })
     };
 
     // Seleccionar todos los hr
@@ -340,7 +336,186 @@ if (noShur) {
         eliminarAdyacentes(hrElements[i]);
     };
 
-    // // Arregla el ancho de la pagina para que se adapte a la pantalla
+
+    // Obtener la URL actual
+    const currentUrl = window.location.href;
+
+    // Verificar si la URL es la correcta
+    if (!currentUrl.includes('https://forocoches.com/foro/profile.php?do=buddylist')) {
+    } else {
+
+        // Crear botón contactos
+        const contactosBtn = document.createElement("button");
+        contactosBtn.textContent = "Contactos";
+        contactosBtn.style.cssText = "background-color: #FF5A4B; color: white; padding: 10px 20px; font-weight: bold; text-shadow: 1px 1px 4px #000; border-radius: 6px; cursor: pointer; margin-left: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);";
+        buttonContainer.appendChild(contactosBtn);
+
+        // Buscar el elemento "#searchform-desktop"
+        let Contactos = header.querySelector("#searchform-desktop");
+
+        // Insertar el contenedor de botones después del elemento "#searchform-desktop" si existe, de lo contrario no lo hará
+        if (Contactos) {
+            header.insertBefore(buttonContainer, Contactos.nextSibling || null);
+        };
+
+        // escuchar eventos de clic en el botón de menu
+        contactosBtn.addEventListener("click", () => {
+            // Verificar si el botón ha sido pulsado previamente
+            if (ventanaAbierta) {
+                toastr["error"](`Ya tienes el menú abierto ¿Por que quieres abrirlo otra vez? &nbsp;<img src="https://forocoches.com/foro/images/smilies/goofy.gif"></a>`, `Roto2Tools`);
+                return;
+            }
+            // verificar si hay una ventana emergente abierta
+            if (!ventanaAbierta) {
+                // establecer el estado de la ventana emergente en abierto
+                ventanaAbierta = true;
+
+                // Crear una nueva ventana emergente
+                const nuevaVentana2 = document.createElement("div");
+                nuevaVentana2.classList.add("nuevaVentana"); // Agregar una clase para identificar la ventana emergente
+                Object.assign(nuevaVentana2.style, { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", border: "5px solid #2A2A2A", borderRadius: "6px", boxShadow: "0 2px 6px rgba(0, 0, 0, 1)", backgroundColor: "#2A2A2A", zIndex: "9999", padding: "20px", textAlign: "center", opacity: "0" });
+                document.body.appendChild(nuevaVentana2);
+
+                // Esperar un breve momento para aplicar el efecto de entrada
+                setTimeout(() => {
+                    nuevaVentana2.style.transition = 'opacity 0.3s ease'; // Duración de la animación y tipo de efecto
+                    nuevaVentana2.style.opacity = '1'; // Cambiar la opacidad a 1 para el efecto de entrada
+                }, 10);
+
+                // Crear el título de la caja de resaltar Contactos
+                const resaltarContactosTitulo = document.createElement("div");
+                resaltarContactosTitulo.textContent = "Lista guardada";
+                resaltarContactosTitulo.style.cssText = "padding: 5px; border: 5px solid rgb(58, 58, 58); color: white; margin: 0px auto 10px; width: 145px; font-weight: bold; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 6px; border-radius: 6px; background-color: rgb(58, 58, 58);";
+                nuevaVentana2.appendChild(resaltarContactosTitulo);
+                // Crear el título de la caja de resaltar Contactos
+                const resaltarContactosTitulo3 = document.createElement("div");
+                resaltarContactosTitulo3.textContent = "Esto solo es una lista de contactos guardada para ver, no se puede modificar";
+                resaltarContactosTitulo3.style.cssText = "padding: 5px; color: white; font-size: 12px; width: 290px; display: block; margin: 5px auto 5px;";
+                nuevaVentana2.appendChild(resaltarContactosTitulo3);
+
+                // Crear div para ver resaltar Contactos
+                const resaltarContactosDiv = document.createElement("div");
+                resaltarContactosDiv.style.cssText = "background-color: rgb(58, 58, 58); color: white; padding: 10px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; font-weight: bold; width: 290px; height: auto;";
+                if (resaltarContactos.length > 0) {
+                    resaltarContactosDiv.textContent = resaltarContactos.join(", ");
+                } else {
+                    resaltarContactosDiv.textContent = "Lista vacía...";
+                }
+                // resaltarContactosDiv.setAttribute("contenteditable", "false"); // Desactivar edición
+                nuevaVentana2.appendChild(resaltarContactosDiv);
+
+                // Crear el título de la caja de resaltar Contactos
+                const resaltarContactosTitulo2 = document.createElement("div");
+                resaltarContactosTitulo2.textContent = "Si le das al boton guardar contactos leerá los contactos que tienes agregados en forocoches y guardará la nueva lista";
+                resaltarContactosTitulo2.style.cssText = "padding: 5px; color: white; margin-top: 5%; margin-bottom: 20px; font-size: 12px; width: 290px; display: block; margin: 0 auto; margin-top: 5%;";
+                nuevaVentana2.appendChild(resaltarContactosTitulo2);
+
+                // Crear botón para guardar lista de contactos
+                const GuardarContactosBtn = document.createElement('button');
+                GuardarContactosBtn.textContent = 'Guardar contactos';
+                GuardarContactosBtn.style.cssText = "background-color: rgb(255, 90, 75); color: white; font-weight: bold; padding: 10px 20px; border-radius: 6px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; cursor: pointer; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; display: block; margin: 5px auto; margin-top: 15px;";
+                GuardarContactosBtn.addEventListener('click', () => {
+                    if (botonPulsado) {
+                        toastr["error"](`No des tantos clics cowboy <img src="https://forocoches.com/foro/images/smilies/para.gif"></a>`, `Roto2Tools`);
+                        return;
+                    }
+                    botonPulsado = true;
+
+                    // Obtener la lista de elementos que contienen los nombres de los contactos en la página de buddylist
+                    let contactosElements = document.querySelectorAll('[id^="buddylist_user"] > [href^="member.php"]');
+
+                    // Verificar si se encontraron contactos
+                    if (contactosElements.length === 0) {
+                        toastr["info"](`No se encontraron contactos en la lista. <img src="https://forocoches.com/foro/images/smilies/number_one.gif"></a>`, `Roto2Tools`);
+                    } else {
+                        // Crear un array vacío para almacenar los nombres de los contactos
+                        let contactos = [];
+
+                        // Iterar sobre los elementos y obtener el nombre de cada contacto
+                        contactosElements.forEach((contactoElement) => {
+                            let contactoNombre = contactoElement.textContent.trim();
+                            contactos.push(contactoNombre);
+                        });
+
+                        // Convertir el array de contactos en una cadena de texto
+                        let contactosString = contactos.join(', ');
+
+                        // Guardar la cadena de contactos en el objeto JSON actualizado en GM_setValue
+                        GM_setValue("resaltarContactos", [contactosString]);
+                        toastr["success"](`Los contactos se han guardado correctamente shur &nbsp;<img src="https://forocoches.com/foro/images/smilies/thumbsup.gif"></a>`, `Roto2Tools`);
+                        hasGuardado = true;
+                    }
+                });
+
+                // Agregar botón a la ventana
+                nuevaVentana2.appendChild(GuardarContactosBtn);
+
+                // agregar el botón de cierre
+                let cerrarContactosBtn = document.createElement("button");
+                cerrarContactosBtn.textContent = "Cerrar";
+                cerrarContactosBtn.style.cssText = "bottom: 20px; padding: 10px 20px; border-radius: 6px; text-shadow: rgb(0, 0, 0) 1px 1px 4px; background-color: rgb(85, 85, 85); color: white; cursor: pointer; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 4px; margin: 5px auto 5px; margin-top: 15px;";
+                cerrarContactosBtn.addEventListener("click", () => {
+                    document.documentElement.style.overflow = "auto";
+                    document.body.style.overflow = "auto";
+                    // esperar un breve momento antes de aplicar el efecto de salida
+                    setTimeout(() => {
+                        nuevaVentana2.style.transition = 'opacity 0.3s ease'; // Duración de la animación y tipo de efecto
+                        nuevaVentana2.style.opacity = '0'; // Cambiar la opacidad a 0 para el efecto de salida
+                    }, 10);
+                    if (hasGuardado) {
+                        toastr["info"](`Recarga la pagina para que Roto2Tools vuelva a leer las listas, gracias y muy buen foro. <img src="https://forocoches.com/foro/images/smilies/number_one.gif"></a>`, `Roto2Tools`);
+                        botonPulsado = false;
+                    }
+                    // eliminar todas las ventanas emergentes del documento después de que se complete el efecto de salida
+                    setTimeout(() => {
+                        let ventanas = document.getElementsByClassName("nuevaVentana");
+                        while (ventanas.length > 0) {
+                            ventanas[0].parentNode.removeChild(ventanas[0]);
+                        }
+                        // establecer el estado de la ventana emergente en cerrado
+                        ventanaAbierta = false;
+                    }, 500); // Esperar 500ms para que se complete la animación de salida antes de eliminar la ventana
+                });
+                nuevaVentana2.appendChild(cerrarContactosBtn);
+            }
+        })
+    };
+
+    // Función para escapar caracteres, quitar comas etc etc
+    function getRegexcontacto(userInputcontacto, wholeWordscontacto) {
+        let escapedInputcontacto = userInputcontacto.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'); // escapar caracteres especiales
+        let regexStringcontacto = wholeWordscontacto ? `\\b${escapedInputcontacto}\\b` : escapedInputcontacto; // agregar word boundaries si es necesario
+        regexStringcontacto = regexStringcontacto.replace(/[áà]/gi, '[aáà]') // acentos
+            .replace(/[éè]/gi, '[eéè]')
+            .replace(/[íï]/gi, '[iíï]')
+            .replace(/[óò]/gi, '[oóò]')
+            .replace(/[úü]/gi, '[uúü]')
+            .replace(/,\s*/g, '|'); // reemplazar comas por |
+        return new RegExp(regexStringcontacto, 'i');
+    };
+
+    // para cada contacto en la lista, buscar si hay un elemento que contiene su nombre en el texto
+    resaltarContactos.forEach((contacto) => {
+        let elementoscontactos = document.querySelectorAll(`[id*="postmenu_"]:not(.resaltado)`);
+        elementoscontactos.forEach((elemAmi) => {
+            let textocontacto = elemAmi.innerText.toLowerCase();
+            let regexcontacto = getRegexcontacto(contacto, true);
+            if (regexcontacto.test(textocontacto)) {
+                let editcontacto = elemAmi.closest('[id*="edit"]');
+                if (editcontacto) {
+                    let sectioncontacto = editcontacto.querySelector('section');
+                    sectioncontacto.classList.add("resaltado");
+                }
+            }
+        })
+    });
+
+    // agregar estilos a los elementos resaltados dentro de [id*="edit"] > section
+    const usecontacto = document.createElement("style");
+    usecontacto.innerHTML = `[id*="edit"] > section.resaltado { border-left: solid 4px #2fc726; }`;
+    document.head.appendChild(usecontacto);
+
+    // Arregla el ancho de la pagina para que se adapte a la pantalla
     document.querySelector('#header').style = 'max-width: unset; margin: unset; width: 100%;';
     document.querySelector('main').style = 'margin: 0; width: 100%; max-width: unset; grid-template-columns: 1fr auto;';
 };
