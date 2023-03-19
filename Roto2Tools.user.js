@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.2.5b
+// @version         1.2.6b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -274,7 +274,7 @@ if (telefono) {
                 let regex = getRegex(palabra, false, true);
                 let regexTitulo = new RegExp(regex.source, "ig");
                 let titulo = elemento.querySelector('[id*="thread_title_"]>span');
-                titulo.innerHTML = titulo.innerHTML.replace(regexTitulo, '<span style="text-shadow: rgb(0, 0, 0) 1px 1px 4px; font-weight: bold; color: #FD5D4D;">$&</span>');
+                titulo.innerHTML = titulo.innerHTML.replace(regexTitulo, '<span style="font-weight: bold; color: #FD5D4D;">$&</span>');
             });
 
             elemento.style.borderRadius = '5px';
