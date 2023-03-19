@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.2.4b
+// @version         1.2.5b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -138,7 +138,7 @@ if (telefono) {
             // Crear el título de la caja de resaltar hilos
             const resaltarHilosTitulo = document.createElement("div");
             resaltarHilosTitulo.textContent = "Resaltar hilos";
-            resaltarHilosTitulo.style.cssText = "padding: 5px; border: 5px solid rgb(58, 58, 58); color: white; margin: 0px auto 10px; width: 145px; font-weight: bold; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 6px; border-radius: 6px; background-color: rgb(58, 58, 58);";
+            resaltarHilosTitulo.style.cssText = "padding: 5px; border: 5px solid rgb(58, 58, 58); color: #EDD40E; text-shadow: rgb(0, 0, 0) 1px 1px 4px; margin: 0px auto 10px; width: 145px; font-weight: bold; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 6px; border-radius: 6px; background-color: rgb(58, 58, 58);";
             nuevaVentana.appendChild(resaltarHilosTitulo);
 
             // Crear textarea para agregar palabras a resaltar
@@ -156,7 +156,7 @@ if (telefono) {
             // Crear el título de la caja de ocultar hilos
             const ocultarHilosTitulo = document.createElement("div");
             ocultarHilosTitulo.textContent = "Ocultar hilos";
-            ocultarHilosTitulo.style.cssText = "padding: 5px; border: 5px solid rgb(58, 58, 58); color: white; margin: 0px auto 10px; width: 145px; font-weight: bold; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 6px; border-radius: 6px; background-color: rgb(58, 58, 58);";
+            ocultarHilosTitulo.style.cssText = "padding: 5px; border: 5px solid rgb(58, 58, 58); color: #FD5D4D; text-shadow: rgb(0, 0, 0) 1px 1px 4px; margin: 0px auto 10px; width: 145px; font-weight: bold; box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 6px; border-radius: 6px; background-color: rgb(58, 58, 58);";
             nuevaVentana.appendChild(ocultarHilosTitulo);
 
             // Crear textarea para agregar palabras a ocultar
@@ -252,29 +252,31 @@ if (telefono) {
         if (!elemento.querySelector('[id*="thread_title_"]>span')) {
             return;
         }
-        let texto = elemento.querySelector('[id*="thread_title_"]>span').innerText.toLowerCase();
+        let titulo = elemento.querySelector('[id*="thread_title_"]>span');
+        let textoTitulo = titulo.innerText.toLowerCase();
         for (let i = 0; i < resaltarHilos.length; i++) {
             let regex = getRegex(resaltarHilos[i], false, true);
-            if (regex.test(texto)) {
+            if (regex.test(textoTitulo)) {
+                let regexTitulo = new RegExp(regex.source, "ig");
                 elemento.style.cssText = "background: #3D3D3D; font-weight: bold; text-shadow: 1px 1px 4px #000;";
                 elemento.querySelector('[id*="thread_title_"]>span').style.color = '#ffffff';
-                break;
+                titulo.innerHTML = titulo.innerHTML.replace(regexTitulo, '<span style="font-weight: bold; color: #EDD40E;">$&</span>');
             }
         }
 
         if (ocultarHilos.some((palabra) => {
             let regex = getRegex(palabra, false, true);
-            return regex.test(texto);
+            return regex.test(textoTitulo);
         })) {
             elementosOcultos.push(elemento)
             elemento.remove()
             ocultarHilos.forEach((palabra) => {
                 let regex = getRegex(palabra, false, true);
-                let regexTitulo = new RegExp(regex.source, "i")
+                let regexTitulo = new RegExp(regex.source, "ig");
                 let titulo = elemento.querySelector('[id*="thread_title_"]>span');
-                let palabraCoincidente = titulo.innerText.match(regexTitulo)[0];
-                titulo.innerHTML = titulo.innerHTML.replace(regexTitulo, `<span style="font-weight: bold; color: #FD5D4D;">${palabraCoincidente}</span>`);
+                titulo.innerHTML = titulo.innerHTML.replace(regexTitulo, '<span style="text-shadow: rgb(0, 0, 0) 1px 1px 4px; font-weight: bold; color: #FD5D4D;">$&</span>');
             });
+
             elemento.style.borderRadius = '5px';
             elemento.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.6)';
         }
@@ -522,4 +524,3 @@ if (telefono) {
     document.querySelector('#header').style = 'max-width: unset; margin: unset; width: 100%;';
     document.querySelector('main').style = 'margin: 0; width: 100%; max-width: unset; grid-template-columns: 1fr auto;';
 };
-
