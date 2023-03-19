@@ -27,5 +27,5 @@ Este script es compatible con las siguientes extensiones
 |   Violentmonkey   | :heavy_check_mark: |
 |    Tampermonkey   | :heavy_check_mark: |
 
-[5]: resources/capturas/captura1.png "Captura"
+[5]: resources/capturas/captura1.gif "Captura"
 [6]: resources/img/icon-64x64.png "logo"
