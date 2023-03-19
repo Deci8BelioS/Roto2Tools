@@ -1,14 +1,14 @@
 // ==UserScript==
-// @id              Roto2Tools
-// @name            Roto2Tools
-// @namespace       Roto2Tools
+// @id              Roto2Tools dev
+// @name            Roto2Tools dev
+// @namespace       Roto2Tools dev
 // @author          DeciBelioS
 // @homepage        https://github.com/Deci8BelioS/Roto2Tools/
 // @description     Script para Forocoches que oculta hilos o los resalta con las palabras añadidas por el usuario
-// @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
-// @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
-// @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.2.6b
+// @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
+// @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
+// @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/Roto2Tools-dev.user.js
+// @version         1.2.6d
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
