@@ -8,6 +8,7 @@
 * Añadir palabras para ocultar hilos o resaltar hilos
 * Resaltar los mensajes de usuarios dentro de los hilos con una barra verde a la izq del mensaje.
 * Ocultar hilos por el nick de su creador
+* Ocultar mensajes en un spoiler dentro de los hilos usando la lista ocultar hilos usuarios.
 * Botón en el Header al lado de la caja de busqueda
 * En los hilos ocultos se resalta la palabra en color naranja para saber por que está oculto
 * En los hilos resaltados se aplica un color oscuro en el recuadro donde aparece el nombre del hilo, autor etc (el color es mas claro que los demas en el modo oscuro)
