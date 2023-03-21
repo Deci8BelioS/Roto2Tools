@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.3.1b
+// @version         1.3.2b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -544,10 +544,43 @@ if (telefono.length) {
         })
     });
 
-    // buscar y borrar secciones con la clase "oculto"
+
+    // buscar y ocultar secciones con la clase "oculto" dentro de un spoiler
     const seccionesOcultas = document.querySelectorAll('[id*="edit"].oculto');
     seccionesOcultas.forEach((seccion) => {
-        seccion.remove();
+        // crear un elemento de spoiler y agregarlo a la página
+        const spoiler = document.createElement("details");
+        spoiler.classList.add("spoiler");
+        seccion.before(spoiler);
+
+        // mover la sección oculta dentro del spoiler y agregar un botón para expandir/cerrar el spoiler
+        spoiler.appendChild(seccion);
+        const botonSpoiler = document.createElement("summary");
+        botonSpoiler.innerText = "El mensaje de este usuario esta oculto por que está en la lista de Ocultar Usuarios";
+        botonSpoiler.style.cssText = "text-align: center; text-shadow: 1px 1px 4px #000; cursor: pointer; color: #ffff; font-weight: bold;";
+        spoiler.style.cssText = "background: #2A2A2A; border-radius: 5px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); padding: 5px;";
+        spoiler.insertBefore(botonSpoiler, seccion);
+
+        // Inicializamos Tippy.js con el gatillo
+        tippy(spoiler, {
+            content: 'Haz clic para mostrar/ocultar los hilos',
+            animation: 'scale',
+            interactive: true,
+            followCursor: false,
+            followCursor: "horizontal",
+            placement: 'bottom', // La ubicación donde se mostrará Tippy
+            arrow: true, // Mostrar una flecha en Tippy
+        });
+        // Agregar un evento de clic para mostrar/ocultar los títulos ocultos
+        spoiler.addEventListener('click', () => {
+            seccion.style.transition = 'max-height 350ms fade-out';
+            if (!spoiler) {
+                spoiler.style.maxHeight = '0';
+            } else {
+                spoiler.style.maxHeight = 'auto';
+            }
+        });
+
     });
 
     // Arregla el ancho de la pagina para que se adapte a la pantalla
