@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.3.4b
+// @version         1.3.5b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -28,7 +28,8 @@
 // @require         https://unpkg.com/@popperjs/core@2
 // @require         https://unpkg.com/tippy.js@6
 // @resource        toastrcss  https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/require/toastr.min.css
-// @resource        tippycss https://unpkg.com/tippy.js@6/animations/scale.css
+// @resource        tippycss https://unpkg.com/tippy.js@6/dist/tippy.css
+// @resource        scalecss https://unpkg.com/tippy.js@6/animations/scale.css
 // ==/UserScript==
 
 // Seleccionar el elemento "header"
@@ -41,27 +42,35 @@ GM_addStyle(toastrcss);
 const tippycss = GM_getResourceText('tippycss');
 GM_addStyle(tippycss);
 
+const scalecss = GM_getResourceText('scalecss');
+GM_addStyle(scalecss);
+
 toastr.options = { "closeButton": false, "debug": false, "newestOnTop": false, "progressBar": true, "positionClass": "toast-bottom-right", "preventDuplicates": true, "onclick": null, "showDuration": "350", "hideDuration": "1000", "timeOut": "6000", "extendedTimeOut": "2000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut" };
 
-// Si estas en modo telefno no funciona el script
+// Si estas en modo telefno, en el foro clasico o no estas logeado no funciona el script
 let telefono = $("#fc-mobile-version-tag-for-monitoring");
-
-// Si no estas logeado no funciona el script
+let telefonoClasico = $(".mobiletitlebottom");
+let clasico = $("a:contains('Nuevo diseño')");
+let listaIconosFC = $("strong:contains('ForoCoches Smilies')");
 let noShur = $("#user-online-status");
 
 // Si estas logeado y en el pc (o modo escritorio) se ejecuta el script
-if (telefono.length) {
+if (telefono.length || telefonoClasico.length) {
     toastr["warning"](`No funciona en telefonos &nbsp;<img src="https://forocoches.com/foro/images/smilies/smash2.gif"></a>`, `Roto2Tools`);
+} else if (clasico.length) {
+    toastr["info"](`No funciona en el foro clasico<img src="https://forocoches.com/foro/images/smilies/eaea.gif"></a>`, `Roto2Tools`);
+} else if (listaIconosFC.length) {
+    return;
 } else if (!noShur.length) {
     toastr["error"](`No funciona si no estas logeado`, `Roto2Tools &nbsp;<img src="https://forocoches.com/foro/images/smilies/nono.gif"></a>`);
 } else {
-    
+
     // leer la lista guardada en Tampermonkey
     let resaltarHilos = GM_getValue("resaltarHilos", []);
     let resaltarContactos = GM_getValue("resaltarContactos", []);
     let ocultarHilos = GM_getValue("ocultarHilos", []);
     let ocultarContactos = GM_getValue("ocultarContactos", []);
-    
+
     // Función para escapar caracteres, quitar comas etc etc
     function getRegex(userInput, isRegex, wholeWords) {
         var regex;
@@ -136,14 +145,14 @@ if (telefono.length) {
         if (!ventanaAbierta) {
             // establecer el estado de la ventana emergente en abierto
             ventanaAbierta = true;
-            
+
             // Deshabilitar el scroll al abrir el menú
             Object.assign(document.body.style, { overflow: "hidden", position: "fixed" });
 
             const nuevaVentana = $("<div></div>").addClass("nuevaVentana")
                 .css({ transition: "width 1.5s ease-out, height 1.5s ease-out", position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", border: "5px solid #2A2A2A", borderRadius: "6px", boxShadow: "0 2px 6px rgba(0, 0, 0, 1)", backgroundColor: "#2A2A2A", zIndex: "9999", padding: "20px", textAlign: "center", opacity: "0" })
                 .appendTo("body");
-            
+
             // Esperar un breve momento para aplicar el efecto de entrada
             setTimeout(() => {
                 nuevaVentana.animate({ opacity: "1" }, 300); // Duración de la animación y tipo de efecto
@@ -267,17 +276,17 @@ if (telefono.length) {
             const guardarlistasBtn = $("<button>").text("GUARDAR")
                 .css({ display: "block", "background-color": "rgb(255, 90, 75)", color: "white", "font-weight": "bold", padding: "10px 20px", "border-radius": "6px", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", cursor: "pointer", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 4px", margin: "5px auto", "margin-top": "15px" });
             guardarlistasBtn.on("click", function () {
-                
+
                 // Verificar si el botón ha sido pulsado previamente
                 if (botonPulsado) {
                     toastr["error"](`No des tantos clics cowboy <img src="https://forocoches.com/foro/images/smilies/para.gif"></a>`, `Roto2Tools`);
                     return;
                 }
-                
+
                 // Establecer variable a true para indicar que el botón ha sido pulsado
                 botonPulsado = true;
                 hasGuardado = true;
-                
+
                 const OcultarListaInput = $(ocultarInput).val().trim();
                 const resaltarListaInput = $(ResaltarInput).val().trim();
                 const ocultarContactosListaInput = $(ocultarContactosInput).val().trim();
@@ -314,14 +323,14 @@ if (telefono.length) {
                     ResaltarInput.value = GM_getValue("resaltarHilos", []).join(", ");
                     ocultarContactosInput.value = GM_getValue("ocultarContactos", []).join(", ");
                     resaltarMensajesContactosInput.value = GM_getValue("resaltarContactos", []).join(", ");
-                    
+
                     // Establecer un temporizador para resetear la variable booleana después de x segundos
                     setTimeout(() => {
                         botonPulsado = false;
                     }, 5000);
                 }
             });
-            
+
             // Inicializamos Tippy.js con el gatillo
             tippy(guardarlistasBtn[0], {
                 content: 'Haz clic para guardar las listas',
@@ -445,7 +454,7 @@ if (telefono.length) {
 
     // Si se han ocultado elementos, agregar el botón spoiler
     if (elementosOcultos.length > 0) {
-        
+
         // Crear el elemento "spoiler"
         const spoiler = document.createElement('div');
         spoiler.style.cssText = "background: #3A3A3A; color: #ffff; font-weight: bold; text-shadow: 1px 1px 4px #000; text-align: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 5px; cursor: pointer;";
@@ -582,7 +591,7 @@ if (telefono.length) {
             placement: 'bottom', // La ubicación donde se mostrará Tippy
             arrow: true, // Mostrar una flecha en Tippy
         });
-        
+
         // Agregar un evento de clic para mostrar/ocultar los títulos ocultos
         spoiler.addEventListener('click', () => {
             seccion.style.transition = 'max-height 350ms fade-out';
