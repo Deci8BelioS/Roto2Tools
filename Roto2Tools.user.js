@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.3.5b
+// @version         1.3.6b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -109,7 +109,9 @@ if (telefono.length || telefonoClasico.length) {
 
     // Creamos el botón menú de Roto2Tools
     const menuBtn = $("<button>").text("Roto2Tools")
-        .css({ "background-color": "#FF5A4B", color: "white", padding: "10px 20px", "font-weight": "bold", "text-shadow": "1px 1px 4px #000", "border-radius": "6px", cursor: "pointer", "margin-left": "5px", "box-shadow": "0px 2px 4px rgba(0, 0, 0, 0.6)" })
+        .css({ "background-color": "#FF5A4B", color: "white", padding: "10px 20px", "font-weight": "bold", "text-shadow": "1px 1px 4px #000", "border-radius": "6px", cursor: "pointer", "margin-left": "5px", "box-shadow": "0px 2px 4px rgba(0, 0, 0, 0.6)", transition: "transform 0.3s, box-shadow 0.3s" })
+        .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
+        .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
     buttonContainer.append(menuBtn[0]);
 
     // Inicializamos Tippy.js con el gatillo
@@ -160,7 +162,9 @@ if (telefono.length || telefonoClasico.length) {
 
             // Crear el título de la caja de resaltar hilos
             const resaltarHilosTitulo = $("<button>").text("Resaltar hilos")
-                .css({ display: "block", padding: "5px", border: "5px solid rgb(58, 58, 58)", cursor: "pointer", color: "#EDD40E", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", margin: "0px auto 10px", width: "145px", "font-weight": "bold", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "border-radius": "6px", "background-color": "rgb(58, 58, 58)" });
+                .css({ display: "block", padding: "5px", border: "5px solid rgb(58, 58, 58)", cursor: "pointer", color: "#EDD40E", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", margin: "0px auto 10px", width: "145px", "font-weight": "bold", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "border-radius": "6px", "background-color": "rgb(58, 58, 58)", transition: "transform 0.3s, box-shadow 0.3s" })
+                .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
+                .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
             nuevaVentana.append(resaltarHilosTitulo);
 
             // Crear textarea para agregar palabras a resaltar
@@ -189,7 +193,9 @@ if (telefono.length || telefonoClasico.length) {
 
             // Crear el título de la caja de resaltar hilos
             const ocultarHilosTitulo = $("<button>").text("Ocultar hilos")
-                .css({ display: "block", padding: "5px", border: "5px solid rgb(58, 58, 58)", cursor: "pointer", color: "#FD5D4D", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", margin: "0px auto 10px", width: "145px", "font-weight": "bold", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "border-radius": "6px", "background-color": "rgb(58, 58, 58)" });
+                .css({ display: "block", padding: "5px", border: "5px solid rgb(58, 58, 58)", cursor: "pointer", color: "#FD5D4D", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", margin: "0px auto 10px", width: "145px", "font-weight": "bold", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "border-radius": "6px", "background-color": "rgb(58, 58, 58)", transition: "transform 0.3s, box-shadow 0.3s" })
+                .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
+                .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
             nuevaVentana.append(ocultarHilosTitulo);
 
             // Crear textarea para agregar palabras a ocultar
@@ -219,7 +225,9 @@ if (telefono.length || telefonoClasico.length) {
 
             // Crear el título de la caja de ocultar hilos
             const ocultarContactosTitulo = $("<button>").text("Ocultar hilos usuarios")
-                .css({ display: "block", padding: "5px", border: "5px solid rgb(58, 58, 58)", cursor: "pointer", color: "#FF2626", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", margin: "0px auto 10px", width: "145px", "font-weight": "bold", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "border-radius": "6px", "background-color": "rgb(58, 58, 58)" });
+                .css({ display: "block", padding: "5px", border: "5px solid rgb(58, 58, 58)", cursor: "pointer", color: "#FF2626", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", margin: "0px auto 10px", width: "145px", "font-weight": "bold", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "border-radius": "6px", "background-color": "rgb(58, 58, 58)", transition: "transform 0.3s, box-shadow 0.3s" })
+                .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
+                .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
             nuevaVentana.append(ocultarContactosTitulo);
 
             // Crear textarea para agregar palabras a ocultar
@@ -249,7 +257,9 @@ if (telefono.length || telefonoClasico.length) {
 
             // Crear el título de la caja de ocultar hilos
             const resaltarMensajesContactosTitulo = $("<button>").text("Resaltar mensajes usuarios")
-                .css({ display: "block", padding: "5px", border: "5px solid rgb(58, 58, 58)", cursor: "pointer", color: "#2fc726", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", margin: "0px auto 10px", width: "145px", "font-weight": "bold", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "border-radius": "6px", "background-color": "rgb(58, 58, 58)" });
+                .css({ display: "block", padding: "5px", border: "5px solid rgb(58, 58, 58)", cursor: "pointer", color: "#2fc726", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", margin: "0px auto 10px", width: "145px", "font-weight": "bold", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "border-radius": "6px", "background-color": "rgb(58, 58, 58)", transition: "transform 0.3s, box-shadow 0.3s" })
+                .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
+                .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
             nuevaVentana.append(resaltarMensajesContactosTitulo);
 
             // Crear textarea para agregar palabras a ocultar
@@ -274,7 +284,9 @@ if (telefono.length || telefonoClasico.length) {
 
             // Crear el botón para guardar las listas
             const guardarlistasBtn = $("<button>").text("GUARDAR")
-                .css({ display: "block", "background-color": "rgb(255, 90, 75)", color: "white", "font-weight": "bold", padding: "10px 20px", "border-radius": "6px", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", cursor: "pointer", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 4px", margin: "5px auto", "margin-top": "15px" });
+                .css({ display: "block", "background-color": "rgb(255, 90, 75)", color: "white", "font-weight": "bold", padding: "10px 20px", "border-radius": "6px", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", cursor: "pointer", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 4px", margin: "5px auto", "margin-top": "15px", transition: "transform 0.3s, box-shadow 0.3s" })
+                .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
+                .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
             guardarlistasBtn.on("click", function () {
 
                 // Verificar si el botón ha sido pulsado previamente
@@ -343,7 +355,7 @@ if (telefono.length || telefonoClasico.length) {
 
             // agregar el botón de cierre
             const cerrarBtn = $("<button>").text("Cerrar")
-                .css({ bottom: "20px", padding: "10px 20px", "border-radius": "6px", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", "background-color": "rgb(85, 85, 85)", color: "white", cursor: "pointer", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 4px", margin: "5px auto 5px", "margin-top": "15px" })
+                .css({ bottom: "20px", padding: "10px 20px", "border-radius": "6px", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", "background-color": "rgb(85, 85, 85)", color: "white", cursor: "pointer", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 4px", margin: "5px auto 5px", "margin-top": "15px", transition: "transform 0.3s, box-shadow 0.3s" })
             cerrarBtn.on("click", function () {
                 $("html,body").css("overflow", "auto");
                 // esperar un breve momento antes de aplicar el efecto de salida
@@ -361,6 +373,8 @@ if (telefono.length || telefonoClasico.length) {
                     ventanaAbierta = false;
                 }, 500); // Esperar 500ms para que se complete la animación de salida antes de eliminar la ventana
             })
+                .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
+                .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
             nuevaVentana.append(cerrarBtn);
         }
     });
@@ -457,7 +471,15 @@ if (telefono.length || telefonoClasico.length) {
 
         // Crear el elemento "spoiler"
         const spoiler = document.createElement('div');
-        spoiler.style.cssText = "background: #3A3A3A; color: #ffff; font-weight: bold; text-shadow: 1px 1px 4px #000; text-align: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 5px; cursor: pointer;";
+        spoiler.style.cssText = "background: #3A3A3A; color: #ffff; font-weight: bold; text-shadow: 1px 1px 4px #000; text-align: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 5px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s";
+        spoiler.addEventListener("mousedown", function () {
+            this.style.boxShadow = "none";
+            this.style.transform = "translateY(3px)";
+        });
+        spoiler.addEventListener("mouseup", function () {
+            this.style.boxShadow = "0px 2px 4px rgba(0, 0, 0, 0.6)";
+            this.style.transform = "none";
+        });
 
         // Agregar el número de hilos ocultados al contenido del spoiler
         spoiler.textContent = cantidadHilosOcultos + ' Hilo(s) oculto(s)';
@@ -479,7 +501,7 @@ if (telefono.length || telefonoClasico.length) {
 
         // Agregar un evento de clic para mostrar/ocultar los títulos ocultos
         spoiler.addEventListener('click', () => {
-            contenedorOcultos.style.transition = 'max-height 350ms ease-out';
+            contenedorOcultos.style.transition = 'max-height 0.3s ease-out';
             if (spoiler.textContent.includes('oculto')) {
                 spoiler.textContent = cantidadHilosOcultos + ' Hilo(s) ocultado(s)';
                 contenedorOcultos.style.maxHeight = '100vh';
@@ -577,10 +599,18 @@ if (telefono.length || telefonoClasico.length) {
         spoiler.appendChild(seccion);
         const botonSpoiler = document.createElement("summary");
         botonSpoiler.innerText = "El mensaje de este usuario esta oculto por que está en la lista de Ocultar Usuarios";
-        botonSpoiler.style.cssText = "text-align: center; text-shadow: 1px 1px 4px #000; cursor: pointer; color: #ffff; font-weight: bold;";
-        spoiler.style.cssText = "background: #2A2A2A; border-radius: 5px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); padding: 5px;";
+        botonSpoiler.style.cssText = "background: #3D3D3D; text-align: center; text-shadow: 1px 1px 4px #000; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.6); cursor: pointer; color: #ffff; font-weight: bold; transition: transform 0.3s, box-shadow 0.3s";
+        spoiler.style.cssText = "background: #2A2A2A; border-radius: 5px; margin-bottom: 15px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.6); padding: 5px; transition: transform 0.3s, box-shadow 0.3s";
         spoiler.insertBefore(botonSpoiler, seccion);
-
+        spoiler.addEventListener("mousedown", function () {
+            spoiler.style.boxShadow = "none";
+            spoiler.style.transform = "translateY(3px)";
+        });
+        spoiler.addEventListener("mouseup", function () {
+            spoiler.style.boxShadow = "0px 2px 4px rgba(0, 0, 0, 0.6)";
+            spoiler.style.transform = "none";
+        });
+      
         // Inicializamos Tippy.js con el gatillo
         tippy(spoiler, {
             content: 'Haz clic para mostrar/ocultar los hilos',
@@ -591,17 +621,8 @@ if (telefono.length || telefonoClasico.length) {
             placement: 'bottom', // La ubicación donde se mostrará Tippy
             arrow: true, // Mostrar una flecha en Tippy
         });
-
-        // Agregar un evento de clic para mostrar/ocultar los títulos ocultos
-        spoiler.addEventListener('click', () => {
-            seccion.style.transition = 'max-height 350ms fade-out';
-            if (!spoiler) {
-                spoiler.style.maxHeight = '0';
-            } else {
-                spoiler.style.maxHeight = 'auto';
-            }
-        });
-
+        var separatorLargeElement = seccion.querySelector('separator-large');
+        separatorLargeElement.remove();
     });
 
     // Arregla el ancho de la pagina para que se adapte a la pantalla
