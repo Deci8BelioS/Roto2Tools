@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/Roto2Tools.user.js
-// @version         1.3.6b
+// @version         1.4.0b
 // @encoding        UTF-8
 // @include         http://www.forocoches.com/*
 // @include         http://forocoches.com/*
@@ -152,13 +152,29 @@ if (telefono.length || telefonoClasico.length) {
             Object.assign(document.body.style, { overflow: "hidden", position: "fixed" });
 
             const nuevaVentana = $("<div></div>").addClass("nuevaVentana")
-                .css({ transition: "width 1.5s ease-out, height 1.5s ease-out", position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", border: "5px solid #2A2A2A", borderRadius: "6px", boxShadow: "0 2px 6px rgba(0, 0, 0, 1)", backgroundColor: "#2A2A2A", zIndex: "9999", padding: "20px", textAlign: "center", opacity: "0" })
+                .css({ transition: "width 1.5s ease-out, height 1.5s ease-out", position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", border: "5px solid #2A2A2A", borderRadius: "6px", boxShadow: "0 2px 6px rgba(0, 0, 0, 1)", backgroundColor: "#2A2A2A", zIndex: "9999", padding: "10px", textAlign: "center", opacity: "0" })
                 .appendTo("body");
 
             // Esperar un breve momento para aplicar el efecto de entrada
             setTimeout(() => {
                 nuevaVentana.animate({ opacity: "1" }, 300); // Duración de la animación y tipo de efecto
             }, 10);
+
+            // Crear título con enlace que se abre en otra pestaña y una imagen
+            const tituloContainer = $("<a>")
+                .attr("href", "https://github.com/Deci8BelioS/Roto2Tools/")
+                .attr("target", "_blank")
+                .css({ display: "block", "font-size": "16px", "font-weight": "bold", "margin-bottom": "10px", "text-shadow": "#000 0px 2px 4px", color: "#fff", "text-align": "center" });
+
+            const imgContainer = $("<span>")
+                .html('&nbsp<img src="https://forocoches.com/foro/images/smilies/goofy.gif">');
+            tituloContainer.append("&nbsp;Roto2Tools").append(imgContainer);
+            nuevaVentana.append(tituloContainer);
+
+            // Crear un separator
+            const separatorContainer = $("<separator>")
+                .css({ display: "block", "margin-bottom": "10px", "background-color": "rgb(58, 58, 58)", "text-align": "center" })
+            nuevaVentana.append(separatorContainer);
 
             // Crear el título de la caja de resaltar hilos
             const resaltarHilosTitulo = $("<button>").text("Resaltar hilos")
@@ -224,7 +240,7 @@ if (telefono.length || telefonoClasico.length) {
             nuevaVentana.append(ocultarContactosContainer);
 
             // Crear el título de la caja de ocultar hilos
-            const ocultarContactosTitulo = $("<button>").text("Ocultar hilos usuarios")
+            const ocultarContactosTitulo = $("<button>").text("Ocultar usuarios")
                 .css({ display: "block", padding: "5px", border: "5px solid rgb(58, 58, 58)", cursor: "pointer", color: "#FF2626", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", margin: "0px auto 10px", width: "145px", "font-weight": "bold", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "border-radius": "6px", "background-color": "rgb(58, 58, 58)", transition: "transform 0.3s, box-shadow 0.3s" })
                 .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
                 .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
@@ -256,7 +272,7 @@ if (telefono.length || telefonoClasico.length) {
             nuevaVentana.append(resaltarMensajesContactosContainer);
 
             // Crear el título de la caja de ocultar hilos
-            const resaltarMensajesContactosTitulo = $("<button>").text("Resaltar mensajes usuarios")
+            const resaltarMensajesContactosTitulo = $("<button>").text("Resaltar usuarios")
                 .css({ display: "block", padding: "5px", border: "5px solid rgb(58, 58, 58)", cursor: "pointer", color: "#2fc726", "text-shadow": "rgb(0, 0, 0) 1px 1px 4px", margin: "0px auto 10px", width: "145px", "font-weight": "bold", "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "border-radius": "6px", "background-color": "rgb(58, 58, 58)", transition: "transform 0.3s, box-shadow 0.3s" })
                 .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
                 .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
@@ -281,6 +297,11 @@ if (telefono.length || telefonoClasico.length) {
                 placement: 'left', // La ubicación donde se mostrará Tippy
                 arrow: true, // Mostrar una flecha en Tippy
             });
+
+            // Crear un separator
+            const separator2Container = $("<separator>")
+                .css({ display: "block", "margin-top": "10px", "background-color": "rgb(58, 58, 58)", "text-align": "center" })
+            nuevaVentana.append(separator2Container);
 
             // Crear el botón para guardar las listas
             const guardarlistasBtn = $("<button>").text("GUARDAR")
@@ -376,6 +397,12 @@ if (telefono.length || telefonoClasico.length) {
                 .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
                 .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
             nuevaVentana.append(cerrarBtn);
+
+            // Crear contenedor para el área de ocultar contactos Contactos
+            const versionContainer = $("<title>").text("Ver 1.4.0b")
+                .css({ display: "block", "font-size": "12px", "margin-top": "10px", "text-shadow": "#000 1px 1px 4px", color: "#fff", "text-align": "right" })
+            nuevaVentana.append(versionContainer);
+
         }
     });
 
@@ -383,15 +410,12 @@ if (telefono.length || telefonoClasico.length) {
     let elementos = document.querySelectorAll('section.without-bottom-corners > div');
     let elementosOcultos = [];
 
-    // Función ocultarContactos
-    let elementos2 = document.querySelectorAll('section.without-bottom-corners > div');
-
-    elementos2.forEach((el) => {
+    elementos.forEach((el) => {
         if (!el.querySelector('[id*="thread_title_"]>span')) {
             return;
         }
         let title = el.querySelector('.without-top-corners > div > div > div > div > [href^="showthread.php"]');
-        let textTitle = title.innerText.toLowerCase();
+        let textTitle = title ? title.innerText.toLowerCase() : '';
 
         if (ocultarContactos.some((palabra) => {
             let regex = getRegex(palabra, false, true);
@@ -402,7 +426,7 @@ if (telefono.length || telefonoClasico.length) {
             ocultarContactos.forEach((palabra) => {
                 let regex = getRegex(palabra, false, true);
                 let regexTitulo = new RegExp(regex.source, "ig");
-                el.style.cssText = "background: #541818; font-size: 0.75rem;";
+                el.style.cssText = "background: #541818;";
                 title.innerHTML = `{ color: #A4A4A4 !important; }`;
                 el.querySelector('[id*="thread_title_"]>span').style.color = '#ffffff';
                 let titulo = el.querySelector('a[href^="showthread.php?p="]');
@@ -417,6 +441,37 @@ if (telefono.length || telefonoClasico.length) {
 
             el.style.borderRadius = '5px';
             el.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.6)';
+        }
+    });
+
+    elementos.forEach((el2) => {
+        if (!el2.querySelector('[id*="thread_title_"]>span')) {
+            return;
+        }
+        let title = el2.querySelector('.without-top-corners > div > div > div > div > [href^="showthread.php"]');
+        let textTitle = title ? title.innerText.toLowerCase() : '';
+
+        if (resaltarContactos.some((palabra) => {
+            let regex = getRegex(palabra, false, true);
+            return regex.test(textTitle);
+        })) {
+            resaltarContactos.forEach((palabra) => {
+                let regex = getRegex(palabra, false, true);
+                let regexTitulo = new RegExp(regex.source, "ig");
+                el2.style.cssText = "background: #003A00; text-shadow: 1px 1px 4px #000;";
+                title.innerHTML = `{ color: #A4A4A4 !important; }`;
+                el2.querySelector('[id*="thread_title_"]>span').style.color = '#ffffff';
+                let titulo = el2.querySelector('a[href^="showthread.php?p="]');
+                let span = document.createElement('span');
+                let index = textTitle.indexOf('@');
+                let nick = textTitle.substring(index, textTitle.indexOf('-', index)).trim();
+                let resto = textTitle.substring(nick.length + 1);
+                span.innerHTML = '<span style="color: #2FC726; font-weight: bold; font-size: 0.75rem; text-shadow: 1px 1px 4px #000;">' + nick + '</span>&nbsp;<span style="color: var(--gray-text); font-size: 0.75rem;">' + resto + '</span>';
+                titulo.parentNode.insertBefore(span, titulo);
+                titulo.remove();
+            });
+
+            el2.style.borderRadius = '5px';
         }
     });
 
@@ -548,7 +603,7 @@ if (telefono.length || telefonoClasico.length) {
 
     // para cada contacto en la lista, buscar si hay un elemento que contiene su nombre en el texto
     resaltarContactos.forEach((contacto) => {
-        let elementoscontactos = document.querySelectorAll(`[id*="postmenu_"]:not(.resaltado)`);
+        let elementoscontactos = document.querySelectorAll(`[id*="postmenu_"] h2:not(.resaltado)`);
         elementoscontactos.forEach((elemAmi) => {
             let textocontacto = elemAmi.innerText.toLowerCase();
             let regexcontacto = getRegexcontacto(contacto, true);
@@ -566,7 +621,7 @@ if (telefono.length || telefonoClasico.length) {
     ocultarContactos.forEach((contacto) => {
         let elementosocultarcontactos = document.querySelectorAll(`[id*="edit"]:not(.oculto)`);
         elementosocultarcontactos.forEach((editcontacto) => {
-            let postmenuElem = editcontacto.querySelector(':scope [id*="postmenu_"]:not(.oculto)');
+            let postmenuElem = editcontacto.querySelector(':scope [id*="postmenu_"] h2:not(.oculto)');
             if (!postmenuElem) {
                 postmenuElem = editcontacto.querySelector(':scope .without-top-corners:not(.oculto)');
             }
@@ -610,7 +665,7 @@ if (telefono.length || telefonoClasico.length) {
             spoiler.style.boxShadow = "0px 2px 4px rgba(0, 0, 0, 0.6)";
             spoiler.style.transform = "none";
         });
-      
+
         // Inicializamos Tippy.js con el gatillo
         tippy(spoiler, {
             content: 'Haz clic para mostrar/ocultar los hilos',
