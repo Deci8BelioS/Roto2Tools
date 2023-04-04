@@ -277,3 +277,5 @@ seccionesOcultas.forEach((seccion) => {
 // Arregla el ancho de la pagina para que se adapte a la pantalla
 $('#header').css({ 'max-width': 'unset', 'margin': 'unset', 'width': '100%' });
 $('main').css({ 'margin': '0', 'width': '100%', 'max-width': 'unset', 'grid-template-columns': '1fr auto' });
+};
+
