@@ -27,11 +27,6 @@ if (Roto2Tools.length > 0) {
     Roto2Tools.after(menuBtn);
 }
 
-// Insertar boton después del elemento "#searchform-desktop" si existe, de lo contrario no lo hará
-if (header.length > 0) {
-    header.after(menuBtn);
-}
-
 var modalContent = $("<div>")
     .addClass('modal-content');
 
@@ -61,7 +56,7 @@ var resaltarHilosInput = $("<textarea>")
     .attr("placeholder", "Agregar palabras a resaltar separadas por comas, ejemplo: palabra, palabra")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(resaltarHilos.join(", "))
-    .appendTo(resaltarHilosInput);
+    .appendTo(tabContent1);
 
 // Contenido
 var tabPane2 = $("<div>")
@@ -77,7 +72,7 @@ const ocultarInput = $("<textarea>")
     .attr("placeholder", "Agregar palabras a ocultar separadas por comas, ejemplo: palabra, palabra")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(ocultarHilos.join(", "))
-    .appendTo(ocultarInput);
+    .appendTo(tabContent2);
 
 var tabPane3 = $("<div>")
     .addClass("tab-pane fade")
@@ -92,7 +87,7 @@ const ocultarContactosInput = $("<textarea>")
     .attr("placeholder", "Agregar usuarios para ocultar sus hilos separados por comas (sin el @), ejemplo: Pepe palotes, iliti")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(ocultarContactos.join(", "))
-    .appendTo(ocultarContactosInput);
+    .appendTo(tabContent3);
 
 var tabPane4 = $("<div>")
     .addClass("tab-pane fade")
@@ -106,11 +101,12 @@ const resaltarMensajesContactosInput = $("<textarea>")
     .attr("placeholder", "Agregar usuarios para resaltar sus mensajes en los hilos separados por comas (sin el @), ejemplo: Pepe palotes, iliti")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(resaltarContactos.join(", "))
-    .appendTo(resaltarMensajesContactosInput);
+    .appendTo(tabContent4);
 
 var tabPane5 = $("<div>")
     .addClass("tab-pane fade")
     .attr("id", "opcion5")
+    
 var tabContent5 = $("<div>")
     .addClass("tab-about")
     .appendTo(tabPane5);
@@ -118,7 +114,7 @@ var tabContent5 = $("<div>")
 const acercaRoto2Tools = $("<div>")
     .addClass("form-control")
     .html("Aquí puedes agregar la información que quieras mostrar en la pestaña.")
-    .appendTo(acercaRoto2Tools);
+    .appendTo(tabContent5);
 
 var tabContent = $("<div>")
     .addClass("tab-content")
