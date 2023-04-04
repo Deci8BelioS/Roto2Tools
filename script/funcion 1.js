@@ -1,39 +1,4 @@
 
-// leer la lista guardada en Tampermonkey
-let resaltarHilos = GM_getValue("resaltarHilos", []);
-let resaltarContactos = GM_getValue("resaltarContactos", []);
-let ocultarHilos = GM_getValue("ocultarHilos", []);
-let ocultarContactos = GM_getValue("ocultarContactos", []);
-
-// Función para escapar caracteres, quitar comas etc etc
-function getRegex(userInput, isRegex, wholeWords) {
-    var regex;
-    if (isRegex) {
-        regex = new RegExp(userInput, "i");
-    } else {
-        userInput = userInput.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"); //Escapar caracteres reservador de las regex
-        userInput = userInput.replace(/[\ ]*[\,]+[\ ]*$/, ""); //Quitar comas sobrantes
-        if (typeof wholeWords == "undefined" || wholeWords) {
-            regex = "(\\b|\\ )"; //word-break
-        } else {
-            regex = "";
-        }
-        regex += "(" + userInput
-            .replace(/[aáà]/ig, "[aáà]")
-            .replace(/[eéè]/ig, "[eéè]")
-            .replace(/[iíï]/ig, "[iíï]") //Accents insensitive
-            .replace(/[oóò]/ig, "[oóò]")
-            .replace(/[uúü]/ig, "[uúü]")
-            .replace(/[\ ]*[\,]+[\ ]*/g, "|") + ")"; //Reemplazar las comas por |
-
-        if (typeof wholeWords == "undefined" || wholeWords) {
-            regex += "(\\b|\\ )"; //word-break
-        }
-        regex = new RegExp(regex, "i");
-    }
-    return regex;
-};
-
 // Función ocultar y resaltar hilos
 let elementos = document.querySelectorAll('section.without-bottom-corners > div');
 let elementosOcultos = [];
