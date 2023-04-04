@@ -87,6 +87,7 @@ const ocultarContactosInput = $("<textarea>")
 var tabPane4 = $("<div>")
   .addClass("tab-pane fade")
   .attr("id", "opcion4")
+
 var tabContent4 = $("<div>")
   .addClass("tab-content")
   .appendTo(tabPane4);
@@ -143,6 +144,11 @@ var tabList = $("<ul>")
         "font-weight": "bold",
         "text-align": "center"
       })
+      .hover(function () {
+        $(this).css("background-color", "rgba(237, 212, 14, 0.1)")
+      }, function () {
+        $(this).css("background-color", "")
+      })
     )
   )
   .append($("<li>").addClass("nav-item")
@@ -160,6 +166,11 @@ var tabList = $("<ul>")
         "font-weight": "bold",
         "text-align": "center"
       })
+      .hover(function () {
+        $(this).css("background-color", "rgba(253, 93, 77, 0.1)");
+      }, function () {
+        $(this).css("background-color", "")
+      })
     )
   )
   .append($("<li>").addClass("nav-item")
@@ -176,6 +187,11 @@ var tabList = $("<ul>")
         "color": "rgb(255, 38, 38)",
         "font-weight": "bold",
         "text-align": "center"
+      })
+      .hover(function () {
+        $(this).css("background-color", "rgba(255, 38, 38, 0.1)");
+      }, function () {
+        $(this).css("background-color", "")
       })
     )
   )
@@ -195,6 +211,11 @@ var tabList = $("<ul>")
         "font-weight": "bold",
         "text-align": "center"
       })
+      .hover(function () {
+        $(this).css("background-color", "rgba(47, 199, 38, 0.1)")
+      }, function () {
+        $(this).css("background-color", "")
+      })
     )
   )
   .append($("<li>")
@@ -213,8 +234,13 @@ var tabList = $("<ul>")
         "font-weight": "bold",
         "text-align": "center"
       })
+      .hover(function () {
+        $(this).css("background-color", "rgba(255, 255, 255, 0.1)")
+      }, function () {
+        $(this).css("background-color", "")
+      })
     )
-  );
+  )
 
 var modalContent = $("<div>")
   .addClass("modal-content")
@@ -233,7 +259,6 @@ var modalContent = $("<div>")
         "margin": "0 auto"
       })
     )
-
   )
   .append($("<div>")
     .addClass("modal-body")
