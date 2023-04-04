@@ -185,7 +185,7 @@ textarea {
     border: 1px solid rgb(212 212 212 / 20%);
     -moz-appearance: none;
     appearance: none;
-    border-radius: .25rem;
+    border-radius: 10px;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
@@ -544,7 +544,6 @@ textarea.form-control {
     width: 100%;
     pointer-events: auto;
     background-color: rgb(42 42 42 / 60%);
-    background-clip: padding-box;
     border: 1px solid rgb(255 255 255 / 20%);
     border-radius: .8rem;
     outline: 0;
