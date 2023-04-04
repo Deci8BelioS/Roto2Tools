@@ -251,7 +251,7 @@ textarea {
 textarea.form-control {
     font-weight: bold;
     text-shadow: rgb(0 0 0 / 60%) 0px 2px 6px;
-    min-height: 188px; 
+    min-height: 233px; 
     max-height: 500px;
 }
 
