@@ -67,4 +67,3 @@ function getRegex(userInput, isRegex, wholeWords) {
     return regex;
 };
     
-};
