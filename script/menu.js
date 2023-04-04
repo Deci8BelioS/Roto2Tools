@@ -27,22 +27,14 @@ if (Roto2Tools.length > 0) {
     Roto2Tools.after(menuBtn);
 }
 
-// Crear contenedor principal
-var modalContainer = $("<div>")
-    .addClass("modal");
-
-// Crear contenedor del contenido de la pestaña
 var modalContent = $("<div>")
-    .addClass("modal-content")
-    .appendTo(modalContainer);
+    .addClass('modal-content');
 
-// Crear encabezado del modal
 var modalHeader = $("<div>")
-    .addClass("modal-header")
+    .addClass('modal-header')
     .appendTo(modalContent);
 
-// Crear título del modal
-var modalTitle = $("<h5>")
+var title = $("<h5>")
     .addClass("lead modal-title")
     .html('<img src="https://forocoches.com/foro/images/smilies/goofy.gif">&nbsp;Roto2Tools&nbsp;<img src="https://forocoches.com/foro/images/smilies/goofy.gif">')
     .appendTo(modalHeader);
@@ -69,7 +61,7 @@ var resaltarHilosInput = $("<textarea>")
     .attr("placeholder", "Agregar palabras a resaltar separadas por comas, ejemplo: palabra, palabra")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(resaltarHilos.join(", "))
-tabContent1.append(resaltarHilosInput);
+    .append(resaltarHilosInput);
 
 // Contenido
 var tabPane2 = $("<div>")
@@ -85,7 +77,7 @@ const ocultarInput = $("<textarea>")
     .attr("placeholder", "Agregar palabras a ocultar separadas por comas, ejemplo: palabra, palabra")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(ocultarHilos.join(", "))
-tabContent2.append(ocultarInput);
+    .append(ocultarInput);
 
 var tabPane3 = $("<div>")
     .addClass("tab-pane fade")
@@ -100,7 +92,7 @@ const ocultarContactosInput = $("<textarea>")
     .attr("placeholder", "Agregar usuarios para ocultar sus hilos separados por comas (sin el @), ejemplo: Pepe palotes, iliti")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(ocultarContactos.join(", "))
-tabContent3.append(ocultarContactosInput);
+    .append(ocultarContactosInput);
 
 var tabPane4 = $("<div>")
     .addClass("tab-pane fade")
@@ -114,7 +106,7 @@ const resaltarMensajesContactosInput = $("<textarea>")
     .attr("placeholder", "Agregar usuarios para resaltar sus mensajes en los hilos separados por comas (sin el @), ejemplo: Pepe palotes, iliti")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(resaltarContactos.join(", "))
-tabContent4.append(resaltarMensajesContactosInput);
+    .append(resaltarMensajesContactosInput);
 
 var tabPane5 = $("<div>")
     .addClass("tab-pane fade")
@@ -126,7 +118,7 @@ var tabContent5 = $("<div>")
 const acercaRoto2Tools = $("<div>")
     .addClass("form-control")
     .html("Aquí puedes agregar la información que quieras mostrar en la pestaña.")
-tabContent5.append(acercaRoto2Tools);
+    .append(acercaRoto2Tools);
 
 var tabContent = $("<div>")
     .addClass("tab-content")
