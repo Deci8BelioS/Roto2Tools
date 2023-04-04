@@ -32,6 +32,11 @@ a {
     color: #ff5845;
 }
 
+a:visited, body_avisited {
+    color: #ff5845;
+    text-decoration: none;
+}
+
 a:hover {
     color: #589CFC
 }
