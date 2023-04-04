@@ -1,9 +1,9 @@
 
-a:visited, body_avisited {
-    color: #ff5845;
-    text-decoration: none;
+p {
+    transition: var(--transition);
+    font-size: 0.875rem;
+    color: #FFF;
 }
-
 ol,
 ul {
     padding-left: 2rem
@@ -29,11 +29,11 @@ strong {
 }
 
 a {
-    color: #0d6efd;
+    color: #ff5845;
 }
 
 a:hover {
-    color: #0a58ca
+    color: #589CFC
 }
 
 a:not([href]):not([class]),
