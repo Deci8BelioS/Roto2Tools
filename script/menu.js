@@ -108,7 +108,7 @@ var tabContent5 = $("<div>")
 
 const acercaRoto2Tools = $("<div>")
   .addClass("tab-about")
-  .html("<strong>Versión instalada:</strong> 1.5.0d")
+  .html("<strong>Versión instalada:</strong> 1.5.0d <a href='https://github.com/Deci8BelioS/Roto2Tools/' target='_blank'>Github Roto2Tools</a>")
   .css({ "color": "#fff", "margin-top": "10px" })
   .appendTo(tabContent5);
 
@@ -194,11 +194,7 @@ var modalContent = $("<div>")
     .addClass("modal-header")
     .append($("<h2>")
       .addClass("modal-title")
-      .append($("<a>")
-        .attr("href", "https://github.com/Deci8BelioS/Roto2Tools/")
-        .attr("target", "_blank")
-        .html('<img src="https://forocoches.com/foro/images/smilies/goofy.gif"> Roto2Tools <img src="https://forocoches.com/foro/images/smilies/goofy.gif">')
-      )
+      .html('<img src="https://forocoches.com/foro/images/smilies/goofy.gif"> Roto2Tools <img src="https://forocoches.com/foro/images/smilies/goofy.gif">')
       .css({
         "text-align": "center",
         "display": "block",
