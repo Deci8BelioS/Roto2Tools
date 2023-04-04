@@ -27,6 +27,11 @@ if (Roto2Tools.length > 0) {
     Roto2Tools.after(menuBtn);
 }
 
+// Insertar boton después del elemento "#searchform-desktop" si existe, de lo contrario no lo hará
+if (header.length > 0) {
+    header.after(menuBtn);
+}
+
 var modalContent = $("<div>")
     .addClass('modal-content');
 
@@ -38,11 +43,6 @@ var title = $("<h5>")
     .addClass("lead modal-title")
     .html('<img src="https://forocoches.com/foro/images/smilies/goofy.gif">&nbsp;Roto2Tools&nbsp;<img src="https://forocoches.com/foro/images/smilies/goofy.gif">')
     .appendTo(modalHeader);
-
-// Insertar boton después del elemento "#searchform-desktop" si existe, de lo contrario no lo hará
-if (header.length > 0) {
-    header.after(menuBtn);
-}
 
 // Crear las pestañas
 var tabContent = $("<div>")
@@ -193,6 +193,8 @@ var tabList = $("<ul>")
     );
 
 var modalContent = $("<div>")
+    .addClass("modal-content")
+    
     .append($("<div>")
         .addClass("modal-body")
         .append(tabList)
