@@ -289,7 +289,7 @@ tippy(guardarlistasBtn[0], {
     content: 'Haz clic para guardar las listas',
     animation: 'scale',
     interactive: true,
-    placement: 'left', // La ubicación donde se mostrará Tippy
+    placement: 'bottom', // La ubicación donde se mostrará Tippy
     arrow: true, // Mostrar una flecha en Tippy
 });
 
