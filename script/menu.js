@@ -27,18 +27,25 @@ if (Roto2Tools.length > 0) {
     Roto2Tools.after(menuBtn);
 }
 
-var modalContent = $("<div>")
-    .addClass('modal-content')
-    .css({ backgroundColor: "#2A2A2A" })
-var modalHeader = $("<div>")
-    .addClass('modal-header')
-    .css({ backgroundColor: "#2A2A2A" })
-var title = $("<h5>")
-    .addClass('modal-title')
-    .css({ backgroundColor: "#2A2A2A" })
-modalHeader.append(title);
+// Crear contenedor principal
+var modalContainer = $("<div>")
+    .addClass("modal");
 
-modalContent.append(modalHeader);
+// Crear contenedor del contenido de la pestaña
+var modalContent = $("<div>")
+    .addClass("modal-content")
+    .appendTo(modalContainer);
+
+// Crear encabezado del modal
+var modalHeader = $("<div>")
+    .addClass("modal-header")
+    .appendTo(modalContent);
+
+// Crear título del modal
+var modalTitle = $("<h5>")
+    .addClass("lead modal-title")
+    .html('<img src="https://forocoches.com/foro/images/smilies/goofy.gif">&nbsp;Roto2Tools&nbsp;<img src="https://forocoches.com/foro/images/smilies/goofy.gif">')
+    .appendTo(modalHeader);
 
 // Insertar boton después del elemento "#searchform-desktop" si existe, de lo contrario no lo hará
 if (header.length > 0) {
@@ -109,9 +116,21 @@ const resaltarMensajesContactosInput = $("<textarea>")
     .val(resaltarContactos.join(", "))
 tabContent4.append(resaltarMensajesContactosInput);
 
+var tabPane5 = $("<div>")
+    .addClass("tab-pane fade")
+    .attr("id", "opcion5")
+var tabContent5 = $("<div>")
+    .addClass("tab-about")
+    .appendTo(tabPane5);
+
+const acercaRoto2Tools = $("<div>")
+    .addClass("form-control")
+    .html("Aquí puedes agregar la información que quieras mostrar en la pestaña.")
+tabContent5.append(acercaRoto2Tools);
+
 var tabContent = $("<div>")
     .addClass("tab-content")
-    .append(tabPane1, tabPane2, tabPane3, tabPane4);
+    .append(tabPane1, tabPane2, tabPane3, tabPane4, tabPane5);
 
 var tabList = $("<ul>")
     .addClass("nav nav-tabs")
@@ -166,20 +185,22 @@ var tabList = $("<ul>")
             .attr("aria-selected", "false")
             .html("Resaltar usuarios")
         )
+    )
+    .append($("<li>")
+        .addClass("nav-item")
+        .append($("<a>")
+            .addClass("nav-link")
+            .attr("id", "opcion5-tab")
+            .attr("data-bs-toggle", "tab")
+            .attr("href", "#opcion5")
+            .attr("role", "tab")
+            .attr("aria-controls", "opcion4")
+            .attr("aria-selected", "false")
+            .html("Acerca de Roto2Tools")
+        )
     );
 
 var modalContent = $("<div>")
-    .addClass("modal-content")
-    .append($("<div>")
-        .addClass("modal-header")
-        .append($("<a>")
-            .addClass("modal-title")
-            .attr("href", "https://github.com/Deci8BelioS/Roto2Tools/")
-            .attr("target", "_blank")
-            .html('<img src="https://forocoches.com/foro/images/smilies/goofy.gif">&nbsp Roto2Tools &nbsp<img src="https://forocoches.com/foro/images/smilies/goofy.gif">')
-        )
-    )
-
     .append($("<div>")
         .addClass("modal-body")
         .append(tabList)
@@ -222,7 +243,6 @@ var modalContent = $("<div>")
             })
         )
     )
-
 
 var modal = $("<div>").addClass("modal fade")
     .attr("tabindex", "-1")
