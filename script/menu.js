@@ -61,7 +61,7 @@ var resaltarHilosInput = $("<textarea>")
     .attr("placeholder", "Agregar palabras a resaltar separadas por comas, ejemplo: palabra, palabra")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(resaltarHilos.join(", "))
-    .append(resaltarHilosInput);
+    .appendTo(resaltarHilosInput);
 
 // Contenido
 var tabPane2 = $("<div>")
@@ -77,7 +77,7 @@ const ocultarInput = $("<textarea>")
     .attr("placeholder", "Agregar palabras a ocultar separadas por comas, ejemplo: palabra, palabra")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(ocultarHilos.join(", "))
-    .append(ocultarInput);
+    .appendTo(ocultarInput);
 
 var tabPane3 = $("<div>")
     .addClass("tab-pane fade")
@@ -92,7 +92,7 @@ const ocultarContactosInput = $("<textarea>")
     .attr("placeholder", "Agregar usuarios para ocultar sus hilos separados por comas (sin el @), ejemplo: Pepe palotes, iliti")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(ocultarContactos.join(", "))
-    .append(ocultarContactosInput);
+    .appendTo(ocultarContactosInput);
 
 var tabPane4 = $("<div>")
     .addClass("tab-pane fade")
@@ -106,7 +106,7 @@ const resaltarMensajesContactosInput = $("<textarea>")
     .attr("placeholder", "Agregar usuarios para resaltar sus mensajes en los hilos separados por comas (sin el @), ejemplo: Pepe palotes, iliti")
     .css({ "min-height": "188px", "max-height": "320px" })
     .val(resaltarContactos.join(", "))
-    .append(resaltarMensajesContactosInput);
+    .appendTo(resaltarMensajesContactosInput);
 
 var tabPane5 = $("<div>")
     .addClass("tab-pane fade")
@@ -118,7 +118,7 @@ var tabContent5 = $("<div>")
 const acercaRoto2Tools = $("<div>")
     .addClass("form-control")
     .html("Aquí puedes agregar la información que quieras mostrar en la pestaña.")
-    .append(acercaRoto2Tools);
+    .appendTo(acercaRoto2Tools);
 
 var tabContent = $("<div>")
     .addClass("tab-content")
@@ -194,7 +194,7 @@ var tabList = $("<ul>")
 
 var modalContent = $("<div>")
     .addClass("modal-content")
-    
+
     .append($("<div>")
         .addClass("modal-body")
         .append(tabList)
