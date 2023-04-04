@@ -108,7 +108,14 @@ var tabContent5 = $("<div>")
 
 const acercaRoto2Tools = $("<div>")
   .addClass("tab-about")
-  .html("<strong>Versión instalada:</strong> 1.5.0d <a href='https://github.com/Deci8BelioS/Roto2Tools/' target='_blank'>Github Roto2Tools</a>")
+  .html('<div style="text-align: center;">\
+  <p>Script para Forocoches que oculta hilos o los resalta con las palabras añadidas por el usuario</p>\
+  <div style="text-align: right;">\
+    <strong><a href="https://github.com/Deci8BelioS/Roto2Tools/" target="_blank">Github Roto2Tools</a></strong>\
+    <br>\
+    <span><strong>Versión instalada:</strong> 1.5.0d</span>\
+  </div>\
+</div>')
   .css({ "color": "#fff", "margin-top": "10px" })
   .appendTo(tabContent5);
 
@@ -131,6 +138,11 @@ var tabList = $("<ul>")
       .attr("aria-controls", "opcion1")
       .attr("aria-selected", "true")
       .html("Resaltar hilos")
+      .css({
+        "color": "rgb(237, 212, 14)",
+        "font-weight": "bold",
+        "text-align": "center"
+      })
     )
   )
   .append($("<li>").addClass("nav-item")
@@ -143,6 +155,11 @@ var tabList = $("<ul>")
       .attr("aria-controls", "opcion2")
       .attr("aria-selected", "false")
       .html("Ocultar hilos")
+      .css({
+        "color": "rgb(253, 93, 77)",
+        "font-weight": "bold",
+        "text-align": "center"
+      })
     )
   )
   .append($("<li>").addClass("nav-item")
@@ -155,6 +172,11 @@ var tabList = $("<ul>")
       .attr("aria-controls", "opcion3")
       .attr("aria-selected", "false")
       .html("Ocultar usuarios")
+      .css({
+        "color": "rgb(255, 38, 38)",
+        "font-weight": "bold",
+        "text-align": "center"
+      })
     )
   )
   .append($("<li>")
@@ -168,6 +190,11 @@ var tabList = $("<ul>")
       .attr("aria-controls", "opcion4")
       .attr("aria-selected", "false")
       .html("Resaltar usuarios")
+      .css({
+        "color": "rgb(47, 199, 38)",
+        "font-weight": "bold",
+        "text-align": "center"
+      })
     )
   )
   .append($("<li>")
@@ -180,7 +207,12 @@ var tabList = $("<ul>")
       .attr("role", "tab")
       .attr("aria-controls", "opcion4")
       .attr("aria-selected", "false")
-      .html("Acerca de")
+      .html("Acerca de Roto2Tools")
+      .css({
+        "color": "rgb(255, 255, 255)",
+        "font-weight": "bold",
+        "text-align": "center"
+      })
     )
   );
 
@@ -251,8 +283,8 @@ var modal = $("<div>")
   .append($("<div>")
     .addClass("modal-dialog modal-dialog")
     .css({
-      "max-width": "40%",
-      "max-height": "40%"
+      "max-width": "auto",
+      "max-height": "auto"
     })
     .attr("role",
       "document")
