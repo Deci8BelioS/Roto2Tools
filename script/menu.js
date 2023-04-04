@@ -49,7 +49,7 @@ var tabContent1 = $("<div>")
 var resaltarHilosInput = $("<textarea>")
   .addClass("form-control")
   .attr("placeholder", "Agregar palabras a resaltar separadas por comas, ejemplo: palabra, palabra")
-  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px", "min-height": "188px", "max-height": "320px" })
+  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px" })
   .val(resaltarHilos.join(", "))
   .appendTo(tabContent1);
 
@@ -65,7 +65,7 @@ var tabContent2 = $("<div>")
 const ocultarInput = $("<textarea>")
   .addClass("form-control")
   .attr("placeholder", "Agregar palabras a ocultar separadas por comas, ejemplo: palabra, palabra")
-  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px", "min-height": "188px", "max-height": "320px" })
+  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px" })
   .val(ocultarHilos.join(", "))
   .appendTo(tabContent2);
 
@@ -80,7 +80,7 @@ var tabContent3 = $("<div>")
 const ocultarContactosInput = $("<textarea>")
   .addClass("form-control")
   .attr("placeholder", "Agregar usuarios para ocultar sus hilos separados por comas (sin el @), ejemplo: Pepe palotes, iliti")
-  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px", "min-height": "188px", "max-height": "320px" })
+  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px" })
   .val(ocultarContactos.join(", "))
   .appendTo(tabContent3);
 
@@ -94,7 +94,7 @@ var tabContent4 = $("<div>")
 const resaltarMensajesContactosInput = $("<textarea>")
   .addClass("form-control")
   .attr("placeholder", "Agregar usuarios para resaltar sus mensajes en los hilos separados por comas (sin el @), ejemplo: Pepe palotes, iliti")
-  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px", "min-height": "188px", "max-height": "320px" })
+  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px" })
   .val(resaltarContactos.join(", "))
   .appendTo(tabContent4);
 
