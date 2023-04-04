@@ -1989,35 +1989,6 @@ fieldset:disabled .btn {
     background-color: transparent
 }
 
-.btn-link {
-    font-weight: 400;
-    color: #0d6efd;
-    text-decoration: underline
-}
-
-.btn-link:hover {
-    color: #0a58ca
-}
-
-.btn-link.disabled,
-.btn-link:disabled {
-    color: #6c757d
-}
-
-.btn-group-lg>.btn,
-.btn-lg {
-    padding: .5rem 1rem;
-    font-size: 1.25rem;
-    border-radius: .3rem
-}
-
-.btn-group-sm>.btn,
-.btn-sm {
-    padding: .25rem .5rem;
-    font-size: .875rem;
-    border-radius: .2rem
-}
-
 .fade {
     transition: opacity .15s linear
 }
