@@ -1,3 +1,9 @@
+
+a:visited, body_avisited {
+    color: #ff5845;
+    text-decoration: none;
+}
+
 ol,
 ul {
     padding-left: 2rem
@@ -193,11 +199,10 @@ textarea {
 }
 
 .form-control:focus {
-    background-color: #3A3A3A;
+    background-color: rgb(58 58 58 / 60%);
     color: #fff;
-    border-color: #FD5D4D;
+    border-color: rgb(253 93 77 / 60%);
     outline: 0;
-    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25)
 }
 
 .form-control::-webkit-date-and-time-value {
@@ -205,12 +210,12 @@ textarea {
 }
 
 .form-control::-moz-placeholder {
-    color: #6c757d;
+    color: #B5B5B5;
     opacity: 1
 }
 
 .form-control::placeholder {
-    color: #6c757d;
+    color: #B5B5B5;
     opacity: 1
 }
 
