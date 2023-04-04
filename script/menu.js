@@ -114,7 +114,7 @@ const acercaRoto2Tools = $("<div>")
   <div style="text-align: right;">\
     <strong><a href="https://github.com/Deci8BelioS/Roto2Tools/" target="_blank">Github Roto2Tools</a></strong>\
     <br>\
-    <span><strong>Versión instalada:</strong> 1.5.0d</span>\
+    <span><strong>Versión instalada:</strong> 1.5.0b</span>\
   </div>\
 </div>')
   .css({ "color": "#fff", "margin-top": "10px" })
