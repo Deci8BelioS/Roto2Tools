@@ -65,7 +65,7 @@ var tabContent2 = $("<div>")
 const ocultarInput = $("<textarea>")
   .addClass("form-control")
   .attr("placeholder", "Agregar palabras a ocultar separadas por comas, ejemplo: palabra, palabra")
-  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px",  "margin-top": "10px", "min-height": "188px", "max-height": "320px" })
+  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px", "min-height": "188px", "max-height": "320px" })
   .val(ocultarHilos.join(", "))
   .appendTo(tabContent2);
 
@@ -80,7 +80,7 @@ var tabContent3 = $("<div>")
 const ocultarContactosInput = $("<textarea>")
   .addClass("form-control")
   .attr("placeholder", "Agregar usuarios para ocultar sus hilos separados por comas (sin el @), ejemplo: Pepe palotes, iliti")
-  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px",  "margin-top": "10px", "min-height": "188px", "max-height": "320px" })
+  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px", "min-height": "188px", "max-height": "320px" })
   .val(ocultarContactos.join(", "))
   .appendTo(tabContent3);
 
@@ -94,7 +94,7 @@ var tabContent4 = $("<div>")
 const resaltarMensajesContactosInput = $("<textarea>")
   .addClass("form-control")
   .attr("placeholder", "Agregar usuarios para resaltar sus mensajes en los hilos separados por comas (sin el @), ejemplo: Pepe palotes, iliti")
-  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px",  "margin-top": "10px", "min-height": "188px", "max-height": "320px" })
+  .css({ "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 6px", "margin-top": "10px", "min-height": "188px", "max-height": "320px" })
   .val(resaltarContactos.join(", "))
   .appendTo(tabContent4);
 
@@ -109,7 +109,7 @@ var tabContent5 = $("<div>")
 const acercaRoto2Tools = $("<div>")
   .addClass("tab-about")
   .html("<strong>Versión instalada:</strong> 1.5.0d")
-  .css({ "margin-top": "10px" })
+  .css({ "color": "#fff", "margin-top": "10px" })
   .appendTo(tabContent5);
 
 var tabContent = $("<div>")
@@ -187,6 +187,7 @@ var tabList = $("<ul>")
 var modalContent = $("<div>")
   .addClass("modal-content")
   .css({
+    "box-shadow": "rgba(0, 0, 0, 0.6) 0px 2px 4px",
     "overflow": "auto"
   })
   .append($("<div>")
