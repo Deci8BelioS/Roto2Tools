@@ -13,15 +13,6 @@ var menuBtn = $("<button>")
   .on("mousedown", function () { $(this).css({ boxShadow: "none", transform: "translateY(3px)" }); })
   .on("mouseup", function () { $(this).css({ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.6)", transform: "none" }); });
 
-// Inicializamos Tippy.js con el gatillo
-tippy(menuBtn[0], {
-  content: 'Haz clic para abrir las preferencias',
-  animation: 'scale',
-  interactive: true,
-  placement: 'bottom', // La ubicación donde se mostrará Tippy
-  arrow: true, // Mostrar una flecha en Tippy
-});
-
 // Insertar boton después del elemento "#searchform-desktop" si existe, de lo contrario no lo hará
 if (Roto2Tools.length > 0) {
   Roto2Tools.after(menuBtn);
@@ -53,7 +44,6 @@ var resaltarHilosInput = $("<textarea>")
   .val(resaltarHilos.join(", "))
   .appendTo(tabContent1);
 
-// Contenido
 var tabPane2 = $("<div>")
   .addClass("tab-pane fade")
   .attr("id", "opcion2")
@@ -359,17 +349,21 @@ guardarlistasBtn.on("click", function () {
     resaltarHilosInput.value = GM_getValue("resaltarHilos", []).join(", ");
     ocultarContactosInput.value = GM_getValue("ocultarContactos", []).join(", ");
     resaltarMensajesContactosInput.value = GM_getValue("resaltarContactos", []).join(", ");
-
-    // Establecer un temporizador para resetear la variable booleana después de x segundos
-    setTimeout(() => {
-      botonPulsado = false;
-    }, 5000);
   }
 });
 
-// Inicializamos Tippy.js con el gatillo
+// Tippy.js guardarlistasBtn
 tippy(guardarlistasBtn[0], {
   content: 'Haz clic para guardar las listas',
+  animation: 'scale',
+  interactive: true,
+  placement: 'bottom', // La ubicación donde se mostrará Tippy
+  arrow: true, // Mostrar una flecha en Tippy
+});
+
+// Tippy.js menuBtn
+tippy(menuBtn[0], {
+  content: 'Haz clic para abrir las preferencias',
   animation: 'scale',
   interactive: true,
   placement: 'bottom', // La ubicación donde se mostrará Tippy
