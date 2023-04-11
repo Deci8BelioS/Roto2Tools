@@ -138,7 +138,7 @@ if (elementosOcultos.length > 0) {
         content: 'Haz clic para mostrar/ocultar los hilos',
         animation: 'scale',
         interactive: true,
-        followCursor: true,
+        followCursor: false,
         followCursor: "horizontal",
         placement: 'bottom', // La ubicación donde se mostrará Tippy
         arrow: true, // Mostrar una flecha en Tippy
