@@ -23,8 +23,8 @@
 // @grant           GM_getResourceURL
 // @grant           GM_getMetadata
 // @run-at          document-end
-// @require         https://code.jquery.com/jquery-3.6.4.min.js
-// @require         https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.min.js
+// @require         https://code.jquery.com/jquery-3.7.1.min.js
+// @require         https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.min.js
 // @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/require/toastr.js
 // @require         https://unpkg.com/@popperjs/core@2
 // @require         https://unpkg.com/tippy.js@6
