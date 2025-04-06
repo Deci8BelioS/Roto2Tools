@@ -23,13 +23,13 @@
 // @run-at          document-end
 // @require         https://code.jquery.com/jquery-3.7.1.min.js
 // @require         https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.min.js
-// @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/main/resources/require/toastr.js
+// @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/require/toastr.js
 // @require         https://unpkg.com/@popperjs/core@2
 // @require         https://unpkg.com/tippy.js@6
 // --- Modulos Roto2Tools ---
-// @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/script/utils.js
-// @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/script/menu.js
-// @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/script/processing.js
+// @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev/script/utils.js
+// @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev/script/menu.js
+// @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev/script/processing.js
 // --- Recursos CSS ---
 // @resource        toastrcss  https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/require/toastr.min.css
 // @resource        tippycss https://unpkg.com/tippy.js@6/dist/tippy.css
