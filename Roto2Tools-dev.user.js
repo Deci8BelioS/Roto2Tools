@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/Roto2Tools-dev.user.js
-// @version         1.6.0d
+// @version         1.6.1d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -35,6 +35,7 @@
 // @resource        tippycss https://unpkg.com/tippy.js@6/dist/tippy.css
 // @resource        scalecss https://unpkg.com/tippy.js@6/animations/scale.css
 // @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/require/bootstrapcss.css
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/require/Roto2Toolscss.css
 // ==/UserScript==
 
 (function(window, $, toastr, Roto2ToolsUtils, Roto2ToolsMenu, Roto2ToolsProcessing) {
@@ -45,6 +46,7 @@
     if (!Roto2ToolsMenu) { console.error("Roto2Tools: Módulo Menu no cargado."); return; }
     if (!Roto2ToolsProcessing) { console.error("Roto2Tools: Módulo Processing no cargado."); return; }
     try {
+        const Roto2Toolscss = GM_getResourceText("Roto2Toolscss"); GM_addStyle(Roto2Toolscss);
         const bootstrapcss = GM_getResourceText("bootstrapcss"); GM_addStyle(bootstrapcss);
         const toastrcss = GM_getResourceText("toastrcss"); GM_addStyle(toastrcss);
         const tippycss = GM_getResourceText("tippycss"); GM_addStyle(tippycss);
