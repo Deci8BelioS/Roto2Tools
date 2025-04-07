@@ -13,9 +13,6 @@
 * Adaptar el foro a la pantalla para no tener espacios vacios a los lados
 * Exportar e Importar las listas
 
-## Notas
-1 - Para guardar los contactos que tienes guardados en forocoches al script deberás ir a tu perfil y <a href="https://forocoches.com/foro/profile.php?do=buddylist">editar lista de contactos</a>, una vez allí aparecerá un boton al lado del botón de Roto2Tools que se llama Contactos, se abrirá una ventana y dandole a Guardar Contactos leera la lista que aparece en la pagina de contactos y los guardará, para saber si se han guardado recargamos la pagina y volvemos a abrir el menu de contactos y veremos la lista guardada.
-
 ## Capturas
 ![Captura][5]
 
