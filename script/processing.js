@@ -6,7 +6,6 @@
 // @author       DeciBelioS
 // @grant        none
 // ==/UserScript==
-// NOTE: This header is only for identification/clarity. NOT needed when used via @require.
 
 (function(window, $, tippy, Utils) {
     'use strict';
@@ -135,7 +134,6 @@
                         }
                     }
                 });
-
                 threadContainer.appendChild(contenedorOcultos);
                 threadContainer.appendChild(spoilerBtn);
             }
@@ -179,6 +177,21 @@
                             tippy(spoiler, { content: "Haz clic para mostrar/ocultar el mensaje", animation: "scale", interactive: true, placement: "bottom", arrow: true });
                             const separatorLargeElement = editcontacto.querySelector("separator-large");
                             if (separatorLargeElement) separatorLargeElement.remove();
+                        }
+                    }
+                });
+                document.querySelectorAll('.quote').forEach((quoteElem) => {
+                    const boldAuthor = quoteElem.querySelector('div > div:first-child b');
+                    if (boldAuthor && !quoteElem.classList.contains('processed-quote')) {
+                        const authorName = boldAuthor.innerText.trim();
+                        if (regexOcultarUnion.test(authorName)) {
+                            quoteElem.classList.add('processed-quote');
+                            quoteElem.innerHTML = `
+                                <div style="padding: 8px; background: rgba(50, 20, 20, 0.4); border: 1px solid rgba(255, 80, 80, 0.2); border-radius: 6px; color: #aaa; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-user-slash" style="color: #ff5845;"></i>
+                                    <span>Cita de <strong>${authorName}</strong> oculta por filtro de usuario.</span>
+                                </div>
+                            `;
                         }
                     }
                 });

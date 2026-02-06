@@ -6,8 +6,6 @@
 // @author       DeciBelioS
 // @grant        none
 // ==/UserScript==
-// NOTE: This header is only for identification/clarity if you were to use it standalone.
-// It's NOT needed when used via @require in the main script.
 
 (function(window, $) {
     'use strict';
@@ -34,9 +32,6 @@
             if (!$button || $button.length === 0) return;
             $button.on("mousedown", function () {$(this).css({ boxShadow: "none", transform: "translateY(3px)" });}).on("mouseup", function () {$(this).css({ boxShadow: "0px 2px 4px #000000", transform: "none" });});
         },
-        createStyledTextarea: function(placeholder, valueArray) {
-            return $("<textarea>").addClass("form-control").attr("placeholder", placeholder).css({ "box-shadow": "0px 2px 4px #000000", "margin-top": "10px" }).val(valueArray.join(", "));
-        },
         getRegexcontacto: function(userInputcontacto, wholeWordscontacto) {
             const names = userInputcontacto.split(',').map(name => name.trim()).filter(name => name.length > 0);
             if (names.length === 0) { return new RegExp('(?!)'); }
@@ -50,6 +45,28 @@
             if (nextHr && nextHr.tagName === "SEPARATOR" && hr.getBoundingClientRect().bottom === nextHr.getBoundingClientRect().top) { nextHr.remove();
                 if (hr.nextElementSibling) {this.eliminarAdyacentes(hr);}
             }
+        },
+        fetchOnlineList: function(type) {
+            return new Promise((resolve, reject) => {
+                const url = type === 'buddy' ? '/foro/profile.php?do=buddylist&nojs=1' : '/foro/profile.php?do=ignorelist&nojs=1';
+                $.get(url)
+                    .done(function(data) {
+                        try {
+                            const doc = new DOMParser().parseFromString(data, "text/html");
+                            let anchors = [];
+                            if (type === 'buddy') {
+                                anchors = doc.querySelectorAll('div[id^="buddylist_user"] a[href*="member.php"]');
+                            } else {
+                                anchors = doc.querySelectorAll('#ignorelist li a[href*="member.php"]');
+                            }
+                            const users = Array.from(anchors)
+                                .map(a => a.textContent.trim())
+                                .filter(Boolean);
+                            resolve(users);
+                        } catch (e) { reject(e); }
+                    })
+                    .fail((err) => reject(err));
+            });
         }
     };
 })(window, window.jQuery);
