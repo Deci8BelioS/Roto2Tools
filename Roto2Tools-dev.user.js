@@ -45,9 +45,9 @@
         addGlobalStyle('https://unpkg.com/tippy.js@6/dist/tippy.css');
         addGlobalStyle('https://unpkg.com/tippy.js@6/animations/scale.css');
         addGlobalStyle('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
-        addGlobalStyle('https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/require/toastr.min.css');
-        addGlobalStyle('https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/require/bootstrapcss.css');
-        addGlobalStyle('https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/require/Roto2Toolscss.css');
+        addGlobalStyle('https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-1/resources/require/toastr.min.css');
+        addGlobalStyle('https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-1/resources/require/bootstrapcss.css');
+        addGlobalStyle('https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-1/resources/require/Roto2Toolscss.css');
     } catch (e) {
         console.error("Roto2Tools: Error al cargar recursos CSS.", e);
         alert("Roto2Tools: No se pudieron cargar algunos estilos. La apariencia puede ser incorrecta.");
