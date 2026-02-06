@@ -31,11 +31,11 @@
 // @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev/script/menu.js
 // @require         https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev/script/processing.js
 // --- Recursos CSS ---
-// @resource        toastrcss  https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/require/toastr.min.css
+// @resource        toastrcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-1/resources/require/toastr.min.css
 // @resource        tippycss https://unpkg.com/tippy.js@6/dist/tippy.css
 // @resource        scalecss https://unpkg.com/tippy.js@6/animations/scale.css
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/require/bootstrapcss.css
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/require/Roto2Toolscss.css
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-1/resources/require/bootstrapcss.css
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-1/resources/require/Roto2Toolscss.css
 // ==/UserScript==
 
 (function(window, $, toastr, Roto2ToolsUtils, Roto2ToolsMenu, Roto2ToolsProcessing) {
