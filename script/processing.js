@@ -21,7 +21,7 @@
             elementos.forEach((el) => {
                 const tituloSpan = el.querySelector('[id*="thread_title_"]>span');
                 if (!tituloSpan) return;
-                const titleLink = el.querySelector('.without-top-corners > div > div > div > div > [href^="showthread.php"]');
+                const titleLink = Array.from(el.querySelectorAll('a')).find(a => a.innerText.trim().startsWith('@'));
                 const textTitle = titleLink ? titleLink.innerText.toLowerCase() : "";
                 const textoTituloSpan = tituloSpan.innerText.toLowerCase();
                 let originalTituloHtml = tituloSpan.innerHTML;
@@ -145,20 +145,19 @@
             document.head.appendChild(userHighlightStyle);
             if (resaltarContactos.length > 0) {
                 const regexResaltarUnion = Utils.getRegexcontacto(resaltarContactos.join(','), true);
-                document.querySelectorAll(`[id*="postmenu_"] h2:not(.resaltado)`).forEach((elemAmi) => {
-                    if (regexResaltarUnion.test(elemAmi.innerText.toLowerCase())) {
-                        const editcontacto = elemAmi.closest('[id*="edit"]');
-                        if (editcontacto) {
-                            const sectioncontacto = editcontacto.querySelector("section");
-                            if (sectioncontacto) sectioncontacto.classList.add("resaltado");
-                        }
+                document.querySelectorAll(`[id*="postmenu_"] h2:not(.resaltado)`).forEach((editcontacto) => {
+                    const elemAmi = Array.from(editcontacto.querySelectorAll('a')).find(a => a.innerText.trim() !== "");
+                    if (elemAmi && !elemAmi.classList.contains('resaltado') && regexResaltarUnion.test(elemAmi.innerText.toLowerCase())) {
+                        elemAmi.classList.add('resaltado');
+                        const sectioncontacto = editcontacto.querySelector("section");
+                        if (sectioncontacto) sectioncontacto.classList.add("resaltado");
                     }
                 });
             }
             if (ocultarContactos.length > 0) {
                 const regexOcultarUnion = Utils.getRegexcontacto(ocultarContactos.join(','), true);
                 document.querySelectorAll(`[id*="edit"]:not(.oculto)`).forEach((editcontacto) => {
-                    const postmenuElem = editcontacto.querySelector(':scope [id*="postmenu_"] h2') || editcontacto.querySelector(':scope .without-top-corners');
+                    const postmenuElem = Array.from(editcontacto.querySelectorAll('a')).find(a => a.innerText.trim() !== "");
                     if (postmenuElem && regexOcultarUnion.test(postmenuElem.innerText.toLowerCase())) {
                         const sectioncontacto = editcontacto.querySelector("section");
                         if (sectioncontacto && !sectioncontacto.classList.contains('oculto')) {
