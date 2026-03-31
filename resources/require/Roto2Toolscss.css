@@ -636,3 +636,28 @@ details.spoiler-quote > summary {
 .rt2-thread-title-white {
     color: #ffffff;
 }
+.rt2-about-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+.rt2-about-title {
+    font-size: 1.8em;
+    color: #fff;
+    margin: 0;
+}
+.rt2-about-gh-btn {
+    color: #ffffff!important;
+    margin-top: 12px;
+    text-decoration: none;
+    background-color: #555555cc;
+}
+.rt2-about-sep {
+    border-color: #ffffff1a;
+    margin: 20px 0;
+}
+.rt2-about-backup-title {
+    color: #fff;
+    margin-bottom: 8px;
+}

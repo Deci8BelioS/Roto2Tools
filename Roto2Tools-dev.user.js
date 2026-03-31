@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.0d
+// @version         1.8.1d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -150,8 +150,7 @@
             delBtn.title = tab === 'history' ? 'Quitar del historial' : 'Quitar de favoritos';
             delBtn.addEventListener('click', () => {
                 if (tab === 'history') {
-                    let hist = GM_getValue('rt2_history', []);
-                    GM_setValue('rt2_history', hist.filter(h => h.id !== item.id));
+                    GM_setValue('rt2_history', GM_getValue('rt2_history', []).filter(h => h.id !== item.id));
                 } else {
                     setFavorites(getFavorites().filter(f => f.id !== item.id));
                 }
@@ -224,17 +223,6 @@
         document.addEventListener('click', () => { dropdown.classList.remove('visible'); });
         window.addEventListener('resize', () => { if (dropdown.classList.contains('visible')) positionDropdown(); });
         window.addEventListener('scroll', () => { if (dropdown.classList.contains('visible')) positionDropdown(); }, true);
-        return {
-            toggle: () => {
-                if (dropdown.classList.contains('visible')) {
-                    dropdown.classList.remove('visible');
-                } else {
-                    renderDropdown(currentTab);
-                    dropdown.classList.add('visible');
-                    positionDropdown();
-                }
-            }
-        };
     }
     function injectFavoriteButtonInThread() {
         const params = new URLSearchParams(window.location.search);
@@ -392,11 +380,111 @@
             const ocultarHilosComp = createTagInputComponent('Ocultar Hilos', 'Añadir palabra...', initialOcultarHilos);
             const ocultarContactosComp = createTagInputComponent('Ocultar Usuarios', 'Añadir usuario...', initialOcultarContactos, 'ignore');
             const resaltarContactosComp = createTagInputComponent('Resaltar Usuarios', 'Añadir usuario...', initialResaltarContactos, 'buddy');
+            function createAboutSection() {
+                const element = document.createElement('div');
+                element.className = 'static-content-section';
+                const versionEl = document.createElement('p');
+                versionEl.className = 'about-version';
+                versionEl.innerHTML = `<i class="fa-solid fa-code-branch"></i> Versión: <strong>${scriptVersion || '—'}</strong>`;
+                element.appendChild(versionEl);
+                const authorEl = document.createElement('p');
+                authorEl.className = 'about-version';
+                authorEl.innerHTML = `<i class="fa-solid fa-user"></i> Autor: <strong>DeciBelioS</strong>`;
+                element.appendChild(authorEl);
+                const ghLink = document.createElement('a');
+                ghLink.href = 'https://github.com/Deci8BelioS/Roto2Tools/';
+                ghLink.target = '_blank';
+                ghLink.rel = 'noopener noreferrer';
+                ghLink.className = 'rt2-button rt2-button-export rt2-about-gh-btn';
+                ghLink.innerHTML = '<i class="fa-brands fa-github"></i> Ver en GitHub';
+                element.appendChild(ghLink);
+                const separator = document.createElement('hr');
+                separator.className = 'rt2-about-sep';
+                element.appendChild(separator);
+                const backupTitle = document.createElement('h3');
+                backupTitle.className = 'rt2-about-backup-title';
+                backupTitle.innerHTML = '<i class="fa-solid fa-database"></i> Backup de listas';
+                element.appendChild(backupTitle);
+                const backupDesc = document.createElement('p');
+                backupDesc.textContent = 'Exporta todas tus listas y favoritos a un archivo JSON o importa una copia de seguridad anterior.';
+                element.appendChild(backupDesc);
+                const backupBtns = document.createElement('div');
+                backupBtns.className = 'backup-buttons';
+                const exportBtn = document.createElement('button');
+                exportBtn.className = 'rt2-button rt2-button-export';
+                exportBtn.innerHTML = '<i class="fa-solid fa-file-export"></i> Exportar backup';
+                exportBtn.addEventListener('click', () => {
+                    const data = {
+                        resaltarHilos: resaltarHilosComp.getValues(),
+                        ocultarHilos: ocultarHilosComp.getValues(),
+                        resaltarContactos: resaltarContactosComp.getValues(),
+                        ocultarContactos: ocultarContactosComp.getValues(),
+                        favoritos: GM_getValue('rt2_favorites', [])
+                    };
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `roto2tools-backup-${new Date().toISOString().slice(0, 10)}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    Roto2ToolsUtils.showToast('success', 'Backup exportado correctamente.', 'Roto2Tools');
+                });
+                const importLabel = document.createElement('label');
+                importLabel.className = 'rt2-button rt2-button-import';
+                importLabel.innerHTML = '<i class="fa-solid fa-file-import"></i> Importar backup';
+                importLabel.style.cursor = 'pointer';
+                const importInput = document.createElement('input');
+                importInput.type = 'file';
+                importInput.accept = '.json';
+                importInput.style.display = 'none';
+                importInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        try {
+                            const parsed = JSON.parse(ev.target.result);
+                            const listKeys = ['resaltarHilos', 'ocultarHilos', 'resaltarContactos', 'ocultarContactos'];
+                            let ok = false;
+                            listKeys.forEach(k => {
+                                if (Array.isArray(parsed[k])) {
+                                    ok = true;
+                                    if (k === 'resaltarHilos') resaltarHilosComp.setValues(parsed[k]);
+                                    if (k === 'ocultarHilos') ocultarHilosComp.setValues(parsed[k]);
+                                    if (k === 'resaltarContactos') resaltarContactosComp.setValues(parsed[k]);
+                                    if (k === 'ocultarContactos') ocultarContactosComp.setValues(parsed[k]);
+                                }
+                            });
+                            if (Array.isArray(parsed.favoritos)) {
+                                ok = true;
+                                GM_setValue('rt2_favorites', parsed.favoritos);
+                            }
+                            if (ok) {
+                                Roto2ToolsUtils.showToast('success', 'Backup importado. Guarda para aplicar los cambios.', 'Roto2Tools');
+                            } else {
+                                Roto2ToolsUtils.showToast('error', 'Archivo JSON no válido.', 'Roto2Tools');
+                            }
+                        } catch (err) {
+                            Roto2ToolsUtils.showToast('error', 'Error al leer el archivo.', 'Roto2Tools');
+                        }
+                        importInput.value = '';
+                    };
+                    reader.readAsText(file);
+                });
+                importLabel.appendChild(importInput);
+                backupBtns.appendChild(exportBtn);
+                backupBtns.appendChild(importLabel);
+                element.appendChild(backupBtns);
+                return { element };
+            }
+            const aboutSection = createAboutSection();
             const sectionsConfig = [
                 { id: 'resaltar-hilos', title: 'Resaltar Hilos', icon: 'fa-solid fa-star', content: resaltarHilosComp.element, color: '#EDD40E', active: true },
                 { id: 'ocultar-hilos', title: 'Ocultar Hilos', icon: 'fa-solid fa-eye-slash', content: ocultarHilosComp.element, color: '#FD5D4D' },
                 { id: 'resaltar-users', title: 'Resaltar Usuarios', icon: 'fa-solid fa-user-check', content: resaltarContactosComp.element, color: '#2FC726' },
                 { id: 'ocultar-users', title: 'Ocultar Usuarios', icon: 'fa-solid fa-user-slash', content: ocultarContactosComp.element, color: '#FF2626' },
+                { id: 'acerca-de', title: 'Acerca de', icon: 'fa-solid fa-circle-info', content: aboutSection.element, color: '#589cfc' },
             ];
             const modalElement = document.createElement('div');
             modalElement.className = 'modal fade';
