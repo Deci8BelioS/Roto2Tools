@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.2d
+// @version         1.8.3d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -20,56 +20,71 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.1
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.1
-// @resource        toastrcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.1
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.3d
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.3d
+// @resource        toastrcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.3d
 // ==/UserScript==
 (function () {
     'use strict';
+    const COLORS = {
+        hideContact: '#FF2626',
+        highlightContact: '#2FC726',
+        highlightThread: '#EDD40E',
+        hideThread: '#FD5D4D',
+        info: '#589cfc',
+    };
+    function applyAccentGroups(str) {
+        return str
+            .replace(/[aáà]/gi, '[aáà]')
+            .replace(/[eéè]/gi, '[eéè]')
+            .replace(/[iíï]/gi, '[iíï]')
+            .replace(/[oóò]/gi, '[oóò]')
+            .replace(/[uúü]/gi, '[uúü]');
+    }
     const Roto2ToolsUtils = {
-        getRegex: function (userInput, isRegex, wholeWords) {
+        getRegex(userInput, isRegex, wholeWords = true) {
             if (isRegex) return new RegExp(userInput, 'i');
-            let escapedInput = userInput.replace(/[-[\]\/{}()*+?.\\\^$|]/g, '\\$&');
-            escapedInput = escapedInput
-                .replace(/[aáà]/gi, '[aáà]').replace(/[eéè]/gi, '[eéè]')
-                .replace(/[iíï]/gi, '[iíï]').replace(/[oóò]/gi, '[oóò]')
-                .replace(/[uúü]/gi, '[uúü]')
-                .replace(/[ ]*[,]+[ ]*$/, '').replace(/[ ]*[,]+[ ]*/g, '|');
-            const corePattern = `(${escapedInput})`;
-            let regexString = (typeof wholeWords === 'undefined' || wholeWords)
-                ? `(?<!\\w)${corePattern}(?!\\w)`
-                : corePattern;
-            try { return new RegExp(regexString, 'i'); } catch (e) { return new RegExp('(?!)'); }
+            let escaped = userInput.replace(/[-[\]\\/{}()*+?.\\\^$|]/g, '\\$&');
+            escaped = applyAccentGroups(escaped)
+                .replace(/[ ]*[,]+[ ]*$/, '')
+                .replace(/[ ]*[,]+[ ]*/g, '|');
+            const core = `(${escaped})`;
+            const pattern = wholeWords ? `(?<!\\w)${core}(?!\\w)` : core;
+            try {
+                return new RegExp(pattern, 'i');
+            } catch {
+                return new RegExp('(?!)');
+            }
         },
-        getRegexcontacto: function (userInputcontacto, wholeWordscontacto) {
-            const names = userInputcontacto.split(',').map(n => n.trim()).filter(n => n.length > 0);
+        getRegexContacto(input, wholeWords = false) {
+            const names = input.split(',').map(n => n.trim()).filter(Boolean);
             if (names.length === 0) return new RegExp('(?!)');
-            const escapedNames = names.map(name => {
-                let escaped = name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-                return escaped
-                    .replace(/[aáà]/gi, '[aáà]').replace(/[eéè]/gi, '[eéè]')
-                    .replace(/[iíï]/gi, '[iíï]').replace(/[oóò]/gi, '[oóò]')
-                    .replace(/[uúü]/gi, '[uúü]');
-            });
-            let regexString = escapedNames.join('|');
-            if (wholeWordscontacto) regexString = `\\b(${regexString})\\b`;
-            return new RegExp(regexString, 'i');
+            const parts = names.map(name =>
+                applyAccentGroups(name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'))
+            );
+            const joined = parts.join('|');
+            const pattern = wholeWords ? `\\b(${joined})\\b` : joined;
+            return new RegExp(pattern, 'i');
         },
-        eliminarAdyacentes: function (hr) {
-            let nextHr = hr.nextElementSibling;
-            if (nextHr && nextHr.tagName === 'SEPARATOR' && hr.getBoundingClientRect().bottom === nextHr.getBoundingClientRect().top) {
-                nextHr.remove();
+        eliminarAdyacentes(hr) {
+            const next = hr.nextElementSibling;
+            if (next?.tagName === 'SEPARATOR' &&
+                hr.getBoundingClientRect().bottom === next.getBoundingClientRect().top) {
+                next.remove();
                 if (hr.nextElementSibling) this.eliminarAdyacentes(hr);
             }
         },
-        applyButtonInteractionEffects: function (btn) {
+        applyButtonInteractionEffects(btn) {
             if (!btn) return;
-            btn.addEventListener('mousedown', () => { btn.style.boxShadow = 'none'; btn.style.transform = 'translateY(3px)'; });
-            btn.addEventListener('mouseup', () => { btn.style.boxShadow = '0px 2px 4px #000000'; btn.style.transform = 'none'; });
-            btn.addEventListener('mouseleave', () => { btn.style.boxShadow = '0px 2px 4px #000000'; btn.style.transform = 'none'; });
+            const SHADOW = '0px 2px 4px #000000';
+            btn.addEventListener('mousedown', () => { btn.style.boxShadow = 'none';  btn.style.transform = 'translateY(3px)'; });
+            btn.addEventListener('mouseup', () => { btn.style.boxShadow = SHADOW;  btn.style.transform = 'none'; });
+            btn.addEventListener('mouseleave', () => { btn.style.boxShadow = SHADOW;  btn.style.transform = 'none'; });
         },
-        applyTooltip: function (el, content) { if (el) el.title = content; },
-        showToast: function (type, msg, title) {
+        applyTooltip(el, content) {
+            if (el) el.title = content;
+        },
+        showToast(type, msg, title) {
             let container = document.getElementById('rt2-toast-container');
             if (!container) {
                 container = document.createElement('div');
@@ -87,35 +102,42 @@
                 toast.style.opacity = '1';
                 requestAnimationFrame(() => { bar.style.width = '0%'; });
             });
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 350); }, 4000);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 350);
+            }, 4000);
         },
-        fetchOnlineList: async function (type) {
-            const url = type === 'buddy' ? '/foro/profile.php?do=buddylist&nojs=1' : '/foro/profile.php?do=ignorelist&nojs=1';
+        async fetchOnlineList(type) {
+            const url = type === 'buddy'
+                ? '/foro/profile.php?do=buddylist&nojs=1'
+                : '/foro/profile.php?do=ignorelist&nojs=1';
             const response = await fetch(url);
             const text = await response.text();
             const doc = new DOMParser().parseFromString(text, 'text/html');
-            const anchors = type === 'buddy'
-                ? doc.querySelectorAll('div[id^="buddylist_user"] a[href*="member.php"]')
-                : doc.querySelectorAll('#ignorelist li a[href*="member.php"]');
-            return Array.from(anchors).map(a => a.textContent.trim()).filter(Boolean);
+            const selector = type === 'buddy'
+                ? 'div[id^="buddylist_user"] a[href*="member.php"]'
+                : '#ignorelist li a[href*="member.php"]';
+            return Array.from(doc.querySelectorAll(selector))
+                .map(a => a.textContent.trim())
+                .filter(Boolean);
         },
-        getRealThreadData: function() {
+        getRealThreadData() {
             const params = new URLSearchParams(window.location.search);
             let id = params.get('t');
             let type = 't';
             if (!id) {
-                const copyLink = document.querySelector('a[onclick*="showthread.php?t="]');
-                if (copyLink) {
-                    const match = copyLink.getAttribute('onclick').match(/[?&]t=(\d+)/);
-                    if (match) { id = match[1]; type = 't'; }
-                }
+                const match = document
+                    .querySelector('a[onclick*="showthread.php?t="]')
+                    ?.getAttribute('onclick')
+                    ?.match(/[?&]t=(\d+)/);
+                if (match) { id = match[1]; }
             }
             if (!id) {
                 id = params.get('p');
                 type = 'p';
             }
             return id ? { id, type } : null;
-        }
+        },
     };
     function trackHistory() {
         const threadData = Roto2ToolsUtils.getRealThreadData();
@@ -123,9 +145,8 @@
         const { id, type } = threadData;
         let title = document.title.replace(' - ForoCoches', '').trim();
         const h1 = document.querySelector('.pull-left > h1') || document.querySelector('h1');
-        if (h1 && h1.innerText) title = h1.innerText.trim();
-        let history = GM_getValue('rt2_history', []);
-        history = history.filter(item => item.id !== id);
+        if (h1?.innerText) title = h1.innerText.trim();
+        let history = GM_getValue('rt2_history', []).filter(item => item.id !== id);
         history.unshift({ id, title, type, date: new Date().toLocaleString() });
         if (history.length > 100) history.pop();
         GM_setValue('rt2_history', history);
@@ -134,36 +155,31 @@
         const dropdown = document.createElement('div');
         dropdown.id = 'rt2-dropdown';
         document.body.appendChild(dropdown);
-        dropdown.addEventListener('click', (e) => { e.stopPropagation(); });
+        dropdown.addEventListener('click', e => e.stopPropagation());
+        const getFavorites = () => GM_getValue('rt2_favorites', []);
+        const setFavorites = favs => GM_setValue('rt2_favorites', favs);
+        const isFav = id => getFavorites().some(f => f.id === id);
+        function toggleFav(item) {
+            const favs = isFav(item.id)
+                ? getFavorites().filter(f => f.id !== item.id)
+                : [{ id: item.id, title: item.title, type: item.type || 't' }, ...getFavorites()];
+            setFavorites(favs);
+        }
         function positionDropdown() {
             const rect = anchorEl.getBoundingClientRect();
-            dropdown.style.top = (rect.bottom + window.scrollY + 6) + 'px';
-            const left = rect.right + window.scrollX - dropdown.offsetWidth;
-            dropdown.style.left = Math.max(4, left) + 'px';
-        }
-        function getFavorites() { return GM_getValue('rt2_favorites', []); }
-        function setFavorites(f) { GM_setValue('rt2_favorites', f); }
-        function isFav(id) { return getFavorites().some(f => f.id === id); }
-        function toggleFav(item) {
-            let favs = getFavorites();
-            if (isFav(item.id)) {
-                favs = favs.filter(f => f.id !== item.id);
-            } else {
-                favs.unshift({ id: item.id, title: item.title, type: item.type || 't' });
-            }
-            setFavorites(favs);
+            dropdown.style.top = `${rect.bottom + window.scrollY + 6}px`;
+            dropdown.style.left = `${Math.max(4, rect.right + window.scrollX - dropdown.offsetWidth)}px`;
         }
         function buildItem(item, tab) {
             const row = document.createElement('div');
             row.className = 'rt2-dd-item';
             const favBtn = document.createElement('button');
-            favBtn.className = 'rt2-dd-item-fav' + (isFav(item.id) ? ' active' : '');
+            favBtn.className = `rt2-dd-item-fav${isFav(item.id) ? ' active' : ''}`;
             favBtn.innerHTML = '★';
             favBtn.title = isFav(item.id) ? 'Quitar de favoritos' : 'Añadir a favoritos';
             favBtn.addEventListener('click', () => { toggleFav(item); renderDropdown(currentTab); });
             const link = document.createElement('a');
-            const paramType = item.type || 't';
-            link.href = `/foro/showthread.php?${paramType}=${item.id}`;
+            link.href = `/foro/showthread.php?${item.type || 't'}=${item.id}`;
             link.textContent = item.title;
             link.title = item.title;
             const delBtn = document.createElement('button');
@@ -178,8 +194,7 @@
                 }
                 renderDropdown(currentTab);
             });
-            row.appendChild(favBtn);
-            row.appendChild(link);
+            row.append(favBtn, link);
             if (item.date) {
                 const dateEl = document.createElement('span');
                 dateEl.className = 'rt2-dd-item-date';
@@ -195,15 +210,15 @@
             dropdown.innerHTML = '';
             const tabsBar = document.createElement('div');
             tabsBar.className = 'rt2-dd-tabs';
-            ['history', 'favorites'].forEach(t => {
+            for (const t of ['history', 'favorites']) {
                 const btn = document.createElement('button');
-                btn.className = 'rt2-dd-tab' + (t === tab ? ' active' : '');
+                btn.className = `rt2-dd-tab${t === tab ? ' active' : ''}`;
                 btn.innerHTML = t === 'history'
                     ? '<i class="fa-solid fa-clock-rotate-left"></i> Historial'
                     : '<i class="fa-solid fa-star"></i> Favoritos';
                 btn.addEventListener('click', () => renderDropdown(t));
                 tabsBar.appendChild(btn);
-            });
+            }
             dropdown.appendChild(tabsBar);
             const panel = document.createElement('div');
             panel.className = 'rt2-dd-panel active';
@@ -211,7 +226,9 @@
             if (items.length === 0) {
                 const empty = document.createElement('div');
                 empty.className = 'rt2-dd-empty';
-                empty.textContent = tab === 'history' ? 'No hay hilos en el historial.' : 'No tienes favoritos guardados.';
+                empty.textContent = tab === 'history'
+                    ? 'No hay hilos en el historial.'
+                    : 'No tienes favoritos guardados.';
                 panel.appendChild(empty);
             } else {
                 items.forEach(item => panel.appendChild(buildItem(item, tab)));
@@ -220,19 +237,21 @@
             const footer = document.createElement('div');
             footer.className = 'rt2-dd-footer';
             const clearBtn = document.createElement('button');
-            clearBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Borrar ' + (tab === 'history' ? 'historial' : 'favoritos');
+            const label = tab === 'history' ? 'historial' : 'favoritos';
+            clearBtn.innerHTML = `<i class="fa-solid fa-trash"></i> Borrar ${label}`;
             clearBtn.addEventListener('click', () => {
                 if (confirm(`¿Borrar ${tab === 'history' ? 'el historial' : 'todos los favoritos'}?`)) {
                     tab === 'history' ? GM_setValue('rt2_history', []) : setFavorites([]);
                     renderDropdown(tab);
-                    Roto2ToolsUtils.showToast('info', `${tab === 'history' ? 'Historial' : 'Favoritos'} borrado.`, 'Roto2Tools');
+                    Roto2ToolsUtils.showToast('info',
+                        `${tab === 'history' ? 'Historial' : 'Favoritos'} borrado.`, 'Roto2Tools');
                 }
             });
             footer.appendChild(clearBtn);
             dropdown.appendChild(footer);
             requestAnimationFrame(positionDropdown);
         }
-        anchorEl.addEventListener('click', (e) => {
+        anchorEl.addEventListener('click', e => {
             e.stopPropagation();
             if (dropdown.classList.contains('visible')) {
                 dropdown.classList.remove('visible');
@@ -242,7 +261,7 @@
                 positionDropdown();
             }
         });
-        document.addEventListener('click', () => { dropdown.classList.remove('visible'); });
+        document.addEventListener('click', () => dropdown.classList.remove('visible'));
         window.addEventListener('resize', () => { if (dropdown.classList.contains('visible')) positionDropdown(); });
         window.addEventListener('scroll', () => { if (dropdown.classList.contains('visible')) positionDropdown(); }, true);
     }
@@ -278,16 +297,19 @@
             }
             GM_setValue('rt2_favorites', f);
         });
-        if (h1.parentElement && h1.parentElement.style.display === 'flex') {
+        if (h1.parentElement?.style.display === 'flex') {
             h1.parentElement.appendChild(star);
         } else {
             h1.parentNode.insertBefore(star, h1.nextSibling);
         }
     }
     const Roto2ToolsMenu = {
-        create: function (options) {
-            const { initialResaltarHilos, initialOcultarHilos, initialResaltarContactos, initialOcultarContactos, onSave, scriptVersion } = options;
-            const Roto2ToolsContainer = document.querySelector('#searchform-desktop');
+        create(options) {
+            const {
+                initialResaltarHilos, initialOcultarHilos,
+                initialResaltarContactos, initialOcultarContactos,
+                onSave, scriptVersion,
+            } = options;
             const menuBtn = document.createElement('button');
             menuBtn.id = 'rt2-menu-btn';
             menuBtn.className = 'rt2-main-button';
@@ -301,45 +323,55 @@
             Roto2ToolsUtils.applyButtonInteractionEffects(histBtn);
             const btnWrapper = document.createElement('span');
             btnWrapper.id = 'rt2-btn-wrapper';
-            btnWrapper.appendChild(menuBtn);
-            btnWrapper.appendChild(histBtn);
-            if (Roto2ToolsContainer && Roto2ToolsContainer.parentNode) {
-                Roto2ToolsContainer.parentNode.insertBefore(btnWrapper, Roto2ToolsContainer.nextSibling);
+            btnWrapper.append(menuBtn, histBtn);
+            const container = document.querySelector('#searchform-desktop');
+            if (container?.parentNode) {
+                container.parentNode.insertBefore(btnWrapper, container.nextSibling);
             } else {
                 btnWrapper.classList.add('rt2-btn-wrapper-fixed');
                 document.body.appendChild(btnWrapper);
             }
             createHistoryDropdown(histBtn);
             function createTagInputComponent(title, placeholder, initialValues = [], importType = null) {
-                let currentTags = new Set(
-                    Array.isArray(initialValues) ? initialValues.map(t => String(t).trim()).filter(Boolean) : []
+                const currentTags = new Set(
+                    Array.isArray(initialValues)
+                        ? initialValues.map(t => String(t).trim()).filter(Boolean)
+                        : []
                 );
-                const container = document.createElement('div');
-                container.className = 'tag-input-component';
+                const wrapper = document.createElement('div');
+                wrapper.className = 'tag-input-component';
                 const header = document.createElement('div');
                 header.className = 'tag-input-header';
                 const headerTitle = document.createElement('h2');
                 headerTitle.innerText = title;
-                const countElement = document.createElement('span');
-                countElement.className = 'tag-count';
-                headerTitle.appendChild(countElement);
+                const countEl = document.createElement('span');
+                countEl.className = 'tag-count';
+                headerTitle.appendChild(countEl);
                 const btnContainer = document.createElement('div');
                 if (importType) {
                     const importBtn = document.createElement('button');
                     importBtn.type = 'button';
                     importBtn.className = 'import-list-btn';
                     importBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Importar FC';
-                    Roto2ToolsUtils.applyTooltip(importBtn, `Importar lista de ${importType === 'buddy' ? 'amigos' : 'ignorados'} desde Forocoches`);
+                    Roto2ToolsUtils.applyTooltip(importBtn,
+                        `Importar lista de ${importType === 'buddy' ? 'amigos' : 'ignorados'} desde Forocoches`);
                     importBtn.addEventListener('click', async () => {
                         Roto2ToolsUtils.showToast('info', 'Obteniendo lista desde Forocoches...', 'Roto2Tools');
                         try {
                             const users = await Roto2ToolsUtils.fetchOnlineList(importType);
-                            let addedCount = 0;
-                            users.forEach(u => { if (!currentTags.has(u)) { currentTags.add(u); renderTag(u); addedCount++; } });
+                            let added = 0;
+                            users.forEach(u => {
+                                if (!currentTags.has(u)) { currentTags.add(u); renderTag(u); added++; }
+                            });
                             updateCount();
-                            Roto2ToolsUtils.showToast(addedCount > 0 ? 'success' : 'info',
-                                addedCount > 0 ? `Importados ${addedCount} usuario(s).` : 'No hay usuarios nuevos.', 'Roto2Tools');
-                        } catch (e) { Roto2ToolsUtils.showToast('error', 'Error al importar la lista.', 'Roto2Tools'); }
+                            Roto2ToolsUtils.showToast(
+                                added > 0 ? 'success' : 'info',
+                                added > 0 ? `Importados ${added} usuario(s).` : 'No hay usuarios nuevos.',
+                                'Roto2Tools'
+                            );
+                        } catch {
+                            Roto2ToolsUtils.showToast('error', 'Error al importar la lista.', 'Roto2Tools');
+                        }
                     });
                     btnContainer.appendChild(importBtn);
                 }
@@ -348,11 +380,14 @@
                 clearBtn.className = 'clear-list-btn';
                 clearBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Limpiar lista';
                 clearBtn.addEventListener('click', () => {
-                    if (confirm('¿Borrar toda la lista?')) { currentTags.clear(); tagsDisplay.innerHTML = ''; updateCount(); }
+                    if (confirm('¿Borrar toda la lista?')) {
+                        currentTags.clear();
+                        tagsDisplay.innerHTML = '';
+                        updateCount();
+                    }
                 });
                 btnContainer.appendChild(clearBtn);
-                header.appendChild(headerTitle);
-                header.appendChild(btnContainer);
+                header.append(headerTitle, btnContainer);
                 const tagsDisplay = document.createElement('div');
                 tagsDisplay.className = 'tags-display';
                 const controls = document.createElement('div');
@@ -364,7 +399,7 @@
                 addButton.type = 'button';
                 addButton.className = 'add-tag-btn';
                 addButton.innerHTML = '<i class="fa-solid fa-plus"></i> Añadir';
-                function updateCount() { countElement.innerText = ` (${currentTags.size})`; }
+                function updateCount() { countEl.innerText = ` (${currentTags.size})`; }
                 function renderTag(text) {
                     const tag = document.createElement('span');
                     tag.className = 'tag';
@@ -374,32 +409,43 @@
                     const deleteBtn = document.createElement('span');
                     deleteBtn.className = 'delete-tag';
                     deleteBtn.innerHTML = '&times;';
-                    deleteBtn.addEventListener('click', () => { currentTags.delete(text); tag.remove(); updateCount(); });
-                    tag.appendChild(tagText);
-                    tag.appendChild(deleteBtn);
+                    deleteBtn.addEventListener('click', () => {
+                        currentTags.delete(text);
+                        tag.remove();
+                        updateCount();
+                    });
+                    tag.append(tagText, deleteBtn);
                     tagsDisplay.appendChild(tag);
                     tagsDisplay.scrollTop = tagsDisplay.scrollHeight;
                 }
                 function addFromInput() {
                     const val = input.value.trim();
-                    if (val && !Array.from(currentTags).map(t => t.toLowerCase()).includes(val.toLowerCase())) {
-                        currentTags.add(val); renderTag(val); input.value = ''; updateCount();
+                    const exists = [...currentTags].some(t => t.toLowerCase() === val.toLowerCase());
+                    if (val && !exists) {
+                        currentTags.add(val);
+                        renderTag(val);
+                        input.value = '';
+                        updateCount();
                     }
                     input.focus();
                 }
                 addButton.addEventListener('click', addFromInput);
-                input.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); addFromInput(); } });
+                input.addEventListener('keypress', e => {
+                    if (e.key === 'Enter') { e.preventDefault(); addFromInput(); }
+                });
                 currentTags.forEach(t => renderTag(t));
                 updateCount();
-                controls.appendChild(input);
-                controls.appendChild(addButton);
-                container.appendChild(header);
-                container.appendChild(tagsDisplay);
-                container.appendChild(controls);
+                controls.append(input, addButton);
+                wrapper.append(header, tagsDisplay, controls);
                 return {
-                    element: container,
-                    getValues: () => Array.from(currentTags),
-                    setValues: (vals) => { currentTags.clear(); tagsDisplay.innerHTML = ''; vals.forEach(v => { currentTags.add(v); renderTag(v); }); updateCount(); }
+                    element: wrapper,
+                    getValues: () => [...currentTags],
+                    setValues(vals) {
+                        currentTags.clear();
+                        tagsDisplay.innerHTML = '';
+                        vals.forEach(v => { currentTags.add(v); renderTag(v); });
+                        updateCount();
+                    },
                 };
             }
             const resaltarHilosComp = createTagInputComponent('Resaltar Hilos', 'Añadir palabra...', initialResaltarHilos);
@@ -407,33 +453,33 @@
             const ocultarContactosComp = createTagInputComponent('Ocultar Usuarios', 'Añadir usuario...', initialOcultarContactos, 'ignore');
             const resaltarContactosComp = createTagInputComponent('Resaltar Usuarios', 'Añadir usuario...', initialResaltarContactos, 'buddy');
             function createAboutSection() {
-                const element = document.createElement('div');
-                element.className = 'static-content-section';
-                const versionEl = document.createElement('p');
-                versionEl.className = 'about-version';
-                versionEl.innerHTML = `<i class="fa-solid fa-code-branch"></i> Versión: <strong>${scriptVersion || '—'}</strong>`;
-                element.appendChild(versionEl);
-                const authorEl = document.createElement('p');
-                authorEl.className = 'about-version';
-                authorEl.innerHTML = `<i class="fa-solid fa-user"></i> Autor: <strong>DeciBelioS</strong>`;
-                element.appendChild(authorEl);
+                const el = document.createElement('div');
+                el.className = 'static-content-section';
+                const makeInfoLine = (icon, html) => {
+                    const p = document.createElement('p');
+                    p.className = 'about-version';
+                    p.innerHTML = `<i class="${icon}"></i> ${html}`;
+                    return p;
+                };
+                el.appendChild(makeInfoLine('fa-solid fa-code-branch', `Versión: <strong>${scriptVersion || '—'}</strong>`));
+                el.appendChild(makeInfoLine('fa-solid fa-user', 'Autor: <strong>DeciBelioS</strong>'));
                 const ghLink = document.createElement('a');
                 ghLink.href = 'https://github.com/Deci8BelioS/Roto2Tools/';
                 ghLink.target = '_blank';
                 ghLink.rel = 'noopener noreferrer';
                 ghLink.className = 'rt2-button rt2-button-export rt2-about-gh-btn';
                 ghLink.innerHTML = '<i class="fa-brands fa-github"></i> Ver en GitHub';
-                element.appendChild(ghLink);
-                const separator = document.createElement('hr');
-                separator.className = 'rt2-about-sep';
-                element.appendChild(separator);
+                el.appendChild(ghLink);
+                const sep = document.createElement('hr');
+                sep.className = 'rt2-about-sep';
+                el.appendChild(sep);
                 const backupTitle = document.createElement('h3');
                 backupTitle.className = 'rt2-about-backup-title';
                 backupTitle.innerHTML = '<i class="fa-solid fa-database"></i> Backup de listas';
-                element.appendChild(backupTitle);
-                const backupDesc = document.createElement('p');
-                backupDesc.textContent = 'Exporta todas tus listas y favoritos a un archivo JSON o importa una copia de seguridad anterior.';
-                element.appendChild(backupDesc);
+                el.appendChild(backupTitle);
+                const desc = document.createElement('p');
+                desc.textContent = 'Exporta todas tus listas y favoritos a un archivo JSON o importa una copia de seguridad anterior.';
+                el.appendChild(desc);
                 const backupBtns = document.createElement('div');
                 backupBtns.className = 'backup-buttons';
                 const exportBtn = document.createElement('button');
@@ -445,7 +491,7 @@
                         ocultarHilos: ocultarHilosComp.getValues(),
                         resaltarContactos: resaltarContactosComp.getValues(),
                         ocultarContactos: ocultarContactosComp.getValues(),
-                        favoritos: GM_getValue('rt2_favorites', [])
+                        favoritos: GM_getValue('rt2_favorites', []),
                     };
                     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
@@ -464,34 +510,33 @@
                 importInput.type = 'file';
                 importInput.accept = '.json';
                 importInput.style.display = 'none';
-                importInput.addEventListener('change', (e) => {
+                importInput.addEventListener('change', e => {
                     const file = e.target.files[0];
                     if (!file) return;
                     const reader = new FileReader();
-                    reader.onload = (ev) => {
+                    reader.onload = ev => {
                         try {
                             const parsed = JSON.parse(ev.target.result);
-                            const listKeys = ['resaltarHilos', 'ocultarHilos', 'resaltarContactos', 'ocultarContactos'];
+                            const compMap = {
+                                resaltarHilos: resaltarHilosComp,
+                                ocultarHilos: ocultarHilosComp,
+                                resaltarContactos: resaltarContactosComp,
+                                ocultarContactos: ocultarContactosComp,
+                            };
                             let ok = false;
-                            listKeys.forEach(k => {
-                                if (Array.isArray(parsed[k])) {
-                                    ok = true;
-                                    if (k === 'resaltarHilos') resaltarHilosComp.setValues(parsed[k]);
-                                    if (k === 'ocultarHilos') ocultarHilosComp.setValues(parsed[k]);
-                                    if (k === 'resaltarContactos') resaltarContactosComp.setValues(parsed[k]);
-                                    if (k === 'ocultarContactos') ocultarContactosComp.setValues(parsed[k]);
-                                }
-                            });
+                            for (const [key, comp] of Object.entries(compMap)) {
+                                if (Array.isArray(parsed[key])) { comp.setValues(parsed[key]); ok = true; }
+                            }
                             if (Array.isArray(parsed.favoritos)) {
-                                ok = true;
                                 GM_setValue('rt2_favorites', parsed.favoritos);
+                                ok = true;
                             }
-                            if (ok) {
-                                Roto2ToolsUtils.showToast('success', 'Backup importado. Guarda para aplicar los cambios.', 'Roto2Tools');
-                            } else {
-                                Roto2ToolsUtils.showToast('error', 'Archivo JSON no válido.', 'Roto2Tools');
-                            }
-                        } catch (err) {
+                            Roto2ToolsUtils.showToast(
+                                ok ? 'success' : 'error',
+                                ok ? 'Backup importado. Guarda para aplicar los cambios.' : 'Archivo JSON no válido.',
+                                'Roto2Tools'
+                            );
+                        } catch {
                             Roto2ToolsUtils.showToast('error', 'Error al leer el archivo.', 'Roto2Tools');
                         }
                         importInput.value = '';
@@ -499,34 +544,33 @@
                     reader.readAsText(file);
                 });
                 importLabel.appendChild(importInput);
-                backupBtns.appendChild(exportBtn);
-                backupBtns.appendChild(importLabel);
-                element.appendChild(backupBtns);
-                return { element };
+                backupBtns.append(exportBtn, importLabel);
+                el.appendChild(backupBtns);
+                return { element: el };
             }
             const aboutSection = createAboutSection();
             const sectionsConfig = [
-                { id: 'resaltar-hilos', title: 'Resaltar Hilos', icon: 'fa-solid fa-star', content: resaltarHilosComp.element, color: '#EDD40E', active: true },
-                { id: 'ocultar-hilos', title: 'Ocultar Hilos', icon: 'fa-solid fa-eye-slash', content: ocultarHilosComp.element, color: '#FD5D4D' },
-                { id: 'resaltar-users', title: 'Resaltar Usuarios', icon: 'fa-solid fa-user-check', content: resaltarContactosComp.element, color: '#2FC726' },
-                { id: 'ocultar-users', title: 'Ocultar Usuarios', icon: 'fa-solid fa-user-slash', content: ocultarContactosComp.element, color: '#FF2626' },
-                { id: 'acerca-de', title: 'Acerca de', icon: 'fa-solid fa-circle-info', content: aboutSection.element, color: '#589cfc' },
+                { id: 'resaltar-hilos', title: 'Resaltar Hilos', icon: 'fa-solid fa-star', content: resaltarHilosComp.element, color: COLORS.highlightThread, active: true },
+                { id: 'ocultar-hilos', title: 'Ocultar Hilos', icon: 'fa-solid fa-eye-slash', content: ocultarHilosComp.element, color: COLORS.hideThread },
+                { id: 'resaltar-users', title: 'Resaltar Usuarios', icon: 'fa-solid fa-user-check', content: resaltarContactosComp.element, color: COLORS.highlightContact },
+                { id: 'ocultar-users', title: 'Ocultar Usuarios', icon: 'fa-solid fa-user-slash', content: ocultarContactosComp.element, color: COLORS.hideContact },
+                { id: 'acerca-de', title: 'Acerca de', icon: 'fa-solid fa-circle-info', content: aboutSection.element,  color: COLORS.info },
             ];
-            const modalElement = document.createElement('div');
-            modalElement.className = 'modal fade';
-            modalElement.id = 'roto2ToolsModal';
-            modalElement.setAttribute('tabindex', '-1');
-            modalElement.setAttribute('role', 'dialog');
-            modalElement.setAttribute('aria-modal', 'true');
-            const modalDialog = document.createElement('div'); modalDialog.className = 'modal-dialog modal-xl';
-            const modalContent = document.createElement('div'); modalContent.className = 'modal-content modal-glassmorphism roto2tools-modal-content';
-            const modalHeader = document.createElement('div'); modalHeader.className = 'modal-header';
+            const makeEl = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; return e; };
+            const modalEl = makeEl('div', 'modal fade');
+            modalEl.id = 'roto2ToolsModal';
+            modalEl.setAttribute('tabindex', '-1');
+            modalEl.setAttribute('role', 'dialog');
+            modalEl.setAttribute('aria-modal', 'true');
+            const modalDialog = makeEl('div', 'modal-dialog modal-xl');
+            const modalContent = makeEl('div', 'modal-content modal-glassmorphism roto2tools-modal-content');
+            const modalHeader = makeEl('div', 'modal-header');
             const versionText = scriptVersion ? ` <small class="rt2-version-text">v${scriptVersion}</small>` : '';
             modalHeader.innerHTML = `<h2 class="modal-title"><img src="https://forocoches.com/foro/images/smilies/goofy.gif" alt="goofy"> Roto2Tools Panel${versionText}</h2>`;
-            const modalBody = document.createElement('div'); modalBody.className = 'modal-body';
-            const mainLayout = document.createElement('div'); mainLayout.className = 'roto2tools-main-layout';
-            const navContainer = document.createElement('div'); navContainer.className = 'roto2tools-nav';
-            const contentContainer = document.createElement('div'); contentContainer.className = 'roto2tools-content';
+            const modalBody = makeEl('div', 'modal-body');
+            const mainLayout = makeEl('div', 'roto2tools-main-layout');
+            const navContainer = makeEl('div', 'roto2tools-nav');
+            const contentContainer = makeEl('div', 'roto2tools-content');
             sectionsConfig.forEach(sec => {
                 const navLink = document.createElement('a');
                 navLink.href = '#';
@@ -534,133 +578,118 @@
                 navLink.dataset.target = sec.id;
                 navLink.setAttribute('role', 'tab');
                 navLink.innerHTML = `<i class="${sec.icon}" style="color:${sec.color};"></i> <span>${sec.title}</span>`;
-                const contentPane = document.createElement('div');
-                contentPane.className = 'roto2tools-content-pane';
-                contentPane.id = sec.id;
-                contentPane.setAttribute('role', 'tabpanel');
-                contentPane.appendChild(sec.content);
-                if (sec.active) { navLink.classList.add('active'); contentPane.classList.add('active'); }
+                const pane = makeEl('div', 'roto2tools-content-pane');
+                pane.id = sec.id;
+                pane.setAttribute('role', 'tabpanel');
+                pane.appendChild(sec.content);
+                if (sec.active) { navLink.classList.add('active'); pane.classList.add('active'); }
                 navLink.addEventListener('click', e => {
                     e.preventDefault();
                     navContainer.querySelectorAll('.roto2tools-nav-link').forEach(l => l.classList.remove('active'));
                     contentContainer.querySelectorAll('.roto2tools-content-pane').forEach(c => c.classList.remove('active'));
                     navLink.classList.add('active');
-                    contentPane.classList.add('active');
+                    pane.classList.add('active');
                 });
                 navContainer.appendChild(navLink);
-                contentContainer.appendChild(contentPane);
+                contentContainer.appendChild(pane);
             });
-            mainLayout.appendChild(navContainer);
-            mainLayout.appendChild(contentContainer);
+            mainLayout.append(navContainer, contentContainer);
             modalBody.appendChild(mainLayout);
-            const modalFooter = document.createElement('div'); modalFooter.className = 'modal-footer';
-            const cerrarBtn = document.createElement('button');
-            cerrarBtn.className = 'rt2-button rt2-button-close';
+            const modalFooter = makeEl('div', 'modal-footer');
+            const cerrarBtn = makeEl('button', 'rt2-button rt2-button-close');
             cerrarBtn.innerHTML = '<i class="fa-solid fa-xmark"></i> Cerrar';
-            const guardarBtn = document.createElement('button');
-            guardarBtn.className = 'rt2-button rt2-button-save';
+            const guardarBtn = makeEl('button', 'rt2-button rt2-button-save');
             guardarBtn.innerHTML = '<i class="fa-solid fa-save"></i> Guardar y Recargar';
             const closeModal = () => {
-                modalElement.classList.remove('show');
-                modalElement.setAttribute('aria-hidden', 'true');
-                setTimeout(() => { modalElement.style.display = 'none'; }, 300);
+                modalEl.classList.remove('show');
+                modalEl.setAttribute('aria-hidden', 'true');
+                setTimeout(() => { modalEl.style.display = 'none'; }, 300);
             };
             cerrarBtn.addEventListener('click', closeModal);
-            document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalElement.style.display !== 'none') closeModal(); });
-            modalElement.addEventListener('click', e => { if (e.target === modalElement) closeModal(); });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && modalEl.style.display !== 'none') closeModal();
+            });
+            modalEl.addEventListener('click', e => { if (e.target === modalEl) closeModal(); });
             guardarBtn.addEventListener('click', () => {
                 onSave({
                     resaltarHilos: resaltarHilosComp.getValues(),
                     ocultarHilos: ocultarHilosComp.getValues(),
                     ocultarContactos: ocultarContactosComp.getValues(),
-                    resaltarContactos: resaltarContactosComp.getValues()
+                    resaltarContactos: resaltarContactosComp.getValues(),
                 });
                 Roto2ToolsUtils.showToast('success', 'Listas guardadas. Recargando...', 'Roto2Tools');
                 closeModal();
                 setTimeout(() => location.reload(), 1000);
             });
-            modalFooter.appendChild(cerrarBtn);
-            modalFooter.appendChild(guardarBtn);
-            modalContent.appendChild(modalHeader);
-            modalContent.appendChild(modalBody);
-            modalContent.appendChild(modalFooter);
+            modalFooter.append(cerrarBtn, guardarBtn);
+            modalContent.append(modalHeader, modalBody, modalFooter);
             modalDialog.appendChild(modalContent);
-            modalElement.appendChild(modalDialog);
-            document.body.appendChild(modalElement);
+            modalEl.appendChild(modalDialog);
+            document.body.appendChild(modalEl);
             menuBtn.addEventListener('click', () => {
-                modalElement.style.display = 'block';
-                modalElement.setAttribute('aria-hidden', 'false');
-                requestAnimationFrame(() => requestAnimationFrame(() => modalElement.classList.add('show')));
+                modalEl.style.display = 'block';
+                modalEl.setAttribute('aria-hidden', 'false');
+                requestAnimationFrame(() => requestAnimationFrame(() => modalEl.classList.add('show')));
             });
-        }
+        },
     };
     const Roto2ToolsProcessing = {
-        processThreads: function (options) {
-            const { ocultarHilos, resaltarHilos, ocultarContactos, resaltarContactos } = options;
+        processThreads({ ocultarHilos, resaltarHilos, ocultarContactos, resaltarContactos }) {
             const elementos = document.querySelectorAll('section.without-bottom-corners > div');
+            const threadContainer = document.querySelector('main > div > section');
             const elementosOcultos = [];
-            const threadContainer = document.querySelector('main>div>section');
             elementos.forEach(el => {
-                const tituloSpan = el.querySelector('[id*="thread_title_"]>span');
+                const tituloSpan = el.querySelector('[id*="thread_title_"] > span');
                 if (!tituloSpan) return;
-                const titleLink = Array.from(el.querySelectorAll('a')).find(a => a.innerText.trim().startsWith('@'));
-                const textTitle = titleLink ? titleLink.innerText.toLowerCase() : '';
+                const titleLink = [...el.querySelectorAll('a')].find(a => a.innerText.trim().startsWith('@'));
+                const textTitle = titleLink?.innerText.toLowerCase() ?? '';
                 const textoTituloSpan = tituloSpan.innerText.toLowerCase();
-                let originalTituloHtml = tituloSpan.innerHTML;
-                let applyHideContactStyle = false, applyHighlightContactStyle = false;
-                let applyHideThreadStyle = false, applyHighlightThreadStyle = false;
-                let mustBeHidden = false, applyBaseStyles = false;
-                if (ocultarContactos.some(p => Roto2ToolsUtils.getRegex(p, false, true).test(textTitle))) {
-                    applyHideContactStyle = true; mustBeHidden = true; applyBaseStyles = true;
-                }
-                if (resaltarContactos.some(p => Roto2ToolsUtils.getRegex(p, false, true).test(textTitle))) {
-                    applyHighlightContactStyle = true; applyBaseStyles = true;
-                }
-                const matchedHideKeywords = ocultarHilos.filter(p => Roto2ToolsUtils.getRegex(p, false, true).test(textoTituloSpan));
-                if (matchedHideKeywords.length > 0) { applyHideThreadStyle = true; mustBeHidden = true; applyBaseStyles = true; }
-                const matchedHighlightKeywords = resaltarHilos.filter(p => Roto2ToolsUtils.getRegex(p, false, true).test(textoTituloSpan));
-                if (matchedHighlightKeywords.length > 0) { applyHighlightThreadStyle = true; applyBaseStyles = true; }
-                let modifiedTitleHtml = originalTituloHtml;
-                if (applyHideContactStyle) el.classList.add('rt2-thread-hide-contact');
-                else if (applyHighlightContactStyle) el.classList.add('rt2-thread-highlight-contact');
-                else if (applyHideThreadStyle) el.classList.add('rt2-thread-hide');
-                else if (applyHighlightThreadStyle) el.classList.add('rt2-thread-highlight');
+                let modifiedHtml = tituloSpan.innerHTML;
+                const hideContact = ocultarContactos.some(p => Roto2ToolsUtils.getRegex(p, false, true).test(textTitle));
+                const highlightContact = resaltarContactos.some(p => Roto2ToolsUtils.getRegex(p, false, true).test(textTitle));
+                const matchedHide = ocultarHilos.filter(p => Roto2ToolsUtils.getRegex(p, false, true).test(textoTituloSpan));
+                const matchedHighlight = resaltarHilos.filter(p => Roto2ToolsUtils.getRegex(p, false, true).test(textoTituloSpan));
+                const mustHide = hideContact || matchedHide.length > 0;
+                const applyBaseStyles = mustHide || highlightContact || matchedHighlight.length > 0;
+                if (hideContact) el.classList.add('rt2-thread-hide-contact');
+                else if (highlightContact) el.classList.add('rt2-thread-highlight-contact');
+                else if (matchedHide.length > 0) el.classList.add('rt2-thread-hide');
+                else if (matchedHighlight.length > 0) el.classList.add('rt2-thread-highlight');
                 if (applyBaseStyles) tituloSpan.classList.add('rt2-thread-title-white');
-                if (applyHideContactStyle || applyHighlightContactStyle) {
-                    const index = textTitle.indexOf('@');
-                    if (index !== -1 && titleLink && titleLink.parentNode) {
-                        const endIndex = textTitle.indexOf('-', index);
-                        const nick = textTitle.substring(index, endIndex !== -1 ? endIndex : undefined).trim();
-                        const resto = textTitle.substring(textTitle.indexOf('-', index) + 1).trim();
-                        const newSpan = document.createElement('span');
-                        const nickColor = applyHideContactStyle ? '#FF2626' : '#2FC726';
-                        newSpan.innerHTML = `<span style="color:${nickColor};font-weight:bold;font-size:.75rem;text-shadow:0px 2px 4px #000;">${nick}</span> <span style="color:var(--gray-text);font-size:.75rem;">${resto}</span>`;
-                        titleLink.parentNode.insertBefore(newSpan, titleLink);
-                        titleLink.remove();
-                    }
+                if ((hideContact || highlightContact) && titleLink?.parentNode) {
+                    const atIdx = textTitle.indexOf('@');
+                    const dashIdx = textTitle.indexOf('-', atIdx);
+                    const nick = textTitle.substring(atIdx, dashIdx !== -1 ? dashIdx : undefined).trim();
+                    const resto = dashIdx !== -1 ? textTitle.substring(dashIdx + 1).trim() : '';
+                    const color = hideContact ? COLORS.hideContact : COLORS.highlightContact;
+                    const newSpan = document.createElement('span');
+                    newSpan.innerHTML =
+                        `<span style="color:${color};font-weight:bold;font-size:.75rem;text-shadow:0px 2px 4px #000;">${nick}</span>` +
+                        ` <span style="color:var(--gray-text);font-size:.75rem;">${resto}</span>`;
+                    titleLink.parentNode.insertBefore(newSpan, titleLink);
+                    titleLink.remove();
                 }
-                if (applyHighlightThreadStyle) {
-                    matchedHighlightKeywords.forEach(p => {
+                const applyKeywordColor = (keywords, color) => {
+                    keywords.forEach(p => {
                         const r = new RegExp(Roto2ToolsUtils.getRegex(p, false, true).source, 'ig');
-                        modifiedTitleHtml = modifiedTitleHtml.replace(r, m => `<span style="font-weight:bold;color:#EDD40E;">${m}</span>`);
+                        modifiedHtml = modifiedHtml.replace(r, m =>
+                            `<span style="font-weight:bold;color:${color};">${m}</span>`
+                        );
                     });
+                };
+                if (matchedHighlight.length > 0) applyKeywordColor(matchedHighlight, COLORS.highlightThread);
+                if (matchedHide.length > 0) applyKeywordColor(matchedHide, COLORS.hideThread);
+                if (matchedHighlight.length > 0 || matchedHide.length > 0) {
+                    tituloSpan.innerHTML = modifiedHtml;
                 }
-                if (applyHideThreadStyle) {
-                    matchedHideKeywords.forEach(p => {
-                        const r = new RegExp(Roto2ToolsUtils.getRegex(p, false, true).source, 'ig');
-                        modifiedTitleHtml = modifiedTitleHtml.replace(r, m => `<span style="font-weight:bold;color:#FD5D4D;">${m}</span>`);
-                    });
-                }
-                if (applyHighlightThreadStyle || applyHideThreadStyle) tituloSpan.innerHTML = modifiedTitleHtml;
-                if (mustBeHidden) elementosOcultos.push(el);
+                if (mustHide) elementosOcultos.push(el);
             });
-            elementosOcultos.forEach(el => { if (el.parentNode) el.remove(); });
             if (elementosOcultos.length > 0 && threadContainer) {
-                const contenedorOcultos = document.createElement('div');
-                contenedorOcultos.className = 'rt2-hidden-threads-container';
-                elementosOcultos.forEach(elemento => {
-                    elemento.classList.add('rt2-hidden-thread-item');
-                    contenedorOcultos.appendChild(elemento);
+                const hiddenContainer = document.createElement('div');
+                hiddenContainer.className = 'rt2-hidden-threads-container';
+                elementosOcultos.forEach(el => {
+                    el.classList.add('rt2-hidden-thread-item');
+                    hiddenContainer.appendChild(el);
                 });
                 const spoilerBtn = document.createElement('div');
                 spoilerBtn.className = 'rt2-spoiler-btn';
@@ -668,40 +697,40 @@
                 Roto2ToolsUtils.applyTooltip(spoilerBtn, 'Haz clic para mostrar/ocultar los hilos');
                 Roto2ToolsUtils.applyButtonInteractionEffects(spoilerBtn);
                 spoilerBtn.addEventListener('click', () => {
-                    const isHidden = contenedorOcultos.style.maxHeight === '0px';
-                    spoilerBtn.textContent = isHidden ? `${elementosOcultos.length} Hilo(s) mostrando` : `${elementosOcultos.length} Hilo(s) oculto(s)`;
-                    contenedorOcultos.style.maxHeight = isHidden ? `${contenedorOcultos.scrollHeight}px` : '0px';
+                    const isHidden = hiddenContainer.style.maxHeight === '0px';
+                    spoilerBtn.textContent = isHidden
+                        ? `${elementosOcultos.length} Hilo(s) mostrando`
+                        : `${elementosOcultos.length} Hilo(s) oculto(s)`;
+                    hiddenContainer.style.maxHeight = isHidden ? `${hiddenContainer.scrollHeight}px` : '0px';
                     spoilerBtn.style.backgroundColor = isHidden ? '#4a4a4a' : '';
                 });
                 window.addEventListener('resize', () => {
-                    if (contenedorOcultos.style.maxHeight !== '0px' && contenedorOcultos.scrollHeight)
-                        contenedorOcultos.style.maxHeight = `${contenedorOcultos.scrollHeight}px`;
+                    if (hiddenContainer.style.maxHeight !== '0px') {
+                        hiddenContainer.style.maxHeight = `${hiddenContainer.scrollHeight}px`;
+                    }
                 });
-                threadContainer.appendChild(contenedorOcultos);
-                threadContainer.appendChild(spoilerBtn);
+                threadContainer.append(hiddenContainer, spoilerBtn);
             }
         },
-        processMessages: function (options) {
-            const { ocultarContactos, resaltarContactos } = options;
+        processMessages({ ocultarContactos, resaltarContactos }) {
             if (resaltarContactos.length > 0) {
-                const regexResaltar = Roto2ToolsUtils.getRegexcontacto(resaltarContactos.join(','), true);
+                const regex = Roto2ToolsUtils.getRegexContacto(resaltarContactos.join(','), true);
                 document.querySelectorAll('div[id^="postmenu_"]').forEach(postmenu => {
                     const userLink = postmenu.querySelector('a[href*="member.php"]');
                     if (!userLink || userLink.classList.contains('resaltado')) return;
-                    if (!regexResaltar.test(userLink.textContent.trim())) return;
+                    if (!regex.test(userLink.textContent.trim())) return;
                     userLink.classList.add('resaltado');
-                    const section = postmenu.closest('[id^="post"]')
+                    postmenu.closest('[id^="post"]')
                         ?.closest('[id^="edit"]')
-                        ?.querySelector('section');
-                    if (section) section.classList.add('resaltado');
+                        ?.querySelector('section')
+                        ?.classList.add('resaltado');
                 });
             }
             if (ocultarContactos.length > 0) {
-                const regexOcultar = Roto2ToolsUtils.getRegexcontacto(ocultarContactos.join(','), true);
+                const regex = Roto2ToolsUtils.getRegexContacto(ocultarContactos.join(','), true);
                 document.querySelectorAll('div[id^="postmenu_"]').forEach(postmenu => {
                     const userLink = postmenu.querySelector('a[href*="member.php"]');
-                    if (!userLink) return;
-                    if (!regexOcultar.test(userLink.textContent.trim())) return;
+                    if (!userLink || !regex.test(userLink.textContent.trim())) return;
                     const editEl = postmenu.closest('[id^="post"]')?.closest('[id^="edit"]');
                     if (!editEl || editEl.classList.contains('oculto')) return;
                     const sectionEl = editEl.querySelector('section');
@@ -710,73 +739,82 @@
                     editEl.classList.add('oculto');
                     const spoiler = document.createElement('details');
                     spoiler.className = 'spoiler';
-                    const botonSpoiler = document.createElement('summary');
-                    botonSpoiler.innerText = 'El mensaje de este usuario está oculto porque está en la lista de Ocultar Usuarios';
+                    const summary = document.createElement('summary');
+                    summary.innerText = 'El mensaje de este usuario está oculto porque está en la lista de Ocultar Usuarios';
                     editEl.before(spoiler);
-                    spoiler.appendChild(botonSpoiler);
-                    spoiler.appendChild(editEl);
-                    const sep = editEl.querySelector('separator-large');
-                    if (sep) sep.remove();
+                    spoiler.append(summary, editEl);
+                    editEl.querySelector('separator-large')?.remove();
                 });
-                const regexOcultarQuotes = Roto2ToolsUtils.getRegexcontacto(ocultarContactos.join(','), true);
-                document.querySelectorAll('.quote').forEach(quoteElem => {
-                    const boldAuthor = quoteElem.querySelector('div > div:first-child b');
-                    if (!boldAuthor || quoteElem.classList.contains('processed-quote')) return;
-                    const authorName = boldAuthor.innerText.trim();
-                    if (!regexOcultarQuotes.test(authorName)) return;
-                    quoteElem.classList.add('processed-quote');
-                    const originalContent = quoteElem.innerHTML;
-                    quoteElem.innerHTML = '';
-                    const detailsEl = document.createElement('details');
-                    detailsEl.className = 'spoiler-quote';
-                    const summaryEl = document.createElement('summary');
-                    summaryEl.textContent = `Cita de ${authorName} (oculto)`;
-                    const innerDiv = document.createElement('div');
-                    innerDiv.innerHTML = originalContent;
-                    detailsEl.appendChild(summaryEl);
-                    detailsEl.appendChild(innerDiv);
-                    quoteElem.appendChild(detailsEl);
+                document.querySelectorAll('.quote').forEach(quoteEl => {
+                    const boldAuthor = quoteEl.querySelector('div > div:first-child b');
+                    if (!boldAuthor || quoteEl.classList.contains('processed-quote')) return;
+                    const author = boldAuthor.innerText.trim();
+                    if (!regex.test(author)) return;
+                    quoteEl.classList.add('processed-quote');
+                    const original = quoteEl.innerHTML;
+                    quoteEl.innerHTML = '';
+                    const details = document.createElement('details');
+                    details.className = 'spoiler-quote';
+                    const summary = document.createElement('summary');
+                    summary.textContent = `Cita de ${author} (oculto)`;
+                    const inner = document.createElement('div');
+                    inner.innerHTML = original;
+                    details.append(summary, inner);
+                    quoteEl.appendChild(details);
                 });
             }
         },
-        cleanupSeparators: function () {
-            document.querySelectorAll('separator').forEach(sep => Roto2ToolsUtils.eliminarAdyacentes(sep));
+        cleanupSeparators() {
+            document.querySelectorAll('separator').forEach(
+                sep => Roto2ToolsUtils.eliminarAdyacentes(sep)
+            );
         },
-        applyFinalStyles: function () {
-            const h = document.getElementById('header');
-            if (h) { h.style.maxWidth = 'unset'; h.style.width = '100%'; }
-            const m = document.querySelector('main');
-            if (m) { m.style.margin = '0'; m.style.width = '100%'; m.style.maxWidth = 'unset'; m.style.gridTemplateColumns = '1fr auto'; }
-        }
+        applyFinalStyles() {
+            const header = document.getElementById('header');
+            if (header) { header.style.maxWidth = 'unset'; header.style.width = '100%'; }
+            const main = document.querySelector('main');
+            if (main) {
+                main.style.margin = '0';
+                main.style.width = '100%';
+                main.style.maxWidth = 'unset';
+                main.style.gridTemplateColumns = '1fr auto';
+            }
+        },
     };
     function init() {
-        if (document.getElementById('fc-mobile-version-tag-for-monitoring') || document.querySelector('.mobiletitlebottom')) {
-            Roto2ToolsUtils.showToast('warning', 'No funciona en la versión móvil.', 'Roto2Tools'); return;
+        if (document.getElementById('fc-mobile-version-tag-for-monitoring') ||
+            document.querySelector('.mobiletitlebottom')) {
+            Roto2ToolsUtils.showToast('warning', 'No funciona en la versión móvil.', 'Roto2Tools');
+            return;
         }
-        if (Array.from(document.querySelectorAll('a')).find(a => a.textContent.trim() === 'Nuevo diseño')) {
-            Roto2ToolsUtils.showToast('info', 'No funciona en el foro clásico.', 'Roto2Tools'); return;
+        if ([...document.querySelectorAll('a')].some(a => a.textContent.trim() === 'Nuevo diseño')) {
+            Roto2ToolsUtils.showToast('info', 'No funciona en el foro clásico.', 'Roto2Tools');
+            return;
         }
-        if (Array.from(document.querySelectorAll('strong')).find(s => s.textContent.trim() === 'ForoCoches Smilies')) return;
+        if ([...document.querySelectorAll('strong')].some(s => s.textContent.trim() === 'ForoCoches Smilies')) return;
         if (!document.querySelector('#user-online-status')) {
-            Roto2ToolsUtils.showToast('error', 'No funciona si no estás logueado.', 'Roto2Tools'); return;
+            Roto2ToolsUtils.showToast('error', 'No funciona si no estás logueado.', 'Roto2Tools');
+            return;
         }
         trackHistory();
         try {
             GM_addStyle(GM_getResourceText('bootstrapcss'));
             GM_addStyle(GM_getResourceText('toastrcss'));
             GM_addStyle(GM_getResourceText('Roto2Toolscss'));
-        } catch (e) { console.error('Roto2Tools: Error al cargar CSS.', e); }
+        } catch (e) {
+            console.error('Roto2Tools: Error al cargar CSS.', e);
+        }
         if (!document.querySelector('link[href*="font-awesome"]')) {
             const fa = document.createElement('link');
             fa.rel = 'stylesheet';
             fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css';
             document.head.appendChild(fa);
         }
-        const scriptVersion = (typeof GM_info !== 'undefined') ? GM_info.script.version : '';
-        let resaltarHilos = GM_getValue('resaltarHilos', []);
-        let resaltarContactos = GM_getValue('resaltarContactos', []);
-        let ocultarHilos = GM_getValue('ocultarHilos', []);
-        let ocultarContactos = GM_getValue('ocultarContactos', []);
+        const scriptVersion = typeof GM_info !== 'undefined' ? GM_info.script.version : '';
+        const resaltarHilos = GM_getValue('resaltarHilos', []);
+        const resaltarContactos = GM_getValue('resaltarContactos', []);
+        const ocultarHilos = GM_getValue('ocultarHilos', []);
+        const ocultarContactos = GM_getValue('ocultarContactos', []);
         try {
             Roto2ToolsMenu.create({
                 initialResaltarHilos: resaltarHilos,
@@ -784,19 +822,21 @@
                 initialResaltarContactos: resaltarContactos,
                 initialOcultarContactos: ocultarContactos,
                 scriptVersion,
-                onSave: function (newData) {
-                    GM_setValue('resaltarHilos', newData.resaltarHilos);
-                    GM_setValue('ocultarHilos', newData.ocultarHilos);
-                    GM_setValue('resaltarContactos', newData.resaltarContactos);
-                    GM_setValue('ocultarContactos', newData.ocultarContactos);
-                }
+                onSave({ resaltarHilos, ocultarHilos, resaltarContactos, ocultarContactos }) {
+                    GM_setValue('resaltarHilos', resaltarHilos);
+                    GM_setValue('ocultarHilos', ocultarHilos);
+                    GM_setValue('resaltarContactos', resaltarContactos);
+                    GM_setValue('ocultarContactos', ocultarContactos);
+                },
             });
-        } catch (e) { console.error('Roto2Tools: Error al crear el menú.', e); }
+        } catch (e) {
+            console.error('Roto2Tools: Error al crear el menú.', e);
+        }
         injectFavoriteButtonInThread();
-        const processingOptions = { ocultarHilos, resaltarHilos, ocultarContactos, resaltarContactos };
+        const opts = { ocultarHilos, resaltarHilos, ocultarContactos, resaltarContactos };
         try {
-            Roto2ToolsProcessing.processThreads(processingOptions);
-            Roto2ToolsProcessing.processMessages(processingOptions);
+            Roto2ToolsProcessing.processThreads(opts);
+            Roto2ToolsProcessing.processMessages(opts);
             Roto2ToolsProcessing.cleanupSeparators();
             Roto2ToolsProcessing.applyFinalStyles();
         } catch (e) {
