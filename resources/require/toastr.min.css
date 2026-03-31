@@ -1,6 +1,6 @@
 #rt2-toast-container {
     position: fixed;
-    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    bottom: 20px;
     right: 12px;
     z-index: 999999;
     pointer-events: none;
@@ -23,21 +23,18 @@
     border-radius: 3px;
     background-position: 15px center;
     background-repeat: no-repeat;
-    box-shadow: 0 0 12px #999;
+    box-shadow: 0 4px 8px #999;
     color: #fff;
-    text-shadow: 1px 1px 4px #000;
+    text-shadow: 0px 2px 4px #000;
     opacity: 0;
-    transition: opacity 0.35s ease;
+    transition: .2s ease;
     word-wrap: break-word;
 }
 
 .rt2-toast:hover {
-    box-shadow: 0 0 12px #000;
+    transition: .2s ease;
+    box-shadow: 0 4px 8px #000;
     cursor: pointer;
-}
-
-.rt2-toast strong {
-    font-weight: 700;
 }
 
 .rt2-toast.success {
@@ -69,10 +66,4 @@
     background-color: #000;
     opacity: .4;
     transition: width 4s linear;
-}
-
-@media (max-width: 360px) {
-    .rt2-toast {
-        width: calc(100vw - 24px);
-    }
 }
