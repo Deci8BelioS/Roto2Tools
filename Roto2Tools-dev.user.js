@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.3-2d
+// @version         1.8.3-3d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -20,9 +20,9 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.3-2d
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.3-2d
-// @resource        toastrcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.3-2d
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.3-3d
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.3-3d
+// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.3-3d
 // ==/UserScript==
 
 (function () {
@@ -798,13 +798,6 @@
             return;
         }
         trackHistory();
-        try {
-            GM_addStyle(GM_getResourceText('bootstrapcss'));
-            GM_addStyle(GM_getResourceText('toastrcss'));
-            GM_addStyle(GM_getResourceText('Roto2Toolscss'));
-        } catch (e) {
-            console.error('Roto2Tools: Error al cargar CSS.', e);
-        }
         if (!document.querySelector('link[href*="font-awesome"]')) {
             const fa = document.createElement('link');
             fa.rel = 'stylesheet';
@@ -847,6 +840,13 @@
     }
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
         init();
+        try {
+            GM_addStyle(GM_getResourceText('bootstrapcss'));
+            GM_addStyle(GM_getResourceText('Roto2Toolscss'));
+            GM_addStyle(GM_getResourceText('toastcss'));
+        } catch (e) {
+            console.error('Roto2Tools: Error al cargar CSS.', e);
+        }
     } else {
         window.addEventListener('DOMContentLoaded', init);
     }
