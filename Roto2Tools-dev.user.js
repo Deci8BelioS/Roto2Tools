@@ -20,9 +20,9 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-1/resources/require/bootstrapcss.css
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-1/resources/require/Roto2Toolscss.css
-// @resource        toastrcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-1/resources/require/toastr.min.css
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css
+// @resource        toastrcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css
 // ==/UserScript==
 (function () {
     'use strict';
