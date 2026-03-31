@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.1d
+// @version         1.8.2d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -98,18 +98,35 @@
                 ? doc.querySelectorAll('div[id^="buddylist_user"] a[href*="member.php"]')
                 : doc.querySelectorAll('#ignorelist li a[href*="member.php"]');
             return Array.from(anchors).map(a => a.textContent.trim()).filter(Boolean);
+        },
+        getRealThreadData: function() {
+            const params = new URLSearchParams(window.location.search);
+            let id = params.get('t');
+            let type = 't';
+            if (!id) {
+                const copyLink = document.querySelector('a[onclick*="showthread.php?t="]');
+                if (copyLink) {
+                    const match = copyLink.getAttribute('onclick').match(/[?&]t=(\d+)/);
+                    if (match) { id = match[1]; type = 't'; }
+                }
+            }
+            if (!id) {
+                id = params.get('p');
+                type = 'p';
+            }
+            return id ? { id, type } : null;
         }
     };
     function trackHistory() {
-        const params = new URLSearchParams(window.location.search);
-        const threadId = params.get('t');
-        if (!threadId) return;
+        const threadData = Roto2ToolsUtils.getRealThreadData();
+        if (!threadData) return;
+        const { id, type } = threadData;
         let title = document.title.replace(' - ForoCoches', '').trim();
         const h1 = document.querySelector('.pull-left > h1') || document.querySelector('h1');
         if (h1 && h1.innerText) title = h1.innerText.trim();
         let history = GM_getValue('rt2_history', []);
-        history = history.filter(item => item.id !== threadId);
-        history.unshift({ id: threadId, title, date: new Date().toLocaleString() });
+        history = history.filter(item => item.id !== id);
+        history.unshift({ id, title, type, date: new Date().toLocaleString() });
         if (history.length > 100) history.pop();
         GM_setValue('rt2_history', history);
     }
@@ -127,9 +144,13 @@
         function getFavorites() { return GM_getValue('rt2_favorites', []); }
         function setFavorites(f) { GM_setValue('rt2_favorites', f); }
         function isFav(id) { return getFavorites().some(f => f.id === id); }
-        function toggleFav(id, title) {
+        function toggleFav(item) {
             let favs = getFavorites();
-            favs = isFav(id) ? favs.filter(f => f.id !== id) : [{ id, title }, ...favs];
+            if (isFav(item.id)) {
+                favs = favs.filter(f => f.id !== item.id);
+            } else {
+                favs.unshift({ id: item.id, title: item.title, type: item.type || 't' });
+            }
             setFavorites(favs);
         }
         function buildItem(item, tab) {
@@ -139,9 +160,10 @@
             favBtn.className = 'rt2-dd-item-fav' + (isFav(item.id) ? ' active' : '');
             favBtn.innerHTML = '★';
             favBtn.title = isFav(item.id) ? 'Quitar de favoritos' : 'Añadir a favoritos';
-            favBtn.addEventListener('click', () => { toggleFav(item.id, item.title); renderDropdown(currentTab); });
+            favBtn.addEventListener('click', () => { toggleFav(item); renderDropdown(currentTab); });
             const link = document.createElement('a');
-            link.href = `/foro/showthread.php?t=${item.id}`;
+            const paramType = item.type || 't';
+            link.href = `/foro/showthread.php?${paramType}=${item.id}`;
             link.textContent = item.title;
             link.title = item.title;
             const delBtn = document.createElement('button');
@@ -225,15 +247,15 @@
         window.addEventListener('scroll', () => { if (dropdown.classList.contains('visible')) positionDropdown(); }, true);
     }
     function injectFavoriteButtonInThread() {
-        const params = new URLSearchParams(window.location.search);
-        const threadId = params.get('t');
-        if (!threadId) return;
+        const threadData = Roto2ToolsUtils.getRealThreadData();
+        if (!threadData) return;
+        const { id, type } = threadData;
         const h1 = document.querySelector('#container > section h1')
             || document.querySelector('.without-bottom-corners h1')
             || document.querySelector('h1');
         if (!h1) return;
         const title = h1.innerText.trim();
-        const isFavNow = GM_getValue('rt2_favorites', []).some(f => f.id === threadId);
+        const isFavNow = GM_getValue('rt2_favorites', []).some(f => f.id === id);
         const star = document.createElement('button');
         star.id = 'rt2-fav-thread-btn';
         star.title = isFavNow ? 'Quitar de favoritos' : 'Añadir a favoritos';
@@ -241,14 +263,14 @@
         if (isFavNow) star.classList.add('is-fav');
         star.addEventListener('click', () => {
             let f = GM_getValue('rt2_favorites', []);
-            if (f.some(x => x.id === threadId)) {
-                f = f.filter(x => x.id !== threadId);
+            if (f.some(x => x.id === id)) {
+                f = f.filter(x => x.id !== id);
                 star.textContent = '☆';
                 star.classList.remove('is-fav');
                 star.title = 'Añadir a favoritos';
                 Roto2ToolsUtils.showToast('info', 'Eliminado de favoritos.', 'Roto2Tools');
             } else {
-                f.unshift({ id: threadId, title });
+                f.unshift({ id, title, type });
                 star.textContent = '★';
                 star.classList.add('is-fav');
                 star.title = 'Quitar de favoritos';
@@ -256,7 +278,11 @@
             }
             GM_setValue('rt2_favorites', f);
         });
-        h1.parentNode.insertBefore(star, h1.nextSibling);
+        if (h1.parentElement && h1.parentElement.style.display === 'flex') {
+            h1.parentElement.appendChild(star);
+        } else {
+            h1.parentNode.insertBefore(star, h1.nextSibling);
+        }
     }
     const Roto2ToolsMenu = {
         create: function (options) {
