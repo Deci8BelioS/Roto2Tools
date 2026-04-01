@@ -592,7 +592,7 @@ details.spoiler-quote > summary {
     text-shadow: 0 2px 4px #000;
 }
 .rt2-thread-title-white {
-    color: #ffffff;
+    color: #ffffff!important;
 }
 .rt2-about-logo-row {
     display: flex;
