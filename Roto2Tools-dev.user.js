@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.3-3d
+// @version         1.8.4d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -20,9 +20,9 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.3-3d
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.3-3d
-// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.3-3d
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.4d
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.4d
+// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.4d
 // ==/UserScript==
 
 (function () {
@@ -45,7 +45,7 @@
     const Roto2ToolsUtils = {
         getRegex(userInput, isRegex, wholeWords = true) {
             if (isRegex) return new RegExp(userInput, 'i');
-            let escaped = userInput.replace(/[-[\]\\/{}()*+?.\\\^$|]/g, '\\$&');
+            let escaped = userInput.replace(/[-[\]\\/{}()*+?.,\\^$|#]/g, '\\$&');
             escaped = applyAccentGroups(escaped)
                 .replace(/[ ]*[,]+[ ]*$/, '')
                 .replace(/[ ]*[,]+[ ]*/g, '|');
@@ -68,19 +68,19 @@
             return new RegExp(pattern, 'i');
         },
         eliminarAdyacentes(hr) {
-            const next = hr.nextElementSibling;
-            if (next?.tagName === 'SEPARATOR' &&
-                hr.getBoundingClientRect().bottom === next.getBoundingClientRect().top) {
+            while (true) {
+                const next = hr.nextElementSibling;
+                if (!next || next.tagName !== 'SEPARATOR') break;
+                if (hr.getBoundingClientRect().bottom !== next.getBoundingClientRect().top) break;
                 next.remove();
-                if (hr.nextElementSibling) this.eliminarAdyacentes(hr);
             }
         },
         applyButtonInteractionEffects(btn) {
             if (!btn) return;
             const SHADOW = '0px 2px 4px #000000';
-            btn.addEventListener('mousedown', () => { btn.style.boxShadow = 'none';  btn.style.transform = 'translateY(3px)'; });
-            btn.addEventListener('mouseup', () => { btn.style.boxShadow = SHADOW;  btn.style.transform = 'none'; });
-            btn.addEventListener('mouseleave', () => { btn.style.boxShadow = SHADOW;  btn.style.transform = 'none'; });
+            btn.addEventListener('mousedown', () => { btn.style.boxShadow = 'none'; btn.style.transform = 'translateY(3px)'; });
+            btn.addEventListener('mouseup', () => { btn.style.boxShadow = SHADOW; btn.style.transform = 'none'; });
+            btn.addEventListener('mouseleave', () => { btn.style.boxShadow = SHADOW; btn.style.transform = 'none'; });
         },
         applyTooltip(el, content) {
             if (el) el.title = content;
@@ -161,9 +161,11 @@
         const setFavorites = favs => GM_setValue('rt2_favorites', favs);
         const isFav = id => getFavorites().some(f => f.id === id);
         function toggleFav(item) {
-            const favs = isFav(item.id)
-                ? getFavorites().filter(f => f.id !== item.id)
-                : [{ id: item.id, title: item.title, type: item.type || 't' }, ...getFavorites()];
+            const currentFavs = getFavorites();
+            const alreadyFav = currentFavs.some(f => f.id === item.id);
+            const favs = alreadyFav
+                ? currentFavs.filter(f => f.id !== item.id)
+                : [{ id: item.id, title: item.title, type: item.type || 't' }, ...currentFavs];
             setFavorites(favs);
         }
         function positionDropdown() {
@@ -174,10 +176,11 @@
         function buildItem(item, tab) {
             const row = document.createElement('div');
             row.className = 'rt2-dd-item';
+            const isItemFav = isFav(item.id);
             const favBtn = document.createElement('button');
-            favBtn.className = `rt2-dd-item-fav${isFav(item.id) ? ' active' : ''}`;
+            favBtn.className = `rt2-dd-item-fav${isItemFav ? ' active' : ''}`;
             favBtn.innerHTML = '★';
-            favBtn.title = isFav(item.id) ? 'Quitar de favoritos' : 'Añadir a favoritos';
+            favBtn.title = isItemFav ? 'Quitar de favoritos' : 'Añadir a favoritos';
             favBtn.addEventListener('click', () => { toggleFav(item); renderDropdown(currentTab); });
             const link = document.createElement('a');
             link.href = `/foro/showthread.php?${item.type || 't'}=${item.id}`;
@@ -189,7 +192,8 @@
             delBtn.title = tab === 'history' ? 'Quitar del historial' : 'Quitar de favoritos';
             delBtn.addEventListener('click', () => {
                 if (tab === 'history') {
-                    GM_setValue('rt2_history', GM_getValue('rt2_history', []).filter(h => h.id !== item.id));
+                    const hist = GM_getValue('rt2_history', []);
+                    GM_setValue('rt2_history', hist.filter(h => h.id !== item.id));
                 } else {
                     setFavorites(getFavorites().filter(f => f.id !== item.id));
                 }
@@ -431,7 +435,7 @@
                     input.focus();
                 }
                 addButton.addEventListener('click', addFromInput);
-                input.addEventListener('keypress', e => {
+                input.addEventListener('keydown', e => {
                     if (e.key === 'Enter') { e.preventDefault(); addFromInput(); }
                 });
                 currentTags.forEach(t => renderTag(t));
@@ -500,7 +504,7 @@
                     a.href = url;
                     a.download = `roto2tools-backup-${new Date().toISOString().slice(0, 10)}.json`;
                     a.click();
-                    URL.revokeObjectURL(url);
+                    setTimeout(() => URL.revokeObjectURL(url), 150);
                     Roto2ToolsUtils.showToast('success', 'Backup exportado correctamente.', 'Roto2Tools');
                 });
                 const importLabel = document.createElement('label');
@@ -555,7 +559,7 @@
                 { id: 'ocultar-hilos', title: 'Ocultar Hilos', icon: 'fa-solid fa-eye-slash', content: ocultarHilosComp.element, color: COLORS.hideThread },
                 { id: 'resaltar-users', title: 'Resaltar Usuarios', icon: 'fa-solid fa-user-check', content: resaltarContactosComp.element, color: COLORS.highlightContact },
                 { id: 'ocultar-users', title: 'Ocultar Usuarios', icon: 'fa-solid fa-user-slash', content: ocultarContactosComp.element, color: COLORS.hideContact },
-                { id: 'acerca-de', title: 'Acerca de', icon: 'fa-solid fa-circle-info', content: aboutSection.element,  color: COLORS.info },
+                { id: 'acerca-de', title: 'Acerca de', icon: 'fa-solid fa-circle-info', content: aboutSection.element, color: COLORS.info },
             ];
             const makeEl = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; return e; };
             const modalEl = makeEl('div', 'modal fade');
@@ -639,6 +643,10 @@
             const elementos = document.querySelectorAll('section.without-bottom-corners > div');
             const threadContainer = document.querySelector('main > div > section');
             const elementosOcultos = [];
+            const hideContactPairs = ocultarContactos.map(p => [p, Roto2ToolsUtils.getRegex(p, false, true)]);
+            const highlightContactPairs = resaltarContactos.map(p => [p, Roto2ToolsUtils.getRegex(p, false, true)]);
+            const hideHilosPairs = ocultarHilos.map(p => [p, Roto2ToolsUtils.getRegex(p, false, true)]);
+            const highlightHilosPairs = resaltarHilos.map(p => [p, Roto2ToolsUtils.getRegex(p, false, true)]);
             elementos.forEach(el => {
                 const tituloSpan = el.querySelector('[id*="thread_title_"] > span');
                 if (!tituloSpan) return;
@@ -646,10 +654,10 @@
                 const textTitle = titleLink?.innerText.toLowerCase() ?? '';
                 const textoTituloSpan = tituloSpan.innerText.toLowerCase();
                 let modifiedHtml = tituloSpan.innerHTML;
-                const hideContact = ocultarContactos.some(p => Roto2ToolsUtils.getRegex(p, false, true).test(textTitle));
-                const highlightContact = resaltarContactos.some(p => Roto2ToolsUtils.getRegex(p, false, true).test(textTitle));
-                const matchedHide = ocultarHilos.filter(p => Roto2ToolsUtils.getRegex(p, false, true).test(textoTituloSpan));
-                const matchedHighlight = resaltarHilos.filter(p => Roto2ToolsUtils.getRegex(p, false, true).test(textoTituloSpan));
+                const hideContact = hideContactPairs.some(([, r]) => r.test(textTitle));
+                const highlightContact = highlightContactPairs.some(([, r]) => r.test(textTitle));
+                const matchedHide = hideHilosPairs.filter(([, r]) => r.test(textoTituloSpan)).map(([p]) => p);
+                const matchedHighlight = highlightHilosPairs.filter(([, r]) => r.test(textoTituloSpan)).map(([p]) => p);
                 const mustHide = hideContact || matchedHide.length > 0;
                 const applyBaseStyles = mustHide || highlightContact || matchedHighlight.length > 0;
                 if (hideContact) el.classList.add('rt2-thread-hide-contact');
@@ -688,6 +696,7 @@
             if (elementosOcultos.length > 0 && threadContainer) {
                 const hiddenContainer = document.createElement('div');
                 hiddenContainer.className = 'rt2-hidden-threads-container';
+                hiddenContainer.style.maxHeight = '0px';
                 elementosOcultos.forEach(el => {
                     el.classList.add('rt2-hidden-thread-item');
                     hiddenContainer.appendChild(el);
@@ -705,18 +714,20 @@
                     hiddenContainer.style.maxHeight = isHidden ? `${hiddenContainer.scrollHeight}px` : '0px';
                     spoilerBtn.style.backgroundColor = isHidden ? '#4a4a4a' : '';
                 });
-                window.addEventListener('resize', () => {
+                const onResize = () => {
                     if (hiddenContainer.style.maxHeight !== '0px') {
                         hiddenContainer.style.maxHeight = `${hiddenContainer.scrollHeight}px`;
                     }
-                });
+                };
+                window.addEventListener('resize', onResize);
                 threadContainer.append(hiddenContainer, spoilerBtn);
             }
         },
         processMessages({ ocultarContactos, resaltarContactos }) {
+            const postmenus = document.querySelectorAll('div[id^="postmenu_"]');
             if (resaltarContactos.length > 0) {
                 const regex = Roto2ToolsUtils.getRegexContacto(resaltarContactos.join(','), true);
-                document.querySelectorAll('div[id^="postmenu_"]').forEach(postmenu => {
+                postmenus.forEach(postmenu => {
                     const userLink = postmenu.querySelector('a[href*="member.php"]');
                     if (!userLink || userLink.classList.contains('resaltado')) return;
                     if (!regex.test(userLink.textContent.trim())) return;
@@ -729,7 +740,7 @@
             }
             if (ocultarContactos.length > 0) {
                 const regex = Roto2ToolsUtils.getRegexContacto(ocultarContactos.join(','), true);
-                document.querySelectorAll('div[id^="postmenu_"]').forEach(postmenu => {
+                postmenus.forEach(postmenu => {
                     const userLink = postmenu.querySelector('a[href*="member.php"]');
                     if (!userLink || !regex.test(userLink.textContent.trim())) return;
                     const editEl = postmenu.closest('[id^="post"]')?.closest('[id^="edit"]');
