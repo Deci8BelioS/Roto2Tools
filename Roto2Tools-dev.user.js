@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.4.1d
+// @version         1.8.5d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -20,9 +20,9 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.4.1d
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.4.1d
-// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.4.1d
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.5d
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.5d
+// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.5d
 // ==/UserScript==
 
 (function () {
@@ -642,13 +642,28 @@
             const elementos = document.querySelectorAll('section.without-bottom-corners > div');
             const threadContainer = document.querySelector('main > div > section');
             const elementosOcultos = [];
+            const favorites = GM_getValue('rt2_favorites', []);
+            const favIds = new Set(favorites.map(f => String(f.id)));
             const hideContactPairs = ocultarContactos.map(p => [p, Roto2ToolsUtils.getRegex(p, false, true)]);
             const highlightContactPairs = resaltarContactos.map(p => [p, Roto2ToolsUtils.getRegex(p, false, true)]);
             const hideHilosPairs = ocultarHilos.map(p => [p, Roto2ToolsUtils.getRegex(p, false, true)]);
             const highlightHilosPairs = resaltarHilos.map(p => [p, Roto2ToolsUtils.getRegex(p, false, true)]);
             elementos.forEach(el => {
-                const tituloSpan = el.querySelector('[id*="thread_title_"] > span');
+                const titleAnchor = el.querySelector('[id*="thread_title_"]');
+                const tituloSpan = titleAnchor?.querySelector('span');
                 if (!tituloSpan) return;
+                const threadId = titleAnchor.id.replace('thread_title_', '');
+                if (favIds.has(threadId)) {
+                    el.style.backgroundColor = '#646400';
+                    const forumIcon = el.querySelector('.forum_title_icon');
+                    if (forumIcon) {
+                        const star = document.createElement('span');
+                        star.className = 'rt2-fav-star-icon';
+                        star.style.cssText = 'color:#ffff00; width: 100%; max-width: 24px; height: 28px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; margin-right: 0;';
+                        star.innerHTML = '<i class="fa-solid fa-star"></i>';
+                        forumIcon.replaceWith(star);
+                    }
+                }
                 const titleLink = [...el.querySelectorAll('a')].find(a => a.innerText.trim().startsWith('@'));
                 const textTitle = titleLink?.innerText.toLowerCase() ?? '';
                 const textoTituloSpan = tituloSpan.innerText.toLowerCase();
