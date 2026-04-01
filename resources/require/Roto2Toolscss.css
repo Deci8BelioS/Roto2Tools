@@ -275,14 +275,13 @@
     border-radius: 6px;
     cursor: pointer;
     font-weight: 700;
-    background: #5cb85c;
+    background: #FD5D4D;
     transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
     text-shadow: 0px 2px 4px #000;
 }
 .add-tag-btn:hover {
-    background: #4cae4c;
     transform: translateY(-2px);
-    box-shadow: 0 5px 14px #5cb85c55;
+    box-shadow: 0 5px 14px #FD5D4D55;
 }
 .add-tag-btn:active {
     transform: translateY(1px);
@@ -335,11 +334,10 @@
     filter: brightness(0.9);
 }
 .rt2-button-save {
-    background: linear-gradient(145deg, #5cb85c, #4caf50);
+    background-color: #FD5D4D;
 }
 .rt2-button-save:hover {
-    background: linear-gradient(145deg, #6dd46d, #5cc85c);
-    box-shadow: 0 8px 20px #4caf5055;
+    box-shadow: 0 8px 20px #FD5D4D55;
 }
 .rt2-button-close {
     background-color: #555555cc;
