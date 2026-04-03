@@ -742,3 +742,6 @@ details.spoiler-quote > summary:hover {
     color: #fff;
     margin-bottom: 8px;
 }
+.rt2-oculto {
+    color: var(--text-color);
+}

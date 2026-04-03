@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.5.1d
+// @version         1.8.6d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -20,9 +20,9 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.5.1d
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.5.1d
-// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.5.1d
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.6d
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.6d
+// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.6d
 // ==/UserScript==
 
 (function () {
@@ -61,10 +61,10 @@
             const names = input.split(',').map(n => n.trim()).filter(Boolean);
             if (names.length === 0) return new RegExp('(?!)');
             const parts = names.map(name =>
-                applyAccentGroups(name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'))
+                applyAccentGroups(name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).replace(/\s+/g, '\\s+')
             );
             const joined = parts.join('|');
-            const pattern = wholeWords ? `\\b(${joined})\\b` : joined;
+            const pattern = wholeWords ? `(?<!\\w)(${joined})(?!\\w)` : `(${joined})`;
             return new RegExp(pattern, 'i');
         },
         eliminarAdyacentes(hr) {
@@ -77,9 +77,15 @@
         },
         applyButtonInteractionEffects(btn) {
             if (!btn) return;
-            btn.addEventListener('mousedown', () => { btn.style.transform = 'translateY(3px)'; });
-            btn.addEventListener('mouseup', () => { btn.style.transform = 'none'; });
-            btn.addEventListener('mouseleave', () => { btn.style.transform = 'none'; });
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'translateY(3px)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'none';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'none';
+            });
         },
         applyTooltip(el, content) {
             if (el) el.title = content;
@@ -108,29 +114,22 @@
             }, 4000);
         },
         async fetchOnlineList(type) {
-            const url = type === 'buddy'
-                ? '/foro/profile.php?do=buddylist&nojs=1'
-                : '/foro/profile.php?do=ignorelist&nojs=1';
+            const url = type === 'buddy' ? '/foro/profile.php?do=buddylist&nojs=1' : '/foro/profile.php?do=ignorelist&nojs=1';
             const response = await fetch(url);
             const text = await response.text();
             const doc = new DOMParser().parseFromString(text, 'text/html');
-            const selector = type === 'buddy'
-                ? 'div[id^="buddylist_user"] a[href*="member.php"]'
-                : '#ignorelist li a[href*="member.php"]';
-            return Array.from(doc.querySelectorAll(selector))
-                .map(a => a.textContent.trim())
-                .filter(Boolean);
+            const selector = type === 'buddy' ? 'div[id^="buddylist_user"] a[href*="member.php"]' : '#ignorelist li a[href*="member.php"]';
+            return Array.from(doc.querySelectorAll(selector)).map(a => a.textContent.trim()).filter(Boolean);
         },
         getRealThreadData() {
             const params = new URLSearchParams(window.location.search);
             let id = params.get('t');
             let type = 't';
             if (!id) {
-                const match = document
-                    .querySelector('a[onclick*="showthread.php?t="]')
-                    ?.getAttribute('onclick')
-                    ?.match(/[?&]t=(\d+)/);
-                if (match) { id = match[1]; }
+                const match = document.querySelector('a[onclick*="showthread.php?t="]')?.getAttribute('onclick')?.match(/[?&]t=(\d+)/);
+                if (match) {
+                    id = match[1];
+                }
             }
             if (!id) {
                 id = params.get('p');
@@ -162,9 +161,7 @@
         function toggleFav(item) {
             const currentFavs = getFavorites();
             const alreadyFav = currentFavs.some(f => f.id === item.id);
-            const favs = alreadyFav
-                ? currentFavs.filter(f => f.id !== item.id)
-                : [{ id: item.id, title: item.title, type: item.type || 't' }, ...currentFavs];
+            const favs = alreadyFav ? currentFavs.filter(f => f.id !== item.id) : [{ id: item.id, title: item.title, type: item.type || 't' }, ...currentFavs];
             setFavorites(favs);
         }
         function positionDropdown() {
@@ -217,9 +214,7 @@
             for (const t of ['history', 'favorites']) {
                 const btn = document.createElement('button');
                 btn.className = `rt2-dd-tab${t === tab ? ' active' : ''}`;
-                btn.innerHTML = t === 'history'
-                    ? '<i class="fa-solid fa-clock-rotate-left"></i> Historial'
-                    : '<i class="fa-solid fa-star"></i> Favoritos';
+                btn.innerHTML = t === 'history' ? '<i class="fa-solid fa-clock-rotate-left"></i> Historial' : '<i class="fa-solid fa-star"></i> Favoritos';
                 btn.addEventListener('click', () => renderDropdown(t));
                 tabsBar.appendChild(btn);
             }
@@ -230,9 +225,7 @@
             if (items.length === 0) {
                 const empty = document.createElement('div');
                 empty.className = 'rt2-dd-empty';
-                empty.textContent = tab === 'history'
-                    ? 'No hay hilos en el historial.'
-                    : 'No tienes favoritos guardados.';
+                empty.textContent = tab === 'history' ? 'No hay hilos en el historial.' : 'No tienes favoritos guardados.';
                 panel.appendChild(empty);
             } else {
                 items.forEach(item => panel.appendChild(buildItem(item, tab)));
@@ -357,22 +350,21 @@
                     importBtn.type = 'button';
                     importBtn.className = 'import-list-btn';
                     importBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Importar FC';
-                    Roto2ToolsUtils.applyTooltip(importBtn,
-                        `Importar lista de ${importType === 'buddy' ? 'amigos' : 'ignorados'} desde Forocoches`);
+                    Roto2ToolsUtils.applyTooltip(importBtn, `Importar lista de ${importType === 'buddy' ? 'amigos' : 'ignorados'} desde Forocoches`);
                     importBtn.addEventListener('click', async () => {
                         Roto2ToolsUtils.showToast('info', 'Obteniendo lista desde Forocoches...', 'Roto2Tools');
                         try {
                             const users = await Roto2ToolsUtils.fetchOnlineList(importType);
                             let added = 0;
                             users.forEach(u => {
-                                if (!currentTags.has(u)) { currentTags.add(u); renderTag(u); added++; }
+                                if (!currentTags.has(u)) {
+                                    currentTags.add(u);
+                                    renderTag(u);
+                                    added++;
+                                }
                             });
                             updateCount();
-                            Roto2ToolsUtils.showToast(
-                                added > 0 ? 'success' : 'info',
-                                added > 0 ? `Importados ${added} usuario(s).` : 'No hay usuarios nuevos.',
-                                'Roto2Tools'
-                            );
+                            Roto2ToolsUtils.showToast(added > 0 ? 'success' : 'info', added > 0 ? `Importados ${added} usuario(s).` : 'No hay usuarios nuevos.', 'Roto2Tools');
                         } catch {
                             Roto2ToolsUtils.showToast('error', 'Error al importar la lista.', 'Roto2Tools');
                         }
@@ -535,11 +527,7 @@
                                 GM_setValue('rt2_favorites', parsed.favoritos);
                                 ok = true;
                             }
-                            Roto2ToolsUtils.showToast(
-                                ok ? 'success' : 'error',
-                                ok ? 'Backup importado. Guarda para aplicar los cambios.' : 'Archivo JSON no válido.',
-                                'Roto2Tools'
-                            );
+                            Roto2ToolsUtils.showToast(ok ? 'success' : 'error', ok ? 'Backup importado. Guarda para aplicar los cambios.' : 'Archivo JSON no válido.', 'Roto2Tools');
                         } catch {
                             Roto2ToolsUtils.showToast('error', 'Error al leer el archivo.', 'Roto2Tools');
                         }
@@ -687,18 +675,14 @@
                     const resto = dashIdx !== -1 ? textTitle.substring(dashIdx + 1).trim() : '';
                     const color = hideContact ? COLORS.hideContact : COLORS.highlightContact;
                     const newSpan = document.createElement('span');
-                    newSpan.innerHTML =
-                        `<span style="color:${color};font-weight:bold;font-size:.75rem;text-shadow:0px 2px 4px #000;">${nick}</span>` +
-                        ` <span style="color:var(--gray-text);font-size:.75rem;">${resto}</span>`;
+                    newSpan.innerHTML =`<span style="color:${color};font-weight:bold;font-size:.75rem;text-shadow:0px 2px 4px #000;">${nick}</span>` + ` <span style="color:var(--gray-text);font-size:.75rem;">${resto}</span>`;
                     titleLink.parentNode.insertBefore(newSpan, titleLink);
                     titleLink.remove();
                 }
                 const applyKeywordColor = (keywords, color) => {
                     keywords.forEach(p => {
                         const r = new RegExp(Roto2ToolsUtils.getRegex(p, false, true).source, 'ig');
-                        modifiedHtml = modifiedHtml.replace(r, m =>
-                            `<span style="font-weight:bold;color:${color};">${m}</span>`
-                        );
+                        modifiedHtml = modifiedHtml.replace(r, m => `<span style="font-weight:bold;color:${color};">${m}</span>`);
                     });
                 };
                 if (matchedHighlight.length > 0) applyKeywordColor(matchedHighlight, COLORS.highlightThread);
@@ -739,38 +723,40 @@
             }
         },
         processMessages({ ocultarContactos, resaltarContactos }) {
-            const postmenus = document.querySelectorAll('div[id^="postmenu_"]');
+            const postmenus = document.querySelectorAll('div[id*="postmenu"], section.without-bottom-corners');
             if (resaltarContactos.length > 0) {
                 const regex = Roto2ToolsUtils.getRegexContacto(resaltarContactos.join(','), true);
                 postmenus.forEach(postmenu => {
-                    const userLink = postmenu.querySelector('a[href*="member.php"]');
+                    const userLink = postmenu.querySelector('a[href*="member.php?u="], a[href*="member.php?userid="], a[href*="member.php"]');
                     if (!userLink || userLink.classList.contains('resaltado')) return;
                     if (!regex.test(userLink.textContent.trim())) return;
                     userLink.classList.add('resaltado');
-                    postmenu.closest('[id^="post"]')
-                        ?.closest('[id^="edit"]')
-                        ?.querySelector('section')
-                        ?.classList.add('resaltado');
+                    postmenu.querySelector('section')?.classList.add('resaltado');
+                    postmenu.classList.add('resaltado');
                 });
             }
             if (ocultarContactos.length > 0) {
                 const regex = Roto2ToolsUtils.getRegexContacto(ocultarContactos.join(','), true);
                 postmenus.forEach(postmenu => {
-                    const userLink = postmenu.querySelector('a[href*="member.php"]');
+                    const userLink = postmenu.querySelector('a[href*="member.php?u="], a[href*="member.php?userid="], a[href*="member.php"]');
                     if (!userLink || !regex.test(userLink.textContent.trim())) return;
-                    const editEl = postmenu.closest('[id^="post"]')?.closest('[id^="edit"]');
-                    if (!editEl || editEl.classList.contains('oculto')) return;
-                    const sectionEl = editEl.querySelector('section');
-                    if (!sectionEl || sectionEl.classList.contains('oculto')) return;
-                    sectionEl.classList.add('oculto');
-                    editEl.classList.add('oculto');
+                    const sectionEl = postmenu.matches('section') ? postmenu : postmenu.querySelector('section');
+                    const editEl = postmenu.closest('[id^="edit"]') || postmenu.closest('[id^="post"]') || sectionEl || postmenu;
+                    if (!editEl || editEl.classList.contains('rt2-oculto')) return;
+                    const targetEl = sectionEl || editEl;
+                    if (targetEl.classList.contains('rt2-oculto')) return;
+                    targetEl.classList.add('rt2-oculto');
+                    editEl.classList.add('rt2-oculto');
+                    const separatorLargeElement = editEl.querySelector('separator-large');
+                    if (separatorLargeElement) separatorLargeElement.remove();
                     const spoiler = document.createElement('details');
                     spoiler.className = 'spoiler';
                     const summary = document.createElement('summary');
                     summary.innerText = 'El mensaje de este usuario está oculto porque está en la lista de Ocultar Usuarios';
-                    editEl.before(spoiler);
-                    spoiler.append(summary, editEl);
-                    editEl.querySelector('separator-large')?.remove();
+                    if (editEl.parentNode) {
+                        editEl.parentNode.insertBefore(spoiler, editEl);
+                        spoiler.append(summary, editEl);
+                    }
                 });
                 document.querySelectorAll('.quote').forEach(quoteEl => {
                     const boldAuthor = quoteEl.querySelector('div > div:first-child b');
