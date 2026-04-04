@@ -180,5 +180,4 @@ div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-chil
 }
 div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div.date-and-time-gray {
     text-align: center;
-    margin-bottom: 30px;
 }
