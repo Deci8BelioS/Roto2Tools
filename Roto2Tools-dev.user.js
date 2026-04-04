@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.7-2d
+// @version         1.8.8d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -20,36 +20,45 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.7-2d
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.7-2d
-// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.7-2d
-// @resource        cust0mMensajes https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/cust0mMensajes.css?v=1.8.7-2d
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.8d
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.8d
+// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.8d
+// @resource        cust0mMensajes https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/cust0mMensajes.css?v=1.8.8d
 // ==/UserScript==
 
 (function () {
     'use strict';
-    const COLORS = {
-        hideContact: '#FF2626',
-        highlightContact: '#2FC726',
-        highlightThread: '#EDD40E',
-        hideThread: '#FD5D4D',
-        info: '#589cfc',
+    // ─────────────────────────────────────────────────────────────────────────────
+    // CONFIGURACIÓN POR DEFECTO
+    // ─────────────────────────────────────────────────────────────────────────────
+    const DEFAULT_SETTINGS = {
+        cust0mMensajes: true,
+        expandirLayout: true,
+        registrarHistorial: true,
+        botonFavoritoHilo: true,
+        limiteHistorial: 100,
+        colores: {
+            hideContact: '#FF2626',
+            highlightContact: '#2FC726',
+            highlightThread: '#EDD40E',
+            hideThread: '#FD5D4D',
+            info: '#589cfc',
+        },
     };
+    const _saved = GM_getValue('rt2_settings', {});
+    const settings = {...DEFAULT_SETTINGS, ..._saved, colores: { ...DEFAULT_SETTINGS.colores, ...(_saved.colores || {}) }};
+    const COLORS = settings.colores;
+    // ─────────────────────────────────────────────────────────────────────────────
+    // UTILIDADES
+    // ─────────────────────────────────────────────────────────────────────────────
     function applyAccentGroups(str) {
-        return str
-            .replace(/[aáà]/gi, '[aáà]')
-            .replace(/[eéè]/gi, '[eéè]')
-            .replace(/[iíï]/gi, '[iíï]')
-            .replace(/[oóò]/gi, '[oóò]')
-            .replace(/[uúü]/gi, '[uúü]');
+        return str.replace(/[aáà]/gi, '[aáà]').replace(/[eéè]/gi, '[eéè]').replace(/[iíï]/gi, '[iíï]').replace(/[oóò]/gi, '[oóò]').replace(/[uúü]/gi, '[uúü]');
     }
     const Roto2ToolsUtils = {
         getRegex(userInput, isRegex, wholeWords = true) {
             if (isRegex) return new RegExp(userInput, 'i');
             let escaped = userInput.replace(/[-[\]\\/{}()*+?.,\\^$|#]/g, '\\$&');
-            escaped = applyAccentGroups(escaped)
-                .replace(/[ ]*[,]+[ ]*$/, '')
-                .replace(/[ ]*[,]+[ ]*/g, '|');
+            escaped = applyAccentGroups(escaped).replace(/[ ]*[,]+[ ]*$/, '').replace(/[ ]*[,]+[ ]*/g, '|');
             const core = `(${escaped})`;
             const pattern = wholeWords ? `(?<!\\w)${core}(?!\\w)` : core;
             try {
@@ -78,15 +87,9 @@
         },
         applyButtonInteractionEffects(btn) {
             if (!btn) return;
-            btn.addEventListener('mousedown', () => {
-                btn.style.transform = 'translateY(3px)';
-            });
-            btn.addEventListener('mouseup', () => {
-                btn.style.transform = 'none';
-            });
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = 'none';
-            });
+            btn.addEventListener('mousedown', () => { btn.style.transform = 'translateY(3px)'; });
+            btn.addEventListener('mouseup', () => { btn.style.transform = 'none'; });
+            btn.addEventListener('mouseleave', () => { btn.style.transform = 'none'; });
         },
         applyTooltip(el, content) {
             if (el) el.title = content;
@@ -127,30 +130,34 @@
             let id = params.get('t');
             let type = 't';
             if (!id) {
-                const match = document.querySelector('a[onclick*="showthread.php?t="]')?.getAttribute('onclick')?.match(/[?&]t=(\d+)/);
-                if (match) {
-                    id = match[1];
-                }
+                const match = document.querySelector('a[onclick*="showthread.php?t="]')
+                    ?.getAttribute('onclick')?.match(/[?&]t=(\d+)/);
+                if (match) id = match[1];
             }
-            if (!id) {
-                id = params.get('p');
-                type = 'p';
-            }
+            if (!id) { id = params.get('p'); type = 'p'; }
             return id ? { id, type } : null;
         },
     };
+    // ─────────────────────────────────────────────────────────────────────────────
+    // HISTORIAL
+    // ─────────────────────────────────────────────────────────────────────────────
     function trackHistory() {
+        if (!settings.registrarHistorial) return;
         const threadData = Roto2ToolsUtils.getRealThreadData();
         if (!threadData) return;
         const { id, type } = threadData;
         let title = document.title.replace(' - ForoCoches', '').trim();
         const h1 = document.querySelector('.pull-left > h1') || document.querySelector('h1');
         if (h1?.innerText) title = h1.innerText.trim();
+        const limit = Math.max(10, Math.min(500, Number(settings.limiteHistorial) || 100));
         let history = GM_getValue('rt2_history', []).filter(item => item.id !== id);
         history.unshift({ id, title, type, date: new Date().toLocaleString() });
-        if (history.length > 100) history.pop();
+        if (history.length > limit) history = history.slice(0, limit);
         GM_setValue('rt2_history', history);
     }
+    // ─────────────────────────────────────────────────────────────────────────────
+    // DROPDOWN HISTORIAL / FAVORITOS
+    // ─────────────────────────────────────────────────────────────────────────────
     function createHistoryDropdown(anchorEl) {
         const dropdown = document.createElement('div');
         dropdown.id = 'rt2-dropdown';
@@ -189,8 +196,7 @@
             delBtn.title = tab === 'history' ? 'Quitar del historial' : 'Quitar de favoritos';
             delBtn.addEventListener('click', () => {
                 if (tab === 'history') {
-                    const hist = GM_getValue('rt2_history', []);
-                    GM_setValue('rt2_history', hist.filter(h => h.id !== item.id));
+                    GM_setValue('rt2_history', GM_getValue('rt2_history', []).filter(h => h.id !== item.id));
                 } else {
                     setFavorites(getFavorites().filter(f => f.id !== item.id));
                 }
@@ -235,14 +241,12 @@
             const footer = document.createElement('div');
             footer.className = 'rt2-dd-footer';
             const clearBtn = document.createElement('button');
-            const label = tab === 'history' ? 'historial' : 'favoritos';
-            clearBtn.innerHTML = `<i class="fa-solid fa-trash"></i> Borrar ${label}`;
+            clearBtn.innerHTML = `<i class="fa-solid fa-trash"></i> Borrar ${tab === 'history' ? 'historial' : 'favoritos'}`;
             clearBtn.addEventListener('click', () => {
                 if (confirm(`¿Borrar ${tab === 'history' ? 'el historial' : 'todos los favoritos'}?`)) {
                     tab === 'history' ? GM_setValue('rt2_history', []) : setFavorites([]);
                     renderDropdown(tab);
-                    Roto2ToolsUtils.showToast('info',
-                        `${tab === 'history' ? 'Historial' : 'Favoritos'} borrado.`, 'Roto2Tools');
+                    Roto2ToolsUtils.showToast('info', `${tab === 'history' ? 'Historial' : 'Favoritos'} borrado.`, 'Roto2Tools');
                 }
             });
             footer.appendChild(clearBtn);
@@ -260,16 +264,23 @@
             }
         });
         document.addEventListener('click', () => dropdown.classList.remove('visible'));
-        window.addEventListener('resize', () => { if (dropdown.classList.contains('visible')) positionDropdown(); });
-        window.addEventListener('scroll', () => { if (dropdown.classList.contains('visible')) positionDropdown(); }, true);
+        window.addEventListener('resize', () => {
+            if (dropdown.classList.contains('visible')) positionDropdown();
+        });
+        window.addEventListener('scroll', () => {
+            if (dropdown.classList.contains('visible')) positionDropdown();
+        }, true);
     }
+    // ─────────────────────────────────────────────────────────────────────────────
+    // BOTÓN FAVORITO EN HILO
+    // Ahora respeta settings.botonFavoritoHilo
+    // ─────────────────────────────────────────────────────────────────────────────
     function injectFavoriteButtonInThread() {
+        if (!settings.botonFavoritoHilo) return;
         const threadData = Roto2ToolsUtils.getRealThreadData();
         if (!threadData) return;
         const { id, type } = threadData;
-        const h1 = document.querySelector('#container > section h1')
-            || document.querySelector('.without-bottom-corners h1')
-            || document.querySelector('h1');
+        const h1 = document.querySelector('#container > section h1') || document.querySelector('.without-bottom-corners h1') || document.querySelector('h1');
         if (!h1) return;
         const title = h1.innerText.trim();
         const isFavNow = GM_getValue('rt2_favorites', []).some(f => f.id === id);
@@ -301,13 +312,12 @@
             h1.parentNode.insertBefore(star, h1.nextSibling);
         }
     }
+    // ─────────────────────────────────────────────────────────────────────────────
+    // MENÚ PRINCIPAL
+    // ─────────────────────────────────────────────────────────────────────────────
     const Roto2ToolsMenu = {
         create(options) {
-            const {
-                initialResaltarHilos, initialOcultarHilos,
-                initialResaltarContactos, initialOcultarContactos,
-                onSave, scriptVersion,
-            } = options;
+            const {initialResaltarHilos, initialOcultarHilos, initialResaltarContactos, initialOcultarContactos, onSave, scriptVersion} = options;
             const menuBtn = document.createElement('button');
             menuBtn.id = 'rt2-menu-btn';
             menuBtn.className = 'rt2-main-button';
@@ -332,9 +342,7 @@
             createHistoryDropdown(histBtn);
             function createTagInputComponent(title, placeholder, initialValues = [], importType = null) {
                 const currentTags = new Set(
-                    Array.isArray(initialValues)
-                        ? initialValues.map(t => String(t).trim()).filter(Boolean)
-                        : []
+                    Array.isArray(initialValues) ? initialValues.map(t => String(t).trim()).filter(Boolean) : []
                 );
                 const wrapper = document.createElement('div');
                 wrapper.className = 'tag-input-component';
@@ -358,14 +366,14 @@
                             const users = await Roto2ToolsUtils.fetchOnlineList(importType);
                             let added = 0;
                             users.forEach(u => {
-                                if (!currentTags.has(u)) {
-                                    currentTags.add(u);
-                                    renderTag(u);
-                                    added++;
-                                }
+                                if (!currentTags.has(u)) { currentTags.add(u); renderTag(u); added++; }
                             });
                             updateCount();
-                            Roto2ToolsUtils.showToast(added > 0 ? 'success' : 'info', added > 0 ? `Importados ${added} usuario(s).` : 'No hay usuarios nuevos.', 'Roto2Tools');
+                            Roto2ToolsUtils.showToast(
+                                added > 0 ? 'success' : 'info',
+                                added > 0 ? `Importados ${added} usuario(s).` : 'No hay usuarios nuevos.',
+                                'Roto2Tools'
+                            );
                         } catch {
                             Roto2ToolsUtils.showToast('error', 'Error al importar la lista.', 'Roto2Tools');
                         }
@@ -449,6 +457,146 @@
             const ocultarHilosComp = createTagInputComponent('Ocultar Hilos', 'Añadir palabra...', initialOcultarHilos);
             const ocultarContactosComp = createTagInputComponent('Ocultar Usuarios', 'Añadir usuario...', initialOcultarContactos, 'ignore');
             const resaltarContactosComp = createTagInputComponent('Resaltar Usuarios', 'Añadir usuario...', initialResaltarContactos, 'buddy');
+            // ── SECCIÓN AJUSTES ───────────────────────────────────────────────────
+            function createSettingsSection() {
+                const el = document.createElement('div');
+                el.className = 'static-content-section rt2-settings-section';
+                function makeGroup(label) {
+                    const grp = document.createElement('div');
+                    grp.className = 'rt2-settings-group';
+                    const title = document.createElement('h3');
+                    title.className = 'rt2-settings-group-title';
+                    title.textContent = label;
+                    grp.appendChild(title);
+                    return grp;
+                }
+                function makeToggleRow(label, desc, key) {
+                    const row = document.createElement('div');
+                    row.className = 'rt2-settings-row';
+                    const info = document.createElement('div');
+                    info.className = 'rt2-settings-row-info';
+                    const lbl = document.createElement('span');
+                    lbl.className = 'rt2-settings-row-label';
+                    lbl.textContent = label;
+                    info.appendChild(lbl);
+                    if (desc) {
+                        const d = document.createElement('span');
+                        d.className = 'rt2-settings-row-desc';
+                        d.textContent = desc;
+                        info.appendChild(d);
+                    }
+                    const toggle = document.createElement('label');
+                    toggle.className = 'rt2-toggle';
+                    const chk = document.createElement('input');
+                    chk.type = 'checkbox';
+                    chk.checked = !!settings[key];
+                    chk.addEventListener('change', () => { settings[key] = chk.checked; });
+                    const slider = document.createElement('span');
+                    slider.className = 'rt2-toggle-slider';
+                    toggle.append(chk, slider);
+                    row.append(info, toggle);
+                    return row;
+                }
+                function makeColorRow(label, colorKey) {
+                    const row = document.createElement('div');
+                    row.className = 'rt2-settings-row';
+                    const lbl = document.createElement('span');
+                    lbl.className = 'rt2-settings-row-label';
+                    lbl.textContent = label;
+                    const colorWrap = document.createElement('div');
+                    colorWrap.className = 'rt2-color-wrap';
+                    const colorInput = document.createElement('input');
+                    colorInput.type = 'color';
+                    colorInput.value = settings.colores[colorKey];
+                    colorInput.className = 'rt2-color-input';
+                    const hexLabel = document.createElement('code');
+                    hexLabel.className = 'rt2-color-hex';
+                    hexLabel.textContent = colorInput.value;
+                    colorInput.addEventListener('input', () => {
+                        settings.colores[colorKey] = colorInput.value;
+                        hexLabel.textContent = colorInput.value;
+                    });
+                    colorWrap.append(colorInput, hexLabel);
+                    row.append(lbl, colorWrap);
+                    return row;
+                }
+                function makeNumberRow(label, desc, key, min, max) {
+                    const row = document.createElement('div');
+                    row.className = 'rt2-settings-row';
+                    const info = document.createElement('div');
+                    info.className = 'rt2-settings-row-info';
+                    const lbl = document.createElement('span');
+                    lbl.className = 'rt2-settings-row-label';
+                    lbl.textContent = label;
+                    info.appendChild(lbl);
+                    if (desc) {
+                        const d = document.createElement('span');
+                        d.className = 'rt2-settings-row-desc';
+                        d.textContent = desc;
+                        info.appendChild(d);
+                    }
+                    const numInput = document.createElement('input');
+                    numInput.type = 'number';
+                    numInput.min = min;
+                    numInput.max = max;
+                    numInput.value = settings[key];
+                    numInput.className = 'rt2-number-input';
+                    numInput.addEventListener('change', () => {
+                        const v = Math.max(min, Math.min(max, parseInt(numInput.value) || min));
+                        numInput.value = v;
+                        settings[key] = v;
+                    });
+                    row.append(info, numInput);
+                    return row;
+                }
+                const grpFunc = makeGroup('⚙️ Funcionalidades');
+                grpFunc.appendChild(makeToggleRow(
+                    'CSS cust0mMensajes',
+                    'Aplica estilos visuales personalizados a los mensajes del foro.',
+                    'cust0mMensajes'
+                ));
+                grpFunc.appendChild(makeToggleRow(
+                    'Expandir layout',
+                    'Expande el ancho del header y del contenido principal al 100%.',
+                    'expandirLayout'
+                ));
+                grpFunc.appendChild(makeToggleRow(
+                    'Botón favorito en hilo',
+                    'Muestra un botón ★ en el título del hilo para guardarlo como favorito.',
+                    'botonFavoritoHilo'
+                ));
+                grpFunc.appendChild(makeToggleRow(
+                    'Registrar historial',
+                    'Guarda automáticamente los hilos que visitas en el historial.',
+                    'registrarHistorial'
+                ));
+                el.appendChild(grpFunc);
+                const grpHist = makeGroup('🕐 Historial');
+                grpHist.appendChild(makeNumberRow(
+                    'Límite de entradas',
+                    'Número máximo de hilos guardados en el historial (10–500).',
+                    'limiteHistorial', 10, 500
+                ));
+                el.appendChild(grpHist);
+                const grpColors = makeGroup('🎨 Colores de resaltado');
+                grpColors.appendChild(makeColorRow('Ocultar contacto', 'hideContact'));
+                grpColors.appendChild(makeColorRow('Resaltar contacto', 'highlightContact'));
+                grpColors.appendChild(makeColorRow('Resaltar hilo', 'highlightThread'));
+                grpColors.appendChild(makeColorRow('Ocultar hilo', 'hideThread'));
+                el.appendChild(grpColors);
+                const resetLink = document.createElement('button');
+                resetLink.className = 'rt2-settings-reset-link';
+                resetLink.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Restablecer ajustes por defecto';
+                resetLink.addEventListener('click', () => {
+                    if (!confirm('¿Restablecer todos los ajustes a sus valores por defecto?')) return;
+                    GM_setValue('rt2_settings', {});
+                    Roto2ToolsUtils.showToast('info', 'Ajustes restablecidos. Recargando...', 'Roto2Tools');
+                    setTimeout(() => location.reload(), 1000);
+                });
+                el.appendChild(resetLink);
+                return { element: el };
+            }
+            // ── SECCIÓN ACERCA DE ─────────────────────────────────────────────────
             function createAboutSection() {
                 const el = document.createElement('div');
                 el.className = 'static-content-section';
@@ -475,7 +623,7 @@
                 backupTitle.innerHTML = '<i class="fa-solid fa-database"></i> Backup de listas';
                 el.appendChild(backupTitle);
                 const desc = document.createElement('p');
-                desc.textContent = 'Exporta todas tus listas y favoritos a un archivo JSON o importa una copia de seguridad anterior.';
+                desc.textContent = 'Exporta todas tus listas, favoritos y ajustes a un archivo JSON, o importa una copia de seguridad anterior.';
                 el.appendChild(desc);
                 const backupBtns = document.createElement('div');
                 backupBtns.className = 'backup-buttons';
@@ -489,6 +637,7 @@
                         resaltarContactos: resaltarContactosComp.getValues(),
                         ocultarContactos: ocultarContactosComp.getValues(),
                         favoritos: GM_getValue('rt2_favorites', []),
+                        ajustes: GM_getValue('rt2_settings', {}),
                     };
                     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
@@ -528,7 +677,15 @@
                                 GM_setValue('rt2_favorites', parsed.favoritos);
                                 ok = true;
                             }
-                            Roto2ToolsUtils.showToast(ok ? 'success' : 'error', ok ? 'Backup importado. Guarda para aplicar los cambios.' : 'Archivo JSON no válido.', 'Roto2Tools');
+                            if (parsed.ajustes && typeof parsed.ajustes === 'object') {
+                                GM_setValue('rt2_settings', parsed.ajustes);
+                                ok = true;
+                            }
+                            Roto2ToolsUtils.showToast(
+                                ok ? 'success' : 'error',
+                                ok ? 'Backup importado. Guarda para aplicar los cambios.' : 'Archivo JSON no válido.',
+                                'Roto2Tools'
+                            );
                         } catch {
                             Roto2ToolsUtils.showToast('error', 'Error al leer el archivo.', 'Roto2Tools');
                         }
@@ -541,12 +698,14 @@
                 el.appendChild(backupBtns);
                 return { element: el };
             }
+            const settingsSection = createSettingsSection();
             const aboutSection = createAboutSection();
             const sectionsConfig = [
                 { id: 'resaltar-hilos', title: 'Resaltar Hilos', icon: 'fa-solid fa-star', content: resaltarHilosComp.element, color: COLORS.highlightThread, active: true },
                 { id: 'ocultar-hilos', title: 'Ocultar Hilos', icon: 'fa-solid fa-eye-slash', content: ocultarHilosComp.element, color: COLORS.hideThread },
                 { id: 'resaltar-users', title: 'Resaltar Usuarios', icon: 'fa-solid fa-user-check', content: resaltarContactosComp.element, color: COLORS.highlightContact },
                 { id: 'ocultar-users', title: 'Ocultar Usuarios', icon: 'fa-solid fa-user-slash', content: ocultarContactosComp.element, color: COLORS.hideContact },
+                { id: 'ajustes', title: 'Ajustes', icon: 'fa-solid fa-gear', content: settingsSection.element, color: '#a0a8ff' },
                 { id: 'acerca-de', title: 'Acerca de', icon: 'fa-solid fa-circle-info', content: aboutSection.element, color: COLORS.info },
             ];
             const makeEl = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; return e; };
@@ -560,6 +719,11 @@
             const modalHeader = makeEl('div', 'modal-header');
             const versionText = scriptVersion ? ` <small class="rt2-version-text">v${scriptVersion}</small>` : '';
             modalHeader.innerHTML = `<h2 class="modal-title"><img src="https://forocoches.com/foro/images/smilies/goofy.gif" alt="goofy"> Roto2Tools Panel${versionText}</h2>`;
+            const modalCloseX = document.createElement('button');
+            modalCloseX.className = 'rt2-modal-close-x';
+            modalCloseX.setAttribute('aria-label', 'Cerrar');
+            modalCloseX.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            modalHeader.appendChild(modalCloseX);
             const modalBody = makeEl('div', 'modal-body');
             const mainLayout = makeEl('div', 'roto2tools-main-layout');
             const navContainer = makeEl('div', 'roto2tools-nav');
@@ -592,13 +756,14 @@
             const cerrarBtn = makeEl('button', 'rt2-button rt2-button-close');
             cerrarBtn.innerHTML = '<i class="fa-solid fa-xmark"></i> Cerrar';
             const guardarBtn = makeEl('button', 'rt2-button rt2-button-save');
-            guardarBtn.innerHTML = '<i class="fa-solid fa-save"></i> Guardar y Recargar';
+            guardarBtn.innerHTML = '<i class="fa-solid fa-save"></i> Guardar';
             const closeModal = () => {
                 modalEl.classList.remove('show');
                 modalEl.setAttribute('aria-hidden', 'true');
                 setTimeout(() => { modalEl.style.display = 'none'; }, 300);
             };
             cerrarBtn.addEventListener('click', closeModal);
+            modalCloseX.addEventListener('click', closeModal);
             document.addEventListener('keydown', e => {
                 if (e.key === 'Escape' && modalEl.style.display !== 'none') closeModal();
             });
@@ -610,11 +775,19 @@
                     ocultarContactos: ocultarContactosComp.getValues(),
                     resaltarContactos: resaltarContactosComp.getValues(),
                 });
-                Roto2ToolsUtils.showToast('success', 'Listas guardadas. Recargando...', 'Roto2Tools');
+                GM_setValue('rt2_settings', {
+                    cust0mMensajes: settings.cust0mMensajes,
+                    expandirLayout: settings.expandirLayout,
+                    botonFavoritoHilo: settings.botonFavoritoHilo,
+                    registrarHistorial: settings.registrarHistorial,
+                    limiteHistorial: settings.limiteHistorial,
+                    colores: { ...settings.colores },
+                });
+                Roto2ToolsUtils.showToast('success', 'Guardado. Recargando...', 'Roto2Tools');
                 closeModal();
                 setTimeout(() => location.reload(), 1000);
             });
-            modalFooter.append(cerrarBtn, guardarBtn);
+            modalFooter.append(guardarBtn);
             modalContent.append(modalHeader, modalBody, modalFooter);
             modalDialog.appendChild(modalContent);
             modalEl.appendChild(modalDialog);
@@ -626,6 +799,9 @@
             });
         },
     };
+    // ─────────────────────────────────────────────────────────────────────────────
+    // PROCESADO
+    // ─────────────────────────────────────────────────────────────────────────────
     const Roto2ToolsProcessing = {
         processThreads({ ocultarHilos, resaltarHilos, ocultarContactos, resaltarContactos }) {
             const elementos = document.querySelectorAll('section.without-bottom-corners > div');
@@ -649,7 +825,7 @@
                     if (forumIcon) {
                         const star = document.createElement('span');
                         star.className = 'rt2-fav-star-icon';
-                        star.style.cssText = 'color:#ffff00; width: 100%; max-width: 24px; height: 28px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; margin-right: 0;';
+                        star.style.cssText = 'color:#ffff00;width:100%;max-width:24px;height:28px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-right:0;';
                         star.innerHTML = '<i class="fa-solid fa-star"></i>';
                         forumIcon.replaceWith(star);
                     }
@@ -666,8 +842,8 @@
                 const applyBaseStyles = mustHide || highlightContact || matchedHighlight.length > 0;
                 if (hideContact) el.classList.add('rt2-thread-hide-contact');
                 else if (highlightContact) el.classList.add('rt2-thread-highlight-contact');
-                else if (matchedHide.length > 0) el.classList.add('rt2-thread-hide');
-                else if (matchedHighlight.length > 0) el.classList.add('rt2-thread-highlight');
+                else if (matchedHide.length) el.classList.add('rt2-thread-hide');
+                else if (matchedHighlight.length) el.classList.add('rt2-thread-highlight');
                 if (applyBaseStyles) tituloSpan.classList.add('rt2-thread-title-white');
                 if ((hideContact || highlightContact) && titleLink?.parentNode) {
                     const atIdx = textTitle.indexOf('@');
@@ -676,21 +852,22 @@
                     const resto = dashIdx !== -1 ? textTitle.substring(dashIdx + 1).trim() : '';
                     const color = hideContact ? COLORS.hideContact : COLORS.highlightContact;
                     const newSpan = document.createElement('span');
-                    newSpan.innerHTML =`<span style="color:${color};font-weight:bold;font-size:.75rem;text-shadow:0px 2px 4px #000;">${nick}</span>` + ` <span style="color:var(--gray-text);font-size:.75rem;">${resto}</span>`;
+                    newSpan.innerHTML =
+                        `<span style="color:${color};font-weight:bold;font-size:.75rem;text-shadow:0px 2px 4px #000;">${nick}</span>` +
+                        ` <span style="color:var(--gray-text);font-size:.75rem;">${resto}</span>`;
                     titleLink.parentNode.insertBefore(newSpan, titleLink);
                     titleLink.remove();
                 }
                 const applyKeywordColor = (keywords, color) => {
                     keywords.forEach(p => {
                         const r = new RegExp(Roto2ToolsUtils.getRegex(p, false, true).source, 'ig');
-                        modifiedHtml = modifiedHtml.replace(r, m => `<span style="font-weight:bold;color:${color};">${m}</span>`);
+                        modifiedHtml = modifiedHtml.replace(r, m =>
+                            `<span style="font-weight:bold;color:${color};">${m}</span>`);
                     });
                 };
-                if (matchedHighlight.length > 0) applyKeywordColor(matchedHighlight, COLORS.highlightThread);
-                if (matchedHide.length > 0) applyKeywordColor(matchedHide, COLORS.hideThread);
-                if (matchedHighlight.length > 0 || matchedHide.length > 0) {
-                    tituloSpan.innerHTML = modifiedHtml;
-                }
+                if (matchedHighlight.length) applyKeywordColor(matchedHighlight, COLORS.highlightThread);
+                if (matchedHide.length) applyKeywordColor(matchedHide, COLORS.hideThread);
+                if (matchedHighlight.length || matchedHide.length) tituloSpan.innerHTML = modifiedHtml;
                 if (mustHide) elementosOcultos.push(el);
             });
             if (elementosOcultos.length > 0 && threadContainer) {
@@ -708,16 +885,13 @@
                 Roto2ToolsUtils.applyButtonInteractionEffects(spoilerBtn);
                 spoilerBtn.addEventListener('click', () => {
                     const isHidden = hiddenContainer.style.maxHeight === '0px';
-                    spoilerBtn.textContent = isHidden
-                        ? `${elementosOcultos.length} Hilo(s) mostrando`
-                        : `${elementosOcultos.length} Hilo(s) oculto(s)`;
+                    spoilerBtn.textContent = isHidden ? `${elementosOcultos.length} Hilo(s) mostrando` : `${elementosOcultos.length} Hilo(s) oculto(s)`;
                     hiddenContainer.style.maxHeight = isHidden ? `${hiddenContainer.scrollHeight}px` : '0px';
                     spoilerBtn.style.backgroundColor = isHidden ? '#4a4a4a' : '';
                 });
                 const onResize = () => {
-                    if (hiddenContainer.style.maxHeight !== '0px') {
+                    if (hiddenContainer.style.maxHeight !== '0px')
                         hiddenContainer.style.maxHeight = `${hiddenContainer.scrollHeight}px`;
-                    }
                 };
                 window.addEventListener('resize', onResize);
                 threadContainer.append(hiddenContainer, spoilerBtn);
@@ -732,13 +906,16 @@
                     if (!userLink || userLink.classList.contains('rt2-resaltado')) return;
                     if (!regex.test(userLink.textContent.trim())) return;
                     userLink.classList.add('rt2-resaltado');
-                    postmenu.closest('[id^="post"]')?.closest('[id^="edit"]')?.querySelector('section')?.classList.add('rt2-resaltado');
+                    postmenu.closest('[id^="post"]')?.closest('[id^="edit"]')
+                        ?.querySelector('section')?.classList.add('rt2-resaltado');
                 });
             }
             if (ocultarContactos.length > 0) {
                 const regex = Roto2ToolsUtils.getRegexContacto(ocultarContactos.join(','), true);
                 postmenus.forEach(postmenu => {
-                    const userLink = postmenu.querySelector('a[href*="member.php?u="], a[href*="member.php?userid="], a[href*="member.php"]');
+                    const userLink = postmenu.querySelector(
+                        'a[href*="member.php?u="], a[href*="member.php?userid="], a[href*="member.php"]'
+                    );
                     if (!userLink || !regex.test(userLink.textContent.trim())) return;
                     const sectionEl = postmenu.matches('section') ? postmenu : postmenu.querySelector('section');
                     const editEl = postmenu.closest('[id^="edit"]') || postmenu.closest('[id^="post"]') || sectionEl || postmenu;
@@ -747,8 +924,7 @@
                     if (targetEl.classList.contains('rt2-oculto')) return;
                     targetEl.classList.add('rt2-oculto');
                     editEl.classList.add('rt2-oculto');
-                    const separatorLargeElement = editEl.querySelector('separator-large');
-                    if (separatorLargeElement) separatorLargeElement.remove();
+                    editEl.querySelector('separator-large')?.remove();
                     const spoiler = document.createElement('details');
                     spoiler.className = 'spoiler';
                     const summary = document.createElement('summary');
@@ -783,6 +959,7 @@
             );
         },
         applyFinalStyles() {
+            if (!settings.expandirLayout) return;
             const header = document.getElementById('header');
             if (header) { header.style.maxWidth = 'unset'; header.style.width = '100%'; }
             const main = document.querySelector('main');
@@ -794,6 +971,9 @@
             }
         },
     };
+    // ─────────────────────────────────────────────────────────────────────────────
+    // INIT
+    // ─────────────────────────────────────────────────────────────────────────────
     function init() {
         if (document.getElementById('fc-mobile-version-tag-for-monitoring') ||
             document.querySelector('.mobiletitlebottom')) {
@@ -841,7 +1021,9 @@
         try {
             GM_addStyle(GM_getResourceText('bootstrapcss'));
             GM_addStyle(GM_getResourceText('Roto2Toolscss'));
-            GM_addStyle(GM_getResourceText('cust0mMensajes'));
+            if (settings.cust0mMensajes) {
+                GM_addStyle(GM_getResourceText('cust0mMensajes'));
+            }
         } catch (e) {
             console.error('Roto2Tools: Error al cargar CSS.', e);
         }
@@ -857,13 +1039,13 @@
             Roto2ToolsUtils.showToast('error', 'Error al procesar. Revisa la consola.', 'Roto2Tools');
         }
     }
+    try {
+        GM_addStyle(GM_getResourceText('toastcss'));
+    } catch (e) {
+        console.error('Roto2Tools: Error al cargar toastcss.', e);
+    }
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
         init();
-        try {
-            GM_addStyle(GM_getResourceText('toastcss'));
-        } catch (e) {
-            console.error('Roto2Tools: Error al cargar toastcss.', e);
-        }
     } else {
         window.addEventListener('DOMContentLoaded', init);
     }
