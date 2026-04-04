@@ -647,7 +647,7 @@ details.spoiler-quote > summary:hover {
     color: #ddd;
 }
 /* ===== MISC ===== */
-[id*="edit"] > section.resaltado {
+[id*="edit"] > section.rt2-resaltado {
     border-left: solid 4px #2fc726 !important;
 }
 .rt2-hidden-threads-container {

@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.6d
+// @version         1.8.7d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -20,9 +20,10 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.6d
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.6d
-// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.6d
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.7d
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.7d
+// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.7d
+// @resource        cust0mMensajes https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/cust0mMensajes.css?v=1.8.7d
 // ==/UserScript==
 
 (function () {
@@ -727,12 +728,11 @@
             if (resaltarContactos.length > 0) {
                 const regex = Roto2ToolsUtils.getRegexContacto(resaltarContactos.join(','), true);
                 postmenus.forEach(postmenu => {
-                    const userLink = postmenu.querySelector('a[href*="member.php?u="], a[href*="member.php?userid="], a[href*="member.php"]');
-                    if (!userLink || userLink.classList.contains('resaltado')) return;
+                    const userLink = postmenu.querySelector('a[href*="member.php"]');
+                    if (!userLink || userLink.classList.contains('rt2-resaltado')) return;
                     if (!regex.test(userLink.textContent.trim())) return;
-                    userLink.classList.add('resaltado');
-                    postmenu.querySelector('section')?.classList.add('resaltado');
-                    postmenu.classList.add('resaltado');
+                    userLink.classList.add('rt2-resaltado');
+                    postmenu.closest('[id^="post"]')?.closest('[id^="edit"]')?.querySelector('section')?.classList.add('rt2-resaltado');
                 });
             }
             if (ocultarContactos.length > 0) {
@@ -856,6 +856,7 @@
             GM_addStyle(GM_getResourceText('bootstrapcss'));
             GM_addStyle(GM_getResourceText('Roto2Toolscss'));
             GM_addStyle(GM_getResourceText('toastcss'));
+            GM_addStyle(GM_getResourceText('cust0mMensajes'));
         } catch (e) {
             console.error('Roto2Tools: Error al cargar CSS.', e);
         }

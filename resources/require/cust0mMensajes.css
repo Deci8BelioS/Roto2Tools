@@ -1,0 +1,184 @@
+div.fc-ab-root {
+    display: none !important;
+    visibility: hidden !important;
+}
+header {
+    box-shadow: unset !important;
+    -webkit-box-shadow: unset !important;
+}
+#header {
+    max-width: unset;
+    margin: unset;
+    width: 100%;
+    height: 60px;
+}
+main {
+    margin: 0px;
+    width: 100%;
+    max-width: unset;
+    grid-template-columns: 1fr auto;
+}
+div[id^='edit'] > section {
+    padding: 12px !important;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) {
+    display: grid;
+    grid-template-rows: 210px 1fr 40px;
+    grid-template-columns: 214px 21px 1fr;
+    grid-template-areas:
+        'user separator content'
+        'info separator content'
+        'controls separator content';
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > separator {
+    height: 100%;
+    width: 1px;
+    grid-area: separator;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    background-color: var(--separator-color);
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-child(2):not(.smallfont),
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:first-child:not(separator) {
+    grid-area: user;
+    flex-direction: column;
+    justify-items: center;
+    justify-content: flex-start !important;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-child(2):not(.smallfont) > :first-child,
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:first-child:not(separator) > :first-child {
+    flex-direction: column;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-child(2):not(.smallfont) > :first-child > a,
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:first-child:not(separator) > :first-child > a {
+    height: 90px !important;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-child(2):not(.smallfont) > :first-child > a .thread-profile-image,
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:first-child:not(separator) > :first-child > a .thread-profile-image {
+    height: 90px !important;
+    width: 90px !important;
+    border-radius: 10% !important;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-child(2):not(.smallfont) > :first-child > :last-child,
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:first-child:not(separator) > :first-child > :last-child {
+    align-items: center;
+    margin-left: 0px !important;
+    margin-top: 20px;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-child(2):not(.smallfont) > :last-child,
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:first-child:not(separator) > :last-child {
+    align-items: center !important;
+    flex-direction: row !important;
+    justify-content: center;
+    order: -1;
+    position: relative;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-child(2):not(.smallfont) > :last-child > div,
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:first-child:not(separator) > :last-child > div {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0px !important;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-child(2):not(.smallfont) > :last-child > div > a,
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:first-child:not(separator) > :last-child > div > a {
+    position: absolute;
+    left: 0px;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-child(2):not(.smallfont) > :last-child > a,
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:first-child:not(separator) > :last-child > a {
+    position: absolute;
+    right: 0px;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-child(2):not(.smallfont) > :last-child > a > div,
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:first-child:not(separator) > :last-child > a > div {
+    color: var(--coral);
+    font-weight: bold;
+    font-size: 14px;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div[id^='post_'] {
+    grid-area: content;
+    padding: 15px;
+    height: min-content;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div[id^='post_'] > .squote {
+    background-color: var(--quote-background-color);
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div[id^='post_'] > .squote > .quote div:first-child {
+    color: var(--quote-title-color);
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div[id^='post_'] > .squote > .quote div:last-child {
+    color: var(--quote-text-color);
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div[id^='post_'] iframe[name^='__tt_embed__'] {
+    height: 100vh !important;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div[id^='post_'] div.twitter-tweet {
+    width: 550px !important;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) {
+    grid-area: controls;
+    justify-content: flex-start;
+    flex-direction: column-reverse !important;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > separator {
+    display: none;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) {
+    flex-direction: row;
+    align-items: flex-end !important;
+    max-height: 24px;
+    position: relative;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) span:last-child:not(.post-controls-icon) {
+    display: none;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) a {
+    --padding-bottom-icons: 0px;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) a:after {
+    padding: 2px;
+    padding-left: 15px;
+    padding-right: 15px;
+    display: none;
+    position: absolute;
+    bottom: calc(var(--padding-bottom-icons) + 35px);
+    border: 1px solid grey;
+    border-radius: 8px;
+    z-index: 15;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #2e2e2e;
+    color: var(--coral);
+    visibility: visible;
+    font-weight: 400;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) a:hover::after {
+    display: block;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) > a[href^='report.php']:after {
+    content: 'Reportar';
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) > div:nth-child(2) > a:after {
+    content: 'Responder';
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) > a:nth-child(3):after {
+    content: 'Citar';
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) > a:nth-child(4):has(> img[src$='add_on.svg']):after {
+    content: 'Quitar de multicita';
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) > a:nth-child(4):has(> img[src$='add_off.svg']):after {
+    content: 'Añadir a multicita';
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div:not(.date-and-time-gray) > a:last-child {
+    margin-left: 0px !important;
+}
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) > div.date-and-time-gray {
+    text-align: center;
+    margin-bottom: 30px;
+}
