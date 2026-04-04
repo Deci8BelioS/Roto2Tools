@@ -646,6 +646,13 @@ details.spoiler-quote > summary {
 details.spoiler-quote > summary:hover {
     color: #ddd;
 }
+.quote {
+    background-color: var(--header-menu-search-background)!important;
+    border: 1px solid #c9c9c935;
+    border-left: 3px solid var(--quote-color);
+    border-radius: 12px!important;
+    padding: 8px 14px 8px 14px!important;
+}
 /* ===== MISC ===== */
 [id*="edit"] > section.rt2-resaltado {
     border-left: solid 4px #2fc726 !important;
