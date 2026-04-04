@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.8-1d
+// @version         1.8.9d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -20,10 +20,10 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.8-1d
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.8-1d
-// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.8-1d
-// @resource        cust0mMensajes https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/cust0mMensajes.css?v=1.8.8-1d
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.9d
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.9d
+// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.9d
+// @resource        cust0mMensajes https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/cust0mMensajes.css?v=1.8.9d
 // ==/UserScript==
 
 (function () {
@@ -793,6 +793,7 @@
             modalEl.appendChild(modalDialog);
             document.body.appendChild(modalEl);
             menuBtn.addEventListener('click', () => {
+                syncRT2Theme();
                 modalEl.style.display = 'block';
                 modalEl.setAttribute('aria-hidden', 'false');
                 requestAnimationFrame(() => requestAnimationFrame(() => modalEl.classList.add('show')));
@@ -971,6 +972,20 @@
             }
         },
     };
+    function detectFCTheme() {
+        const forceLight = localStorage.getItem('FORCE_LIGHT_MODE') === 'true';
+        const forceDark = localStorage.getItem('FORCE_DARK_MODE') === 'true';
+        const autoDark = localStorage.getItem('AUTO_DARK_MODE') === 'true';
+        if (forceLight) return 'light';
+        if (forceDark) return 'dark';
+        if (autoDark) return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        return 'dark';
+    }
+    function syncRT2Theme() {
+        const modal = document.getElementById('roto2ToolsModal');
+        if (!modal) return;
+        modal.dataset.rt2Theme = detectFCTheme();
+    }
     // ─────────────────────────────────────────────────────────────────────────────
     // INIT
     // ─────────────────────────────────────────────────────────────────────────────
@@ -1015,6 +1030,7 @@
                     GM_setValue('ocultarContactos', ocultarContactos);
                 },
             });
+            syncRT2Theme();
         } catch (e) {
             console.error('Roto2Tools: Error al crear el menú.', e);
         }
@@ -1049,4 +1065,14 @@
     } else {
         window.addEventListener('DOMContentLoaded', init);
     }
+    window.addEventListener('storage', (e) => {
+        if (['FORCE_LIGHT_MODE', 'FORCE_DARK_MODE', 'AUTO_DARK_MODE'].includes(e.key)) {
+            syncRT2Theme();
+        }
+    });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (localStorage.getItem('AUTO_DARK_MODE') === 'true') {
+            syncRT2Theme();
+        }
+    });
 })();
