@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.7-1d
+// @version         1.8.7-2d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -20,10 +20,10 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.7-1d
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.7-1d
-// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.7-1d
-// @resource        cust0mMensajes https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/cust0mMensajes.css?v=1.8.7-1d
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.7-2d
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.7-2d
+// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.7-2d
+// @resource        cust0mMensajes https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/cust0mMensajes.css?v=1.8.7-2d
 // ==/UserScript==
 
 (function () {
@@ -838,6 +838,13 @@
         } catch (e) {
             console.error('Roto2Tools: Error al crear el menú.', e);
         }
+        try {
+            GM_addStyle(GM_getResourceText('bootstrapcss'));
+            GM_addStyle(GM_getResourceText('Roto2Toolscss'));
+            GM_addStyle(GM_getResourceText('cust0mMensajes'));
+        } catch (e) {
+            console.error('Roto2Tools: Error al cargar CSS.', e);
+        }
         injectFavoriteButtonInThread();
         const opts = { ocultarHilos, resaltarHilos, ocultarContactos, resaltarContactos };
         try {
@@ -853,12 +860,9 @@
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
         init();
         try {
-            GM_addStyle(GM_getResourceText('bootstrapcss'));
-            GM_addStyle(GM_getResourceText('Roto2Toolscss'));
             GM_addStyle(GM_getResourceText('toastcss'));
-            GM_addStyle(GM_getResourceText('cust0mMensajes'));
         } catch (e) {
-            console.error('Roto2Tools: Error al cargar CSS.', e);
+            console.error('Roto2Tools: Error al cargar toastcss.', e);
         }
     } else {
         window.addEventListener('DOMContentLoaded', init);
