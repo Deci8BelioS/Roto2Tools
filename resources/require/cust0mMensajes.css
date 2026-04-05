@@ -20,6 +20,8 @@ main {
 }
 div[id^='edit'] > section {
     padding: 12px !important;
+    border: 1px solid var(--rt2-border);
+    border-radius: var(--rt2-r-xxl);
 }
 div[id^='edit'] > section > div[id^=post]:not([id^='post_']) {
     display: grid;
@@ -147,12 +149,12 @@ div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-chil
     display: none;
     position: absolute;
     bottom: calc(var(--padding-bottom-icons) + 35px);
-    border: 1px solid grey;
-    border-radius: 8px;
+    border: 1px solid var(--rt2-border-strong);
+    border-radius: var(--rt2-r-lg);
     z-index: 15;
     text-align: center;
     white-space: nowrap;
-    background-color: #2e2e2e;
+    background-color: var(--rt2-bg-s3);
     color: var(--coral);
     visibility: visible;
     font-weight: 400;
