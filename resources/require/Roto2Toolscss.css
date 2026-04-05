@@ -564,7 +564,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 9px 12px;
+    padding: 8px 12px;
     border-radius: var(--rt2-r-md);
     background: var(--rt2-bg-row);
     transition: background var(--rt2-t);
@@ -1033,6 +1033,204 @@ details.spoiler-quote>summary:hover {
 }
 .rt2-oculto {
     color: var(--text-color);
+}
+#rt2-notes-btn {
+    padding: 6px 10px
+}
+#rt2-notes-dropdown {
+    position: absolute;
+    z-index: 10200;
+    width: 360px;
+    background: var(--rt2-bg-dropdown);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid var(--rt2-border);
+    border-radius: var(--rt2-r-xl);
+    box-shadow: var(--rt2-shadow-lg);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    font-family: sans-serif;
+    font-size: 14px;
+    color: var(--rt2-text-2);
+    animation: rt2FadeIn .15s ease
+}
+#rt2-notes-dropdown.visible {
+    display: flex
+}
+.rt2-nd-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rt2-border);
+    background: var(--rt2-bg-nav);
+    gap: 8px
+}
+.rt2-nd-title {
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--rt2-text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1
+}
+.rt2-nd-add-btn {
+    background: var(--rt2-accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--rt2-r-md);
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: .8rem;
+    font-weight: 600;
+    text-shadow: var(--rt2-shadow-sm);
+    transition: background var(--rt2-t), transform var(--rt2-t);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0
+}
+.rt2-nd-add-btn:hover {
+    background: var(--rt2-accent-hover);
+    transform: translateY(-1px)
+}
+.rt2-nd-back-btn {
+    background: var(--rt2-bg-s3);
+    color: var(--rt2-text-muted);
+    border: 1px solid var(--rt2-border);
+    border-radius: var(--rt2-r-md);
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: .8rem;
+    transition: background var(--rt2-t), color var(--rt2-t);
+    flex-shrink: 0
+}
+.rt2-nd-back-btn:hover {
+    background: var(--rt2-bg-s3-hover);
+    color: var(--rt2-text)
+}
+.rt2-nd-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 380px;
+    overflow-y: auto
+}
+.rt2-nd-list::-webkit-scrollbar {
+    width: 6px
+}
+.rt2-nd-list::-webkit-scrollbar-track {
+    background: var(--rt2-scrollbar-track)
+}
+.rt2-nd-list::-webkit-scrollbar-thumb {
+    background: var(--rt2-scrollbar-thumb);
+    border-radius: var(--rt2-r-sm)
+}
+.rt2-nd-list::-webkit-scrollbar-thumb:hover {
+    background: var(--rt2-scrollbar-thumb-hover)
+}
+.rt2-nd-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--rt2-border);
+    transition: background var(--rt2-t), padding-left var(--rt2-t)
+}
+.rt2-nd-item:last-child {
+    border-bottom: none
+}
+.rt2-nd-item:hover {
+    background: var(--rt2-bg-nav-hover);
+    padding-left: 18px
+}
+.rt2-nd-item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px
+}
+.rt2-nd-item-title {
+    font-weight: 600;
+    font-size: .85rem;
+    color: var(--rt2-gold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: var(--rt2-text-shadow)
+}
+.rt2-nd-item-preview {
+    font-size: .75rem;
+    color: var(--rt2-text-faintest);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: monospace
+}
+.rt2-nd-item-btns {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0
+}
+.rt2-nd-btn {
+    background: var(--rt2-bg-s3);
+    border: 1px solid var(--rt2-border);
+    border-radius: var(--rt2-r-sm);
+    padding: 3px 7px;
+    cursor: pointer;
+    font-size: .75rem;
+    color: var(--rt2-text-muted);
+    transition: background var(--rt2-t), color var(--rt2-t), border-color var(--rt2-t), transform var(--rt2-t)
+}
+.rt2-nd-btn:hover {
+    transform: translateY(-1px)
+}
+.rt2-nd-btn-copy:hover {
+    background: var(--rt2-success-bg);
+    border-color: var(--rt2-success);
+    color: var(--rt2-success)
+}
+.rt2-nd-btn-edit:hover {
+    background: var(--rt2-bg-nav-active);
+    border-color: var(--rt2-blue);
+    color: var(--rt2-blue)
+}
+.rt2-nd-btn-del:hover {
+    background: var(--rt2-danger-bg-soft);
+    border-color: var(--rt2-danger-border);
+    color: var(--rt2-danger-text)
+}
+.rt2-nd-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px
+}
+.rt2-nd-input,
+.rt2-nd-textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: var(--rt2-r-md);
+    border: 1px solid var(--rt2-border-input);
+    background: var(--rt2-bg-input);
+    color: var(--rt2-text);
+    font-family: inherit;
+    font-size: .85rem;
+    text-shadow: var(--rt2-text-shadow);
+    transition: border-color var(--rt2-t), box-shadow var(--rt2-t)
+}
+.rt2-nd-textarea {
+    font-family: monospace;
+    resize: vertical;
+    line-height: 1.5
+}
+.rt2-nd-input:focus,
+.rt2-nd-textarea:focus {
+    outline: 0;
+    border-color: var(--rt2-blue);
+    box-shadow: 0 0 0 3px var(--rt2-blue-focus-ring)
 }
 @keyframes rt2FadeIn {
     from {

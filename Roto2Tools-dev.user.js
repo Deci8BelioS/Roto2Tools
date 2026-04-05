@@ -8,7 +8,7 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
-// @version         1.8.9d
+// @version         1.9.0d
 // @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
@@ -20,22 +20,20 @@
 // @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
-// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.8.9d
-// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.8.9d
-// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.8.9d
-// @resource        cust0mMensajes https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/cust0mMensajes.css?v=1.8.9d
+// @resource        bootstrapcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.9.0d
+// @resource        Roto2Toolscss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/Roto2Toolscss.css?v=1.9.0d
+// @resource        toastcss https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/toastr.min.css?v=1.9.0d
+// @resource        cust0mMensajes https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/refs/heads/dev-2/resources/require/cust0mMensajes.css?v=1.9.0d
 // ==/UserScript==
 
 (function () {
     'use strict';
-    // ─────────────────────────────────────────────────────────────────────────────
-    // CONFIGURACIÓN POR DEFECTO
-    // ─────────────────────────────────────────────────────────────────────────────
     const DEFAULT_SETTINGS = {
         cust0mMensajes: true,
         expandirLayout: true,
         registrarHistorial: true,
         botonFavoritoHilo: true,
+        ocultarIdSidebar: false,
         limiteHistorial: 100,
         colores: {
             hideContact: '#FF2626',
@@ -48,9 +46,6 @@
     const _saved = GM_getValue('rt2_settings', {});
     const settings = {...DEFAULT_SETTINGS, ..._saved, colores: { ...DEFAULT_SETTINGS.colores, ...(_saved.colores || {}) }};
     const COLORS = settings.colores;
-    // ─────────────────────────────────────────────────────────────────────────────
-    // UTILIDADES
-    // ─────────────────────────────────────────────────────────────────────────────
     function applyAccentGroups(str) {
         return str.replace(/[aáà]/gi, '[aáà]').replace(/[eéè]/gi, '[eéè]').replace(/[iíï]/gi, '[iíï]').replace(/[oóò]/gi, '[oóò]').replace(/[uúü]/gi, '[uúü]');
     }
@@ -138,9 +133,6 @@
             return id ? { id, type } : null;
         },
     };
-    // ─────────────────────────────────────────────────────────────────────────────
-    // HISTORIAL
-    // ─────────────────────────────────────────────────────────────────────────────
     function trackHistory() {
         if (!settings.registrarHistorial) return;
         const threadData = Roto2ToolsUtils.getRealThreadData();
@@ -155,9 +147,6 @@
         if (history.length > limit) history = history.slice(0, limit);
         GM_setValue('rt2_history', history);
     }
-    // ─────────────────────────────────────────────────────────────────────────────
-    // DROPDOWN HISTORIAL / FAVORITOS
-    // ─────────────────────────────────────────────────────────────────────────────
     function createHistoryDropdown(anchorEl) {
         const dropdown = document.createElement('div');
         dropdown.id = 'rt2-dropdown';
@@ -271,10 +260,159 @@
             if (dropdown.classList.contains('visible')) positionDropdown();
         }, true);
     }
-    // ─────────────────────────────────────────────────────────────────────────────
-    // BOTÓN FAVORITO EN HILO
-    // Ahora respeta settings.botonFavoritoHilo
-    // ─────────────────────────────────────────────────────────────────────────────
+    function createNotesDropdown(anchorEl) {
+        const dropdown = document.createElement('div');
+        dropdown.id = 'rt2-notes-dropdown';
+        document.body.appendChild(dropdown);
+        dropdown.addEventListener('click', e => e.stopPropagation());
+        const getNotes = () => GM_getValue('rt2_notes', []);
+        const setNotes = n => GM_setValue('rt2_notes', n);
+        function positionDropdown() {
+            const rect = anchorEl.getBoundingClientRect();
+            dropdown.style.top = `${rect.bottom + window.scrollY + 6}px`;
+            dropdown.style.left = `${Math.max(4, rect.right + window.scrollX - dropdown.offsetWidth)}px`;
+        }
+        let editingIndex = null;
+        function showList() {
+            dropdown.innerHTML = '';
+            const header = document.createElement('div');
+            header.className = 'rt2-nd-header';
+            const title = document.createElement('span');
+            title.className = 'rt2-nd-title';
+            title.innerHTML = '<i class="fa-solid fa-note-sticky"></i> Notas';
+            const addBtn = document.createElement('button');
+            addBtn.className = 'rt2-nd-add-btn';
+            addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Nueva';
+            addBtn.addEventListener('click', () => showEditor(null));
+            header.append(title, addBtn);
+            dropdown.appendChild(header);
+            const notes = getNotes();
+            if (notes.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'rt2-dd-empty';
+                empty.innerHTML = '<i class="fa-solid fa-note-sticky"></i> No hay notas todavía.';
+                dropdown.appendChild(empty);
+            } else {
+                const list = document.createElement('div');
+                list.className = 'rt2-nd-list';
+                notes.forEach((note, idx) => {
+                    const item = document.createElement('div');
+                    item.className = 'rt2-nd-item';
+                    const itemInfo = document.createElement('div');
+                    itemInfo.className = 'rt2-nd-item-info';
+                    const itemTitle = document.createElement('span');
+                    itemTitle.className = 'rt2-nd-item-title';
+                    itemTitle.textContent = note.title || 'Sin título';
+                    const itemPreview = document.createElement('span');
+                    itemPreview.className = 'rt2-nd-item-preview';
+                    itemPreview.textContent = note.content || '';
+                    itemInfo.append(itemTitle, itemPreview);
+                    const btns = document.createElement('div');
+                    btns.className = 'rt2-nd-item-btns';
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'rt2-nd-btn rt2-nd-btn-copy';
+                    copyBtn.title = 'Copiar al portapapeles';
+                    copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i>';
+                    copyBtn.addEventListener('click', () => {
+                        const fallback = () => {
+                            const ta = document.createElement('textarea');
+                            ta.value = note.content;
+                            ta.style.cssText = 'position:fixed;opacity:0';
+                            document.body.appendChild(ta);
+                            ta.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(ta);
+                        };
+                        try { navigator.clipboard.writeText(note.content).catch(fallback); } catch { fallback(); }
+                        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                        setTimeout(() => { copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i>'; }, 1500);
+                        Roto2ToolsUtils.showToast('success', `"${note.title || 'Nota'}" copiada.`, 'Roto2Tools');
+                    });
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'rt2-nd-btn rt2-nd-btn-edit';
+                    editBtn.title = 'Editar';
+                    editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+                    editBtn.addEventListener('click', () => showEditor(idx));
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'rt2-nd-btn rt2-nd-btn-del';
+                    delBtn.title = 'Eliminar';
+                    delBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                    delBtn.addEventListener('click', () => {
+                        if (confirm(`¿Eliminar "${note.title || 'Sin título'}"?`)) {
+                            const n = getNotes(); n.splice(idx, 1); setNotes(n);
+                            Roto2ToolsUtils.showToast('info', 'Nota eliminada.', 'Roto2Tools');
+                            showList();
+                        }
+                    });
+                    btns.append(copyBtn, editBtn, delBtn);
+                    item.append(itemInfo, btns);
+                    list.appendChild(item);
+                });
+                dropdown.appendChild(list);
+            }
+            requestAnimationFrame(positionDropdown);
+        }
+        function showEditor(idx) {
+            editingIndex = idx;
+            const note = idx !== null ? getNotes()[idx] : null;
+            dropdown.innerHTML = '';
+            const header = document.createElement('div');
+            header.className = 'rt2-nd-header';
+            const backBtn = document.createElement('button');
+            backBtn.className = 'rt2-nd-back-btn';
+            backBtn.innerHTML = '<i class="fa-solid fa-arrow-left"></i>';
+            backBtn.title = 'Volver';
+            backBtn.addEventListener('click', showList);
+            const title = document.createElement('span');
+            title.className = 'rt2-nd-title';
+            title.textContent = idx !== null ? 'Editar nota' : 'Nueva nota';
+            header.append(backBtn, title);
+            dropdown.appendChild(header);
+            const body = document.createElement('div');
+            body.className = 'rt2-nd-editor';
+            const titleInput = document.createElement('input');
+            titleInput.type = 'text';
+            titleInput.className = 'rt2-nd-input';
+            titleInput.placeholder = 'Título...';
+            titleInput.value = note?.title || '';
+            const contentTextarea = document.createElement('textarea');
+            contentTextarea.className = 'rt2-nd-textarea';
+            contentTextarea.placeholder = 'Contenido, copypasta, meme...';
+            contentTextarea.rows = 5;
+            contentTextarea.value = note?.content || '';
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'rt2-button rt2-button-save';
+            saveBtn.style.cssText = 'width:100%;justify-content:center;margin-top:4px';
+            saveBtn.innerHTML = '<i class="fa-solid fa-save"></i> Guardar';
+            saveBtn.addEventListener('click', () => {
+                const content = contentTextarea.value.trim();
+                if (!content) { Roto2ToolsUtils.showToast('error', 'El contenido no puede estar vacío.', 'Roto2Tools'); return; }
+                const notes = getNotes();
+                const noteData = { title: titleInput.value.trim() || 'Sin título', content, date: new Date().toLocaleString() };
+                if (editingIndex !== null) { notes[editingIndex] = noteData; } else { notes.unshift(noteData); }
+                setNotes(notes);
+                Roto2ToolsUtils.showToast('success', 'Nota guardada.', 'Roto2Tools');
+                showList();
+            });
+            body.append(titleInput, contentTextarea, saveBtn);
+            dropdown.appendChild(body);
+            requestAnimationFrame(positionDropdown);
+            titleInput.focus();
+        }
+        anchorEl.addEventListener('click', e => {
+            e.stopPropagation();
+            if (dropdown.classList.contains('visible')) {
+                dropdown.classList.remove('visible');
+            } else {
+                showList();
+                dropdown.classList.add('visible');
+                positionDropdown();
+            }
+        });
+        document.addEventListener('click', () => dropdown.classList.remove('visible'));
+        window.addEventListener('resize', () => { if (dropdown.classList.contains('visible')) positionDropdown(); });
+        window.addEventListener('scroll', () => { if (dropdown.classList.contains('visible')) positionDropdown(); }, true);
+    }
     function injectFavoriteButtonInThread() {
         if (!settings.botonFavoritoHilo) return;
         const threadData = Roto2ToolsUtils.getRealThreadData();
@@ -312,9 +450,6 @@
             h1.parentNode.insertBefore(star, h1.nextSibling);
         }
     }
-    // ─────────────────────────────────────────────────────────────────────────────
-    // MENÚ PRINCIPAL
-    // ─────────────────────────────────────────────────────────────────────────────
     const Roto2ToolsMenu = {
         create(options) {
             const {initialResaltarHilos, initialOcultarHilos, initialResaltarContactos, initialOcultarContactos, onSave, scriptVersion} = options;
@@ -329,9 +464,15 @@
             histBtn.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i>';
             histBtn.title = 'Historial y Favoritos';
             Roto2ToolsUtils.applyButtonInteractionEffects(histBtn);
+            const notesBtn = document.createElement('button');
+            notesBtn.id = 'rt2-notes-btn';
+            notesBtn.className = 'rt2-main-button';
+            notesBtn.innerHTML = '<i class="fa-solid fa-note-sticky"></i>';
+            notesBtn.title = 'Notas y Copypastas';
+            Roto2ToolsUtils.applyButtonInteractionEffects(notesBtn);
             const btnWrapper = document.createElement('span');
             btnWrapper.id = 'rt2-btn-wrapper';
-            btnWrapper.append(menuBtn, histBtn);
+            btnWrapper.append(menuBtn, histBtn, notesBtn);
             const container = document.querySelector('#searchform-desktop');
             if (container?.parentNode) {
                 container.parentNode.insertBefore(btnWrapper, container.nextSibling);
@@ -340,6 +481,7 @@
                 document.body.appendChild(btnWrapper);
             }
             createHistoryDropdown(histBtn);
+            createNotesDropdown(notesBtn);
             function createTagInputComponent(title, placeholder, initialValues = [], importType = null) {
                 const currentTags = new Set(
                     Array.isArray(initialValues) ? initialValues.map(t => String(t).trim()).filter(Boolean) : []
@@ -570,6 +712,11 @@
                     'Guarda automáticamente los hilos que visitas en el historial.',
                     'registrarHistorial'
                 ));
+                grpFunc.appendChild(makeToggleRow(
+                    'Ocultar sidebar de ID',
+                    'Oculta la columna lateral derecha con el ID en las páginas del foro.',
+                    'ocultarIdSidebar'
+                ));
                 el.appendChild(grpFunc);
                 const grpHist = makeGroup('🕐 Historial');
                 grpHist.appendChild(makeNumberRow(
@@ -637,6 +784,7 @@
                         resaltarContactos: resaltarContactosComp.getValues(),
                         ocultarContactos: ocultarContactosComp.getValues(),
                         favoritos: GM_getValue('rt2_favorites', []),
+                        notas: GM_getValue('rt2_notes', []),
                         ajustes: GM_getValue('rt2_settings', {}),
                     };
                     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -675,6 +823,10 @@
                             }
                             if (Array.isArray(parsed.favoritos)) {
                                 GM_setValue('rt2_favorites', parsed.favoritos);
+                                ok = true;
+                            }
+                            if (Array.isArray(parsed.notas)) {
+                                GM_setValue('rt2_notes', parsed.notas);
                                 ok = true;
                             }
                             if (parsed.ajustes && typeof parsed.ajustes === 'object') {
@@ -780,6 +932,7 @@
                     expandirLayout: settings.expandirLayout,
                     botonFavoritoHilo: settings.botonFavoritoHilo,
                     registrarHistorial: settings.registrarHistorial,
+                    ocultarIdSidebar: settings.ocultarIdSidebar,
                     limiteHistorial: settings.limiteHistorial,
                     colores: { ...settings.colores },
                 });
@@ -800,9 +953,6 @@
             });
         },
     };
-    // ─────────────────────────────────────────────────────────────────────────────
-    // PROCESADO
-    // ─────────────────────────────────────────────────────────────────────────────
     const Roto2ToolsProcessing = {
         processThreads({ ocultarHilos, resaltarHilos, ocultarContactos, resaltarContactos }) {
             const elementos = document.querySelectorAll('section.without-bottom-corners > div');
@@ -960,15 +1110,22 @@
             );
         },
         applyFinalStyles() {
-            if (!settings.expandirLayout) return;
-            const header = document.getElementById('header');
-            if (header) { header.style.maxWidth = 'unset'; header.style.width = '100%'; }
-            const main = document.querySelector('main');
-            if (main) {
-                main.style.margin = '0';
-                main.style.width = '100%';
-                main.style.maxWidth = 'unset';
-                main.style.gridTemplateColumns = '1fr auto';
+            if (settings.expandirLayout) {
+                const header = document.getElementById('header');
+                if (header) { header.style.maxWidth = 'unset'; header.style.width = '100%'; }
+                const main = document.querySelector('main');
+                if (main) {
+                    main.style.margin = '0';
+                    main.style.width = '100%';
+                    main.style.maxWidth = 'unset';
+                    main.style.gridTemplateColumns = settings.ocultarIdSidebar ? '1fr' : '1fr auto';
+                }
+            }
+            if (settings.ocultarIdSidebar) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) sidebar.style.display = 'none';
+                const main = document.querySelector('main');
+                if (main) main.style.gridTemplateColumns = '1fr';
             }
         },
     };
@@ -986,9 +1143,6 @@
         if (!modal) return;
         modal.dataset.rt2Theme = detectFCTheme();
     }
-    // ─────────────────────────────────────────────────────────────────────────────
-    // INIT
-    // ─────────────────────────────────────────────────────────────────────────────
     function init() {
         if (document.getElementById('fc-mobile-version-tag-for-monitoring') ||
             document.querySelector('.mobiletitlebottom')) {
