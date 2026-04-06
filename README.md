@@ -1,44 +1,63 @@
-![logo][6]
-## Características
+<p align="center">
+  <img src="resources/img/icon-64x64.png" alt="logo" width="80"/>
+  <h1 align="center">Roto2Tools</h1>
+  <p align="center">Userscript para mejorar tu experiencia en <strong>Forocoches</strong> 🐴</p>
+</p>
 
-* Añadir palabras para ocultar hilos o resaltar hilos
-* Añadir usuarios para ocultar o resaltar sus mensajes dentro de los hilos
-* Resaltar los mensajes de tus contactos de forocoches dentro de los hilos con una barra verde a la izq del mensaje, la misma barra que tiene los mensajes del creador del hilo.
-* Botón en el Header al lado de la caja de búsqueda
-* En los hilos ocultos se resalta la palabra en color naranja para saber por qué está oculto
-* En los hilos resaltados se aplica un color oscuro en el recuadro donde aparece el nombre del hilo, autor etc (el color es más claro que los demás en el modo oscuro)
-* Adaptar el foro a la pantalla para no tener espacios vacíos a los lados
-* Exportar e Importar las listas (backup completo en JSON: listas, favoritos, notas y ajustes)
-* Historial de hilos visitados con acceso rápido desde el header
-* Favoritos: guarda hilos como favoritos desde el listado o dentro del propio hilo
-* Notas y Copypastas: bloc de notas integrado con soporte para copiar al portapapeles
-* Panel de ajustes con opciones configurables:
-  * Activar/desactivar CSS personalizado (`cust0mMensajes`)
-  * Expandir el layout al 100% de ancho
-  * Botón de favorito dentro del hilo
-  * Registro automático del historial
-  * Ocultar la columna lateral de ID
-  * Límite configurable de entradas en el historial (10–500)
-  * Colores de resaltado/ocultado personalizables para hilos y usuarios
-* Importar lista de amigos/ignorados directamente desde Forocoches
-* Detección automática del tema del foro (claro/oscuro) y sincronización con el panel
-* Ocultado de mensajes de usuarios ignorados con spoiler colapsable
-* Ocultado de citas de usuarios ignorados con spoiler colapsable
-* Hilos favoritos marcados visualmente con estrella dorada en el listado
-* Notificaciones toast para feedback de acciones (guardar, importar, exportar, errores...)
-* Compatibilidad exclusiva con el nuevo diseño de Forocoches (no funciona en versión móvil ni diseño clásico)
+## ✨ Características
 
-## Capturas
-![Captura][5]
+### 🧵 Gestión de Hilos
+- 🔴 Añadir palabras para **ocultar hilos** — la palabra se resalta en naranja
+- 🟡 Añadir palabras para **resaltar hilos** — fondo oscuro en el recuadro del hilo
+- ⭐ Hilos favoritos marcados con **estrella dorada** en el listado
+- 📐 Adaptar el foro al ancho de pantalla sin espacios vacíos
 
-## Extensiones soportadas
+### 👤 Gestión de Usuarios
+- 🟢 **Resaltar mensajes** de contactos con barra verde a la izquierda |
+- 🙈 **Ocultar mensajes** de usuarios ignorados con spoiler colapsable |
+- 💬 **Ocultar citas** de usuarios ignorados con spoiler colapsable |
+- 📥 Importar lista de amigos/ignorados directamente desde Forocoches |
 
-Este script es compatible con las siguientes extensiones
+### 🕓 Historial & Favoritos
+- Registro automático de hilos visitados con acceso rápido desde el header
+- Guarda hilos como favoritos desde el listado o desde dentro del propio hilo
+- Dropdown con pestañas de **Historial** y **Favoritos** en el header
 
-|     Extensión     |     Compatible     |
-| ----------------- | ------------------ |
-|   Violentmonkey   | :heavy_check_mark: |
-|    Tampermonkey   | :heavy_check_mark: |
+### 📝 Notas & Copypastas
+- Bloc de notas integrado directamente en el header
+- Soporte para **copiar al portapapeles** con un clic
+- Edición, borrado y organización de notas
 
-[5]: resources/capturas/captura1.gif "Captura"
-[6]: resources/img/icon-64x64.png "logo"
+### ⚙️ Panel de Ajustes
+- 🎨 Colores de resaltado/ocultado personalizables para hilos y usuarios
+- 📏 Expandir el layout al 100% de ancho
+- 🔢 Límite configurable de entradas en el historial (10–500)
+- 🪪 Ocultar la columna lateral de ID
+- 💾 Activar/desactivar CSS personalizado (`cust0mMensajes`)
+- ⭐ Botón de favorito dentro del hilo
+- 📖 Registro automático del historial
+
+### 💾 Backup
+- Exportar e importar backup completo en **JSON** (listas, favoritos, notas y ajustes)
+
+### 🔔 Otras funciones
+- Notificaciones **toast** para feedback de acciones (guardar, importar, exportar, errores...)
+- Detección automática del tema del foro ☀️/🌙 y sincronización con el panel
+
+## 📸 Capturas
+
+<p align="center">
+  <img src="resources/capturas/captura1.gif" alt="Captura"/>
+</p>
+
+## 🧩 Extensiones soportadas
+
+| Extensión | Compatible |
+|:---------:|:----------:|
+| Violentmonkey | ✅ |
+| Tampermonkey | ✅ |
+
+## ⚠️ Compatibilidad
+
+> Solo funciona con el **nuevo diseño de Forocoches**.
+> ❌ No compatible con versión móvil ni diseño clásico.
