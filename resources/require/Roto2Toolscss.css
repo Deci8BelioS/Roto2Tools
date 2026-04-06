@@ -75,7 +75,7 @@
     --rt2-shadow-xl: 0 8px 32px 0 #00000080;
     --rt2-r-sm: 4px;
     --rt2-r-md: 6px;
-    --rt2-r-lg: 8px;
+    --rt2-r-lg: 24px;
     --rt2-r-xl: 10px;
     --rt2-r-xxl: 12px;
     --rt2-r-pill: 15px;
@@ -156,7 +156,7 @@
     padding: 10px 20px;
     font-weight: 700;
     text-shadow: 1px 1px 4px #000;
-    border-radius: var(--rt2-r-md);
+    border-radius: var(--rt2-r-lg);
     cursor: pointer;
     margin-left: 5px;
     box-shadow: var(--rt2-shadow-sm);
@@ -351,7 +351,7 @@
     background: var(--rt2-danger-bg-soft);
     color: var(--rt2-danger-text);
     border: 1px solid var(--rt2-danger-border);
-    border-radius: var(--rt2-r-md);
+    border-radius: var(--rt2-r-lg);
     padding: 5px 10px;
     cursor: pointer;
     text-shadow: var(--rt2-text-shadow);
@@ -450,7 +450,7 @@
     padding: 10px 20px;
     color: #fff;
     border: none;
-    border-radius: var(--rt2-r-md);
+    border-radius: var(--rt2-r-lg);
     cursor: pointer;
     font-weight: 700;
     background: var(--rt2-accent);
@@ -676,7 +676,7 @@
     background: var(--rt2-blue-btn);
     color: #fff;
     border: none;
-    border-radius: var(--rt2-r-md);
+    border-radius: var(--rt2-r-lg);
     padding: 5px 10px;
     cursor: pointer;
     text-shadow: var(--rt2-shadow-sm);
@@ -1080,7 +1080,7 @@ details.spoiler-quote>summary:hover {
     background: var(--rt2-accent);
     color: #fff;
     border: none;
-    border-radius: var(--rt2-r-md);
+    border-radius: var(--rt2-r-lg);
     padding: 5px 10px;
     cursor: pointer;
     font-size: .8rem;
