@@ -122,7 +122,7 @@ div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div[id^='post_'] 
 div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div[id^='post_'] div.twitter-tweet {
     width: 550px !important;
 }
-div[id^='edit'] > section > div[id^=post]:not([id^='post_']) > div:nth-last-child(2) {
+div[id^='edit'] > section > div[id^=post]:not([id^='post_']):has(> div:first-child > div > a[href='member.php?u=']) > div:has(> a[href^='report.php']) {
     grid-area: controls;
     justify-content: flex-start;
     flex-direction: column-reverse !important;
