@@ -1,5 +1,4 @@
 // ==UserScript==
-// @id              Roto2Tools DEV
 // @name            Roto2Tools DEV
 // @namespace       Roto2Tools DEV
 // @author          DeciBelioS
@@ -8,8 +7,8 @@
 // @icon            https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-48x48.png
 // @icon64          https://raw.githubusercontent.com/Deci8BelioS/Roto2Tools/dev/resources/img/icon-64x64.png
 // @updateURL       https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
+// @downloadURL     https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/Roto2Tools-dev.user.js
 // @version         1.9.1-4d
-// @encoding        UTF-8
 // @match           *://www.forocoches.com/*
 // @match           *://forocoches.com/*
 // @grant           GM_setValue
@@ -17,7 +16,6 @@
 // @grant           GM_deleteValue
 // @grant           GM_xmlhttpRequest
 // @grant           GM_addStyle
-// @grant           GM_getMetadata
 // @grant           GM_getResourceText
 // @run-at          document-end
 // @resource        bootstrapcss    https://github.com/Deci8BelioS/Roto2Tools/raw/refs/heads/dev-2/resources/require/bootstrapcss.css?v=1.9.1-4d
